@@ -3,50 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bali Elite Pro</title>
+    <title>Bali Premium Rental</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .vehicle-card { transition: all 0.2s ease; }
-        .active-ring { border: 3px solid #2563eb !important; }
-        input[type="date"]::-webkit-inner-spin-button,
-        input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.5; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .premium-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .premium-card:active { transform: scale(0.96); brightness: 0.8; }
+        .glass-effect { background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
-<body class="bg-[#f8f9fb] text-slate-900 overflow-x-hidden">
-    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col pb-10"></div>
+<body class="bg-black text-white overflow-hidden">
+    <div id="app" class="max-w-md mx-auto h-screen flex flex-col"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 1. РАСШИРЕННАЯ БД (Цены: день, неделя, месяц)
         const db = [
             { 
                 id: 1, type: 'bike', model: 'Yamaha NMAX 2024', 
                 prices: { day: 170000, week: 1000000, month: 2800000 },
                 img: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=800',
-                desc: 'Новый байк, ABS, большой багажник.'
+                desc: 'Premium black edition. Full insurance.'
             },
             { 
-                id: 2, type: 'car', model: 'Toyota Avanza', 
-                prices: { day: 450000, week: 2800000, month: 8500000 },
+                id: 2, type: 'car', model: 'Mitsubishi Xpander', 
+                prices: { day: 650000, week: 3800000, month: 11000000 },
                 img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800',
-                desc: '7 мест, кондиционер, идеален для семьи.'
+                desc: '7-seater luxury crossover. Clean interior.'
             }
         ];
 
-        let state = {
-            step: 'type',
-            transport: null,
-            startDate: '',
-            endDate: '',
-            location: 'Canggu',
-            helmets: 1,
-            holder: false
-        };
-
-        // ТЕКУЩАЯ ДАТА ДЛЯ ВАЛИДАЦИИ
+        let state = { step: 'type', transport: null, startDate: '', endDate: '', location: 'Canggu' };
         const today = new Date().toISOString().split('T')[0];
 
         function calculateTotal(vehicle) {
@@ -54,9 +44,7 @@
             const start = new Date(state.startDate);
             const end = new Date(state.endDate);
             const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-            
             if (diffDays <= 0) return 0;
-
             if (diffDays >= 30) return Math.floor(diffDays * (vehicle.prices.month / 30));
             if (diffDays >= 7) return Math.floor(diffDays * (vehicle.prices.week / 7));
             return diffDays * vehicle.prices.day;
@@ -64,78 +52,98 @@
 
         function render() {
             const app = document.getElementById('app');
+            
             if (state.step === 'type') {
                 app.innerHTML = `
-                    <div class="p-6">
-                        <h1 class="text-4xl font-black mb-6 mt-4">Bali Booking</h1>
-                        <div class="space-y-4">
-                            <div onclick="go('bike')" class="bg-white rounded-[30px] p-6 shadow-xl border-2 border-transparent hover:border-blue-500">
-                                <span class="text-4xl">🛵</span> <h2 class="text-2xl font-bold inline ml-3">Байки</h2>
-                            </div>
-                            <div onclick="go('car')" class="bg-white rounded-[30px] p-6 shadow-xl border-2 border-transparent hover:border-blue-500">
-                                <span class="text-4xl">🚗</span> <h2 class="text-2xl font-bold inline ml-3">Машины</h2>
+                    <div class="h-full w-full flex flex-col p-2 gap-2">
+                        <div onclick="go('bike')" class="relative flex-1 rounded-[40px] overflow-hidden premium-card">
+                            <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=1000&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                            <div class="absolute bottom-10 left-8">
+                                <span class="glass-effect px-4 py-1 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase">Rent a Bike</span>
+                                <h2 class="text-4xl font-black mt-2 italic tracking-tighter">MOTORCYCLES</h2>
+                                <p class="text-gray-300 text-sm mt-1">Starting from 100k IDR / day</p>
                             </div>
                         </div>
-                    </div>`;
+
+                        <div onclick="go('car')" class="relative flex-1 rounded-[40px] overflow-hidden premium-card">
+                            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1000&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                            <div class="absolute bottom-10 left-8">
+                                <span class="glass-effect px-4 py-1 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase">Rent a Car</span>
+                                <h2 class="text-4xl font-black mt-2 italic tracking-tighter">PREMIUM CARS</h2>
+                                <p class="text-gray-300 text-sm mt-1">Starting from 450k IDR / day</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
             } else {
                 const items = db.filter(v => v.type === state.transport);
+                app.style.overflowY = 'auto'; // Включаем скролл для списка
                 app.innerHTML = `
-                    <div class="p-4">
-                        <button onclick="state.step='type'; render()" class="mb-4 font-bold text-blue-600">← Назад</button>
-                        
-                        <div class="bg-white p-5 rounded-[25px] shadow-sm mb-4 border border-gray-100">
-                            <h3 class="text-[11px] font-black uppercase text-gray-400 mb-2">Настройки аренды</h3>
-                            <div class="grid grid-cols-2 gap-3 mb-3">
-                                <input type="date" min="${today}" value="${state.startDate}" onchange="state.startDate=this.value; render()" class="bg-slate-50 p-3 rounded-xl text-xs font-bold">
-                                <input type="date" min="${state.startDate || today}" value="${state.endDate}" onchange="state.endDate=this.value; render()" class="bg-slate-50 p-3 rounded-xl text-xs font-bold">
+                    <div class="p-4 bg-[#f8f9fb] min-h-screen text-slate-900">
+                        <div class="flex items-center justify-between mb-6 pt-4">
+                            <button onclick="state.step='type'; render()" class="bg-white shadow-lg p-3 rounded-2xl">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                            </button>
+                            <h2 class="text-xl font-black uppercase tracking-widest">${state.transport === 'bike' ? 'Bikes' : 'Cars'}</h2>
+                            <div class="w-12"></div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-[32px] shadow-xl mb-8 border border-gray-100">
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <p class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1">Pick up</p>
+                                    <input type="date" min="${today}" value="${state.startDate}" onchange="state.startDate=this.value; render()" class="w-full bg-slate-50 p-3 rounded-2xl text-xs font-bold border-none outline-none">
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1">Return</p>
+                                    <input type="date" min="${state.startDate || today}" value="${state.endDate}" onchange="state.endDate=this.value; render()" class="w-full bg-slate-50 p-3 rounded-2xl text-xs font-bold border-none outline-none">
+                                </div>
                             </div>
-                            <select onchange="state.location=this.value; render()" class="w-full bg-slate-50 p-3 rounded-xl text-xs font-bold border-none leading-tight">
-                                <option value="Canggu">Чангу (Free)</option>
-                                <option value="Uluwatu">Улувату (50k)</option>
-                                <option value="Ubud">Убуд (100k)</option>
+                            <p class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1">Location</p>
+                            <select onchange="state.location=this.value; render()" class="w-full bg-slate-50 p-3 rounded-2xl text-xs font-bold border-none outline-none appearance-none">
+                                <option value="Canggu">Canggu / Seminyak</option>
+                                <option value="Uluwatu">Uluwatu / Bukit</option>
+                                <option value="Ubud">Ubud Central</option>
                             </select>
                         </div>
 
-                        <div class="space-y-6">
+                        <div class="space-y-8">
                             ${items.map(v => {
                                 const total = calculateTotal(v);
                                 return `
-                                <div class="bg-white rounded-[35px] overflow-hidden shadow-lg border border-gray-50">
-                                    <img src="${v.img}" class="w-full h-52 object-cover">
-                                    <div class="p-6">
-                                        <h3 class="text-2xl font-black mb-1">${v.model}</h3>
-                                        <p class="text-gray-400 text-xs mb-4">${v.desc}</p>
+                                <div class="bg-white rounded-[40px] overflow-hidden shadow-2xl border border-gray-50">
+                                    <div class="relative h-64">
+                                        <img src="${v.img}" class="w-full h-full object-cover">
+                                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-2xl font-black text-sm text-blue-600 shadow-lg italic">
+                                            BEST PRICE
+                                        </div>
+                                    </div>
+                                    <div class="p-8">
+                                        <h3 class="text-3xl font-black text-slate-800 leading-tight">${v.model}</h3>
+                                        <p class="text-gray-400 text-sm mt-2 mb-6">${v.desc}</p>
                                         
-                                        <div class="bg-slate-50 p-3 rounded-2xl mb-4 text-[10px] grid grid-cols-3 text-center font-bold">
-                                            <div class="border-r">День<br><span class="text-blue-600">${v.prices.day/1000}k</span></div>
-                                            <div class="border-r">Неделя<br><span class="text-blue-600">${v.prices.week/1000}k</span></div>
-                                            <div>Месяц<br><span class="text-blue-600">${(v.prices.month/1000).toFixed(0)}k</span></div>
+                                        <div class="flex items-end justify-between">
+                                            <div>
+                                                <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Total for period</p>
+                                                <p class="text-3xl font-black text-blue-600">${total > 0 ? total.toLocaleString() : '—'} <span class="text-xs font-bold text-gray-400 uppercase">idr</span></p>
+                                            </div>
+                                            <button onclick="finishOrder('${v.model}', ${total})" class="bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-90 transition-all shadow-xl shadow-slate-200">Book</button>
                                         </div>
-
-                                        <div class="flex items-center justify-between mb-4">
-                                            <span class="text-xs font-bold text-gray-500 uppercase">Итого за срок:</span>
-                                            <span class="text-xl font-black text-blue-600">${total > 0 ? total.toLocaleString() : '—'} IDR</span>
-                                        </div>
-
-                                        <button onclick="finishOrder('${v.model}', ${total})" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black tracking-widest active:scale-95 transition-all">ЗАБРОНИРОВАТЬ</button>
                                     </div>
                                 </div>`;
                             }).join('')}
                         </div>
-                    </div>`;
+                    </div>
+                `;
             }
         }
 
         function finishOrder(model, total) {
-            if (total === 0) return tg.showAlert("Сначала выберите корректные даты!");
-            
-            const order = {
-                model, total,
-                dates: `${state.startDate} / ${state.endDate}`,
-                loc: state.location
-            };
-            
-            tg.showConfirm(`Подтверждаете бронь ${model} за ${total.toLocaleString()} IDR?\nДоставка: ${state.location}`, (ok) => {
+            if (total === 0) return tg.showAlert("Please select valid dates first!");
+            const order = { model, total, dates: `${state.startDate} / ${state.endDate}`, loc: state.location };
+            tg.showConfirm(`Confirm booking for ${model}?\nTotal: ${total.toLocaleString()} IDR`, (ok) => {
                 if(ok) tg.sendData(JSON.stringify(order));
             });
         }
