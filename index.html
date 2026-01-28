@@ -133,6 +133,33 @@
         }
 
         function book(model) {
+    // 1. Проверка дат
+    if(!state.startDate || !state.endDate) {
+        tg.showAlert("Пожалуйста, выберите даты аренды");
+        return;
+    }
+
+    // 2. Формируем объект с данными заказа
+    const orderData = {
+        transport: state.transport === 'bike' ? 'Байк 🛵' : 'Машина 🚗',
+        model: model,
+        dates: `${state.startDate} — ${state.endDate}`,
+        options: state.transport === 'bike' 
+            ? `Шлемы: ${state.helmets}, Держатель: ${state.holder ? 'Да' : 'Нет'}`
+            : 'Стандартная комплектация',
+        user: tg.initDataUnsafe?.user?.username || "Unknown"
+    };
+
+    // 3. Красивый текст для подтверждения пользователю
+    const confirmText = `Подтверждаете заказ?\n\n📍 ${orderData.model}\n📅 ${orderData.dates}\n⚙️ ${orderData.options}`;
+
+    tg.showConfirm(confirmText, (ok) => {
+        if (ok) {
+            // ОТПРАВКА ДАННЫХ БОТУ
+            tg.sendData(JSON.stringify(orderData));
+        }
+    });
+}
             if(!state.startDate || !state.endDate) {
                 tg.showAlert("Пожалуйста, выберите даты аренды");
                 return;
