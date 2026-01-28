@@ -9,48 +9,49 @@
     <style>
         .vehicle-card { transition: transform 0.2s; }
         .vehicle-card:active { transform: scale(0.98); }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+        input[type="date"] { appearance: none; -webkit-appearance: none; }
     </style>
 </head>
 <body class="bg-[#f8f9fb] text-slate-900">
-    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col">
+    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col pb-10">
         </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.backgroundColor = '#f8f9fb';
-        tg.headerColor = '#f8f9fb';
 
-        // БАЗА ДАННЫХ С КАРТИНКАМИ ВЫСОКОГО КАЧЕСТВА
         const db = [
             { 
-                id: 1, 
-                type: 'bike', 
-                model: 'Yamaha NMAX 2024', 
-                price: '170.000', 
+                id: 1, type: 'bike', model: 'Yamaha NMAX 2024', price: '170.000', 
                 img: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&q=80&w=800',
                 tags: ['No Deposit', '2024 New']
             },
             { 
-                id: 2, 
-                type: 'bike', 
-                model: 'Honda PCX 160', 
-                price: '180.000', 
+                id: 2, type: 'bike', model: 'Honda PCX 160', price: '180.000', 
                 img: 'https://images.unsplash.com/photo-1620510625142-b45cbb784397?auto=format&fit=crop&q=80&w=800',
                 tags: ['ABS', 'Fast Delivery']
             },
             { 
-                id: 3, 
-                type: 'car', 
-                model: 'Mitsubishi Xpander', 
-                price: '650.000', 
+                id: 3, type: 'car', model: 'Mitsubishi Xpander', price: '650.000', 
                 img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800',
-                tags: ['7 Seats', 'Clean Interior']
+                tags: ['7 Seats', 'Clean']
             }
         ];
 
-        let state = { step: 'type', transport: null };
+        // Состояние приложения (Persistence)
+        let state = JSON.parse(localStorage.getItem('rental_v2')) || {
+            step: 'type',
+            transport: null,
+            startDate: '',
+            endDate: '',
+            helmets: 1,
+            holder: false
+        };
+
+        function save() {
+            localStorage.setItem('rental_v2', JSON.stringify(state));
+            render();
+        }
 
         function render() {
             const app = document.getElementById('app');
@@ -58,22 +59,16 @@
             if (state.step === 'type') {
                 app.innerHTML = `
                     <div class="p-6">
-                        <h1 class="text-3xl font-black mb-2 mt-4">Bali Rental</h1>
-                        <p class="text-gray-500 mb-8">Премиальный сервис аренды на острове</p>
-                        
+                        <h1 class="text-3xl font-black mb-2 mt-4 text-blue-600">Bali Rent</h1>
+                        <p class="text-gray-500 mb-8">Выберите тип транспорта:</p>
                         <div class="space-y-4">
                             <div onclick="go('bike')" class="relative overflow-hidden rounded-[32px] h-48 vehicle-card shadow-lg">
                                 <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-black/40 flex items-end p-6">
-                                    <h2 class="text-white text-2xl font-bold">Мотобайки</h2>
-                                </div>
+                                <div class="absolute inset-0 bg-black/40 flex items-end p-6"><h2 class="text-white text-2xl font-bold">Байки</h2></div>
                             </div>
-
                             <div onclick="go('car')" class="relative overflow-hidden rounded-[32px] h-48 vehicle-card shadow-lg">
                                 <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-black/40 flex items-end p-6">
-                                    <h2 class="text-white text-2xl font-bold">Автомобили</h2>
-                                </div>
+                                <div class="absolute inset-0 bg-black/40 flex items-end p-6"><h2 class="text-white text-2xl font-bold">Машины</h2></div>
                             </div>
                         </div>
                     </div>
@@ -82,27 +77,52 @@
                 const items = db.filter(v => v.type === state.transport);
                 app.innerHTML = `
                     <div class="p-4">
-                        <div class="flex items-center justify-between mb-6">
-                            <button onclick="back()" class="bg-white shadow-sm px-4 py-2 rounded-full font-semibold text-sm">← Назад</button>
+                        <div class="flex items-center justify-between mb-4">
+                            <button onclick="back()" class="bg-white shadow-sm px-4 py-2 rounded-full font-bold text-sm text-blue-600">← Назад</button>
                             <span class="font-bold text-lg">${state.transport === 'bike' ? 'Байки' : 'Машины'}</span>
                             <div class="w-10"></div>
                         </div>
 
+                        <div class="bg-white p-4 rounded-3xl shadow-sm mb-6 grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[10px] uppercase font-bold text-gray-400 ml-2">Дата начала</label>
+                                <input type="date" value="${state.startDate}" onchange="state.startDate=this.value; save()" class="w-full mt-1 p-2 bg-slate-50 rounded-xl border-none text-sm">
+                            </div>
+                            <div>
+                                <label class="text-[10px] uppercase font-bold text-gray-400 ml-2">Дата конца</label>
+                                <input type="date" value="${state.endDate}" onchange="state.endDate=this.value; save()" class="w-full mt-1 p-2 bg-slate-50 rounded-xl border-none text-sm">
+                            </div>
+                        </div>
+
+                        ${state.transport === 'bike' ? `
+                            <div class="bg-blue-600 p-5 rounded-[32px] shadow-lg mb-8 text-white">
+                                <h4 class="font-bold mb-4 flex items-center gap-2">⚙️ Опции байка</h4>
+                                <div class="flex justify-between items-center mb-4 text-sm">
+                                    <span>Количество шлемов:</span>
+                                    <div class="flex bg-blue-500 rounded-xl p-1">
+                                        ${[0, 1, 2].map(n => `
+                                            <button onclick="state.helmets=${n}; save()" class="w-8 h-8 rounded-lg font-bold ${state.helmets === n ? 'bg-white text-blue-600' : ''}">${n}</button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center text-sm">
+                                    <span>Держатель для телефона:</span>
+                                    <button onclick="state.holder=!state.holder; save()" class="px-4 py-2 rounded-xl font-bold ${state.holder ? 'bg-green-400' : 'bg-blue-500'}">
+                                        ${state.holder ? 'Да' : 'Нет'}
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+
                         <div class="space-y-6">
                             ${items.map(v => `
-                                <div class="bg-white rounded-[24px] overflow-hidden shadow-sm border border-gray-100">
-                                    <img src="${v.img}" class="w-full h-52 object-cover">
+                                <div class="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
+                                    <img src="${v.img}" class="w-full h-48 object-cover">
                                     <div class="p-5">
-                                        <div class="flex gap-2 mb-2">
-                                            ${v.tags.map(tag => `<span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider">${tag}</span>`).join('')}
-                                        </div>
+                                        <div class="flex gap-2 mb-2">${v.tags.map(t => `<span class="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-md uppercase">${t}</span>`).join('')}</div>
                                         <h3 class="text-xl font-bold mb-1">${v.model}</h3>
-                                        <p class="text-gray-400 text-sm mb-4 italic">от ${v.price} IDR / сутки</p>
-                                        
-                                        <button onclick="tg.showAlert('Вы выбрали ${v.model}. Заявка отправлена!')" 
-                                                class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-lg active:bg-blue-700 transition-colors">
-                                            Забронировать
-                                        </button>
+                                        <p class="text-gray-400 text-sm mb-4">от ${v.price} IDR / сутки</p>
+                                        <button onclick="book('${v.model}')" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold active:scale-95 transition-all">Забронировать</button>
                                     </div>
                                 </div>
                             `).join('')}
@@ -112,8 +132,19 @@
             }
         }
 
-        function go(type) { state.transport = type; state.step = 'models'; render(); window.scrollTo(0,0); }
-        function back() { state.step = 'type'; render(); window.scrollTo(0,0); }
+        function book(model) {
+            if(!state.startDate || !state.endDate) {
+                tg.showAlert("Пожалуйста, выберите даты аренды");
+                return;
+            }
+            const info = state.transport === 'bike' ? `\nШлемов: ${state.helmets}, Держатель: ${state.holder ? 'Да' : 'Нет'}` : '';
+            tg.showConfirm(`Бронируем ${model}?\nДаты: ${state.startDate} — ${state.endDate}${info}`, (ok) => {
+                if(ok) tg.close();
+            });
+        }
+
+        function go(type) { state.transport = type; state.step = 'models'; save(); }
+        function back() { state.step = 'type'; save(); }
 
         render();
     </script>
