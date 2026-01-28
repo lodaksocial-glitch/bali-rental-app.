@@ -22,7 +22,6 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // 1. ПЕРЕВОДЫ 1:1
         const i18n = {
             ru: {
                 rent_bike: "Аренда байка",
@@ -30,7 +29,7 @@
                 starting_from: "От 100k IDR / день",
                 rent_car: "Аренда авто",
                 premium_cars: "ПРЕМИУМ АВТО",
-                starting_car: "От 450k IDR / день",
+                starting_car: "От 300k IDR / день", // ИЗМЕНЕНО ЗДЕСЬ
                 bikes: "Байки",
                 cars: "Машины",
                 pickup: "Дата получения",
@@ -51,7 +50,7 @@
                 starting_from: "Starting from 100k IDR / day",
                 rent_car: "Rent a Car",
                 premium_cars: "PREMIUM CARS",
-                starting_car: "Starting from 450k IDR / day",
+                starting_car: "Starting from 300k IDR / day", // ИЗМЕНЕНО ЗДЕСЬ
                 bikes: "Bikes",
                 cars: "Cars",
                 pickup: "Pick up date",
@@ -70,13 +69,25 @@
 
         const db = [
             { 
-                id: 1, type: 'bike', model: 'Yamaha NMAX 2024', 
+                id: 1, type: 'bike', model: 'Honda Vario 125', 
+                prices: { day: 100000, week: 600000, month: 1800000 },
+                img: 'https://images.unsplash.com/photo-1620510625142-b45cbb784397?w=800',
+                desc: { ru: "Экономичный и маневренный.", en: "Economic and agile." }
+            },
+            { 
+                id: 2, type: 'bike', model: 'Yamaha NMAX 2024', 
                 prices: { day: 170000, week: 1000000, month: 2800000 },
                 img: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=800',
                 desc: { ru: "Черная серия. Полная страховка.", en: "Black edition. Full insurance." }
             },
             { 
-                id: 2, type: 'car', model: 'Mitsubishi Xpander', 
+                id: 3, type: 'car', model: 'Suzuki Brio (Manual)', // Добавил эконом-вариант за 300к
+                prices: { day: 300000, week: 1900000, month: 5500000 },
+                img: 'https://images.unsplash.com/photo-1590362891175-3066494957e1?q=80&w=800&auto=format&fit=crop',
+                desc: { ru: "Компактный и экономичный городской авто.", en: "Compact and fuel-efficient city car." }
+            },
+            { 
+                id: 4, type: 'car', model: 'Mitsubishi Xpander', 
                 prices: { day: 650000, week: 3800000, month: 11000000 },
                 img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800',
                 desc: { ru: "7-местный кроссовер. Чистый салон.", en: "7-seater crossover. Clean interior." }
