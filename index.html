@@ -3,167 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bali Elite Rental</title>
+    <title>Bali Elite Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .vehicle-card { transition: transform 0.2s; }
-        .vehicle-card:active { transform: scale(0.98); }
-        body { -webkit-tap-highlight-color: transparent; }
+        .vehicle-card { transition: all 0.2s ease; }
+        .active-ring { border: 3px solid #2563eb !important; }
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.5; }
     </style>
 </head>
 <body class="bg-[#f8f9fb] text-slate-900 overflow-x-hidden">
-    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col pb-10">
-        </div>
+    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col pb-10"></div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // БАЗА ДАННЫХ
+        // 1. РАСШИРЕННАЯ БД (Цены: день, неделя, месяц)
         const db = [
             { 
-                id: 1, type: 'bike', model: 'Yamaha NMAX 2024', price: 170000, 
-                img: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&q=80&w=800',
-                tags: ['No Deposit', '2024 New']
+                id: 1, type: 'bike', model: 'Yamaha NMAX 2024', 
+                prices: { day: 170000, week: 1000000, month: 2800000 },
+                img: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=800',
+                desc: 'Новый байк, ABS, большой багажник.'
             },
             { 
-                id: 2, type: 'bike', model: 'Honda PCX 160', price: 185000, 
-                img: 'https://images.unsplash.com/photo-1620510625142-b45cbb784397?auto=format&fit=crop&q=80&w=800',
-                tags: ['ABS', 'Top Condition']
-            },
-            { 
-                id: 3, type: 'car', model: 'Mitsubishi Xpander', price: 650000, 
-                img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800',
-                tags: ['7 Seats', 'Family Car']
+                id: 2, type: 'car', model: 'Toyota Avanza', 
+                prices: { day: 450000, week: 2800000, month: 8500000 },
+                img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800',
+                desc: '7 мест, кондиционер, идеален для семьи.'
             }
         ];
 
-        // Состояние
-        let state = JSON.parse(localStorage.getItem('rental_final_v1')) || {
+        let state = {
             step: 'type',
             transport: null,
             startDate: '',
             endDate: '',
+            location: 'Canggu',
             helmets: 1,
             holder: false
         };
 
-        function save() {
-            localStorage.setItem('rental_final_v1', JSON.stringify(state));
-            render();
+        // ТЕКУЩАЯ ДАТА ДЛЯ ВАЛИДАЦИИ
+        const today = new Date().toISOString().split('T')[0];
+
+        function calculateTotal(vehicle) {
+            if (!state.startDate || !state.endDate) return 0;
+            const start = new Date(state.startDate);
+            const end = new Date(state.endDate);
+            const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays <= 0) return 0;
+
+            if (diffDays >= 30) return Math.floor(diffDays * (vehicle.prices.month / 30));
+            if (diffDays >= 7) return Math.floor(diffDays * (vehicle.prices.week / 7));
+            return diffDays * vehicle.prices.day;
         }
 
         function render() {
             const app = document.getElementById('app');
-            
             if (state.step === 'type') {
                 app.innerHTML = `
                     <div class="p-6">
-                        <h1 class="text-4xl font-black mb-2 mt-4 text-slate-800">Bali Rent</h1>
-                        <p class="text-gray-500 mb-8 font-medium text-lg">Премиальный сервис аренды</p>
-                        <div class="space-y-5">
-                            <div onclick="go('bike')" class="relative overflow-hidden rounded-[35px] h-52 vehicle-card shadow-xl border-4 border-white">
-                                <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-8">
-                                    <h2 class="text-white text-3xl font-bold italic tracking-wider">БАЙКИ</h2>
-                                </div>
+                        <h1 class="text-4xl font-black mb-6 mt-4">Bali Booking</h1>
+                        <div class="space-y-4">
+                            <div onclick="go('bike')" class="bg-white rounded-[30px] p-6 shadow-xl border-2 border-transparent hover:border-blue-500">
+                                <span class="text-4xl">🛵</span> <h2 class="text-2xl font-bold inline ml-3">Байки</h2>
                             </div>
-                            <div onclick="go('car')" class="relative overflow-hidden rounded-[35px] h-52 vehicle-card shadow-xl border-4 border-white">
-                                <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=800" class="absolute inset-0 w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-8">
-                                    <h2 class="text-white text-3xl font-bold italic tracking-wider">МАШИНЫ</h2>
-                                </div>
+                            <div onclick="go('car')" class="bg-white rounded-[30px] p-6 shadow-xl border-2 border-transparent hover:border-blue-500">
+                                <span class="text-4xl">🚗</span> <h2 class="text-2xl font-bold inline ml-3">Машины</h2>
                             </div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             } else {
                 const items = db.filter(v => v.type === state.transport);
                 app.innerHTML = `
                     <div class="p-4">
-                        <div class="flex items-center justify-between mb-4">
-                            <button onclick="back()" class="bg-white shadow-md px-6 py-2 rounded-full font-bold text-sm text-blue-600 active:scale-90 transition-all">← Назад</button>
-                            <span class="font-black text-xl uppercase tracking-widest text-slate-700">${state.transport === 'bike' ? 'Байки' : 'Машины'}</span>
-                            <div class="w-10"></div>
+                        <button onclick="state.step='type'; render()" class="mb-4 font-bold text-blue-600">← Назад</button>
+                        
+                        <div class="bg-white p-5 rounded-[25px] shadow-sm mb-4 border border-gray-100">
+                            <h3 class="text-[11px] font-black uppercase text-gray-400 mb-2">Настройки аренды</h3>
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <input type="date" min="${today}" value="${state.startDate}" onchange="state.startDate=this.value; render()" class="bg-slate-50 p-3 rounded-xl text-xs font-bold">
+                                <input type="date" min="${state.startDate || today}" value="${state.endDate}" onchange="state.endDate=this.value; render()" class="bg-slate-50 p-3 rounded-xl text-xs font-bold">
+                            </div>
+                            <select onchange="state.location=this.value; render()" class="w-full bg-slate-50 p-3 rounded-xl text-xs font-bold border-none leading-tight">
+                                <option value="Canggu">Чангу (Free)</option>
+                                <option value="Uluwatu">Улувату (50k)</option>
+                                <option value="Ubud">Убуд (100k)</option>
+                            </select>
                         </div>
 
-                        <div class="bg-white p-5 rounded-[30px] shadow-sm mb-6 border border-gray-100">
-                            <h4 class="text-[11px] font-black uppercase text-gray-400 mb-3 ml-1 tracking-widest">Период аренды</h4>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <input type="date" value="${state.startDate}" onchange="state.startDate=this.value; save()" class="w-full p-3 bg-slate-50 rounded-2xl border-none text-xs font-bold">
-                                </div>
-                                <div>
-                                    <input type="date" value="${state.endDate}" onchange="state.endDate=this.value; save()" class="w-full p-3 bg-slate-50 rounded-2xl border-none text-xs font-bold">
-                                </div>
-                            </div>
-                        </div>
-
-                        ${state.transport === 'bike' ? `
-                            <div class="bg-slate-900 p-6 rounded-[35px] shadow-2xl mb-8 text-white">
-                                <h4 class="font-bold mb-5 flex items-center gap-2 text-blue-400 italic">EQUIPMENT</h4>
-                                <div class="flex justify-between items-center mb-6">
-                                    <span class="text-sm font-medium">Шлемы (max 2):</span>
-                                    <div class="flex bg-slate-800 rounded-2xl p-1">
-                                        ${[0, 1, 2].map(n => `
-                                            <button onclick="state.helmets=${n}; save()" class="w-10 h-10 rounded-xl font-bold transition-all ${state.helmets === n ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50' : 'text-slate-400'}">${n}</button>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-sm font-medium">Держатель телефона:</span>
-                                    <button onclick="state.holder=!state.holder; save()" class="px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${state.holder ? 'bg-green-500 text-white shadow-lg shadow-green-500/50' : 'bg-slate-800 text-slate-400'}">
-                                        ${state.holder ? 'Добавлен' : 'Нет'}
-                                    </button>
-                                </div>
-                            </div>
-                        ` : ''}
-
-                        <div class="space-y-8 mt-4">
-                            ${items.map(v => `
-                                <div class="bg-white rounded-[40px] overflow-hidden shadow-xl border border-gray-50">
-                                    <img src="${v.img}" class="w-full h-64 object-cover">
+                        <div class="space-y-6">
+                            ${items.map(v => {
+                                const total = calculateTotal(v);
+                                return `
+                                <div class="bg-white rounded-[35px] overflow-hidden shadow-lg border border-gray-50">
+                                    <img src="${v.img}" class="w-full h-52 object-cover">
                                     <div class="p-6">
-                                        <div class="flex gap-2 mb-3 leading-none">${v.tags.map(t => `<span class="bg-blue-50 text-blue-600 text-[9px] font-black px-2 py-1.5 rounded-lg uppercase tracking-tighter">${t}</span>`).join('')}</div>
-                                        <h3 class="text-2xl font-black text-slate-800 mb-1 tracking-tight">${v.model}</h3>
-                                        <p class="text-blue-600 font-bold text-lg mb-6">${v.price.toLocaleString()} <span class="text-xs text-gray-400 uppercase">idr / день</span></p>
-                                        <button onclick="book('${v.model}')" class="w-full bg-blue-600 text-white py-5 rounded-[22px] font-black text-lg shadow-lg shadow-blue-500/30 active:scale-95 transition-all">БРОНИРОВАТЬ</button>
+                                        <h3 class="text-2xl font-black mb-1">${v.model}</h3>
+                                        <p class="text-gray-400 text-xs mb-4">${v.desc}</p>
+                                        
+                                        <div class="bg-slate-50 p-3 rounded-2xl mb-4 text-[10px] grid grid-cols-3 text-center font-bold">
+                                            <div class="border-r">День<br><span class="text-blue-600">${v.prices.day/1000}k</span></div>
+                                            <div class="border-r">Неделя<br><span class="text-blue-600">${v.prices.week/1000}k</span></div>
+                                            <div>Месяц<br><span class="text-blue-600">${(v.prices.month/1000).toFixed(0)}k</span></div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between mb-4">
+                                            <span class="text-xs font-bold text-gray-500 uppercase">Итого за срок:</span>
+                                            <span class="text-xl font-black text-blue-600">${total > 0 ? total.toLocaleString() : '—'} IDR</span>
+                                        </div>
+
+                                        <button onclick="finishOrder('${v.model}', ${total})" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-black tracking-widest active:scale-95 transition-all">ЗАБРОНИРОВАТЬ</button>
                                     </div>
-                                </div>
-                            `).join('')}
+                                </div>`;
+                            }).join('')}
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }
         }
 
-        function book(model) {
-            if(!state.startDate || !state.endDate) {
-                tg.showAlert("⚠️ Выберите даты аренды в календаре");
-                return;
-            }
-
+        function finishOrder(model, total) {
+            if (total === 0) return tg.showAlert("Сначала выберите корректные даты!");
+            
             const order = {
-                model: model,
-                type: state.transport,
-                dates: `${state.startDate} — ${state.endDate}`,
-                helmets: state.helmets,
-                holder: state.holder ? 'Нужен' : 'Не нужен'
+                model, total,
+                dates: `${state.startDate} / ${state.endDate}`,
+                loc: state.location
             };
-
-            const confirmMsg = `Забронировать ${model}?\n📅 ${order.dates}${state.transport === 'bike' ? `\n🪖 Шлемы: ${order.helmets}\n📱 Держатель: ${order.holder}` : ''}`;
-
-            tg.showConfirm(confirmMsg, (ok) => {
-                if(ok) {
-                    tg.sendData(JSON.stringify(order));
-                }
+            
+            tg.showConfirm(`Подтверждаете бронь ${model} за ${total.toLocaleString()} IDR?\nДоставка: ${state.location}`, (ok) => {
+                if(ok) tg.sendData(JSON.stringify(order));
             });
         }
 
-        function go(type) { state.transport = type; state.step = 'models'; save(); window.scrollTo(0,0); }
-        function back() { state.step = 'type'; save(); window.scrollTo(0,0); }
-
+        function go(type) { state.transport = type; state.step = 'models'; render(); }
         render();
     </script>
 </body>
