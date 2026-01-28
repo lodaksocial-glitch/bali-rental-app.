@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bali Rental App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 select-none">
+    <div id="app" class="p-4 max-w-md mx-auto">
+        </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // ТВОЯ БАЗА ДАННЫХ
+        const db = [
+            { id: 1, type: 'bike', model: 'Honda Vario', price: '100k', img: '🛵' },
+            { id: 2, type: 'bike', model: 'Yamaha NMAX', price: '170k', img: '🚀' },
+            { id: 3, type: 'car', model: 'Toyota Avanza', price: '450k', img: '🚗' }
+        ];
+
+        let state = { step: 'type', transport: null };
+
+        function render() {
+            const app = document.getElementById('app');
+            if (state.step === 'type') {
+                app.innerHTML = `
+                    <h1 class="text-2xl font-bold mb-6 mt-4">Аренда на Бали 🌴</h1>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div onclick="go('bike')" class="bg-white p-8 rounded-3xl shadow-sm text-center border-2 border-transparent active:border-blue-500">
+                            <span class="text-5xl">🛵</span>
+                            <p class="mt-3 font-bold text-lg">Байки</p>
+                        </div>
+                        <div onclick="go('car')" class="bg-white p-8 rounded-3xl shadow-sm text-center border-2 border-transparent active:border-blue-500">
+                            <span class="text-5xl">🚗</span>
+                            <p class="mt-3 font-bold text-lg">Машины</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const items = db.filter(v => v.type === state.transport);
+                app.innerHTML = `
+                    <button onclick="back()" class="text-blue-500 font-medium mb-4 flex items-center">← Назад</button>
+                    <h2 class="text-xl font-bold mb-4 capitalize">${state.transport === 'bike' ? 'Мотобайки' : 'Автомобили'}</h2>
+                    ${items.map(v => `
+                        <div class="bg-white p-4 rounded-2xl mb-3 flex items-center justify-between shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <span class="text-3xl">${v.img}</span>
+                                <div>
+                                    <h3 class="font-bold">${v.model}</h3>
+                                    <p class="text-sm text-gray-500">${v.price} IDR / сутки</p>
+                                </div>
+                            </div>
+                            <button onclick="tg.showAlert('Вы выбрали ${v.model}. Мы скоро свяжемся с вами!')" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold">Ок</button>
+                        </div>
+                    `).join('')}
+                `;
+            }
+        }
+
+        function go(type) { state.transport = type; state.step = 'models'; render(); }
+        function back() { state.step = 'type'; render(); }
+
+        render();
+    </script>
+</body>
+</html>
