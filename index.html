@@ -8,249 +8,160 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; background: #0f172a; color: #fff; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 15px rgba(37,99,235,0.4); }
-        .page { display: none; min-height: 100vh; animation: fadeIn 0.2s ease; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #0f172a; 
+            color: #fff; 
+            overscroll-behavior: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Стили для кнопок и карточек */
+        .btn-primary { 
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
+            box-shadow: 0 4px 15px rgba(37,99,235,0.4); 
+            transition: transform 0.1s;
+        }
+        .btn-primary:active { transform: scale(0.96); }
+
+        .card-hover:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* Анимация страниц */
+        .page { display: none; min-height: 100vh; animation: fadeIn 0.3s ease; padding-bottom: 120px; }
         .active { display: flex; }
-        .lang-active { background: #3b82f6; color: white; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Переключатель языка */
+        .lang-btn { opacity: 0.6; }
+        .lang-active { opacity: 1; background: #3b82f6; color: white; }
+        
+        /* Скроллбар */
         ::-webkit-scrollbar { width: 0; }
+        
+        /* Исправление кликабельности */
+        .clickable { cursor: pointer; z-index: 10; position: relative; }
     </style>
 </head>
 <body class="bg-[#0f172a]">
-    <div id="app" class="max-w-md mx-auto relative h-screen overflow-hidden flex flex-col">
+    <div id="app" class="max-w-md mx-auto relative min-h-screen flex flex-col bg-[#f8fafc]">
         
-        <div class="absolute top-4 right-4 z-50 flex glass rounded-full p-1 scale-90">
-            <button onclick="setLang('ru')" id="btn-ru" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">RU</button>
-            <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">EN</button>
+        <div class="fixed top-0 left-0 w-full z-50 p-4 pointer-events-none">
+            <div class="max-w-md mx-auto relative">
+                <div class="absolute top-0 right-0 pointer-events-auto bg-black/80 backdrop-blur rounded-full p-1 flex shadow-lg border border-white/10">
+                    <button onclick="setLang('ru')" id="btn-ru" class="lang-btn px-3 py-1 rounded-full text-[10px] font-bold text-white transition-all">RU</button>
+                    <button onclick="setLang('en')" id="btn-en" class="lang-btn px-3 py-1 rounded-full text-[10px] font-bold text-white transition-all">EN</button>
+                </div>
+            </div>
         </div>
 
-        <div id="step-type" class="page active flex-col p-4 gap-4 h-full overflow-y-auto pb-10">
-            <div class="mt-8 mb-2">
-                <h1 class="text-3xl font-black italic uppercase tracking-tighter">Bali Elite Pro</h1>
-                <p class="text-gray-400 text-xs font-bold uppercase tracking-widest" id="lbl-subtitle">Premium Rental Service</p>
+        <div id="step-type" class="page active flex-col p-4 gap-4 bg-[#0f172a]">
+            <div class="mt-12 mb-4 px-2">
+                <h1 class="text-4xl font-black italic uppercase tracking-tighter text-white">Bali Elite</h1>
+                <p class="text-blue-500 text-xs font-bold uppercase tracking-widest pl-1">Premium Rental Service</p>
             </div>
 
-            <div onclick="showCategory('bike')" class="relative h-48 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-2xl">
-                <img src="http://googleusercontent.com/image_collection/image_retrieval/1886254463873933798_0" class="absolute inset-0 w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+            <div onclick="showCategory('bike')" class="clickable card-hover relative h-56 rounded-[32px] overflow-hidden shadow-2xl bg-gray-900">
+                <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
                 <div class="absolute bottom-6 left-6">
-                    <h2 class="text-2xl font-black italic uppercase" id="lbl-moto">Motorcycles</h2>
-                    <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest" id="lbl-start-bike">From 150k IDR / day</p>
+                    <h2 class="text-3xl font-black italic uppercase text-white" id="lbl-moto">Bikes</h2>
+                    <p class="text-gray-300 text-[10px] font-bold uppercase tracking-widest mt-1" id="lbl-start-bike">From 150k</p>
                 </div>
             </div>
 
-            <div onclick="showCategory('car')" class="relative h-48 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-2xl">
-                <img src="http://googleusercontent.com/image_collection/image_retrieval/10368144206329733771_0" class="absolute inset-0 w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+            <div onclick="showCategory('car')" class="clickable card-hover relative h-56 rounded-[32px] overflow-hidden shadow-2xl bg-gray-900">
+                <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
                 <div class="absolute bottom-6 left-6">
-                    <h2 class="text-2xl font-black italic uppercase" id="lbl-cars">Premium Cars</h2>
-                    <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest" id="lbl-start-car">From 350k IDR / day</p>
+                    <h2 class="text-3xl font-black italic uppercase text-white" id="lbl-cars">Cars</h2>
+                    <p class="text-gray-300 text-[10px] font-bold uppercase tracking-widest mt-1" id="lbl-start-car">From 350k</p>
+                </div>
+            </div>
+            
+            <div onclick="showCategory('sport')" class="clickable card-hover relative h-40 rounded-[32px] overflow-hidden shadow-2xl bg-gray-900 border border-white/10">
+                <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-70">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent"></div>
+                <div class="absolute bottom-6 left-6">
+                    <h2 class="text-2xl font-black italic uppercase text-white" id="lbl-sport">Sport & Luxury</h2>
+                    <p class="text-blue-300 text-[10px] font-bold uppercase tracking-widest mt-1">Ninja, ZX-25R, Harley</p>
                 </div>
             </div>
         </div>
 
-        <div id="step-list" class="page flex-col bg-[#f8fafc] text-slate-900 h-full">
-            <div class="p-4 bg-white shadow-sm flex items-center justify-between sticky top-0 z-40">
-                <button onclick="showPage('step-type')" class="p-2 rounded-xl bg-slate-100 text-blue-600 font-bold">←</button>
-                <h2 class="text-sm font-black uppercase tracking-widest" id="lbl-category-title">Select Model</h2>
-                <div class="w-8"></div>
+        <div id="step-list" class="page flex-col bg-slate-50 text-slate-900 pt-20">
+            <div class="fixed top-0 max-w-md w-full bg-white/90 backdrop-blur-md p-4 pt-4 shadow-sm z-40 flex items-center gap-4">
+                <button onclick="showPage('step-type')" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-900 font-bold hover:bg-slate-200">←</button>
+                <h2 class="text-sm font-black uppercase tracking-widest" id="lbl-cat-title">Models</h2>
             </div>
-            <div id="items-container" class="space-y-3 p-4 pb-20 overflow-y-auto"></div>
+            <div id="items-container" class="px-4 space-y-3 pb-24"></div>
         </div>
 
-        <div id="step-details" class="page flex-col bg-white text-slate-900 h-full overflow-hidden relative">
-            <div class="flex-1 overflow-y-auto pb-44">
-                <div class="relative h-64">
-                    <img id="det-img" src="" class="w-full h-full object-cover">
-                    <button onclick="showPage('step-list')" class="absolute top-4 left-4 bg-white/90 p-2 rounded-xl text-slate-900 shadow-lg z-10 font-bold">←</button>
+        <div id="step-details" class="page flex-col bg-white h-full relative">
+            <button onclick="showPage('step-list')" class="absolute top-4 left-4 z-20 bg-white/80 backdrop-blur p-2 rounded-full shadow-lg font-bold w-10 h-10">←</button>
+            
+            <div class="h-72 w-full bg-gray-200 relative">
+                <img id="det-img" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+            </div>
+
+            <div class="px-6 -mt-8 relative z-10">
+                <h1 id="det-model" class="text-3xl font-black text-slate-900 leading-none mb-2">Model</h1>
+                <span id="det-specs" class="inline-block bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider mb-4">Specs</span>
+                <p id="det-desc" class="text-sm text-gray-500 leading-relaxed mb-6">Description text...</p>
+
+                <div class="grid grid-cols-3 gap-2 mb-6">
+                    <div class="text-center p-3 border border-slate-100 rounded-xl bg-slate-50">
+                        <div class="text-[9px] uppercase font-bold text-gray-400 mb-1" id="lbl-day">Day</div>
+                        <div id="p-day" class="font-bold text-slate-900 text-sm">150k</div>
+                    </div>
+                    <div class="text-center p-3 border border-blue-100 rounded-xl bg-blue-50/50">
+                        <div class="text-[9px] uppercase font-bold text-blue-400 mb-1" id="lbl-week">Week</div>
+                        <div id="p-week" class="font-bold text-blue-700 text-sm">1M</div>
+                    </div>
+                    <div class="text-center p-3 border border-slate-100 rounded-xl bg-slate-50">
+                        <div class="text-[9px] uppercase font-bold text-gray-400 mb-1" id="lbl-month">Month</div>
+                        <div id="p-month" class="font-bold text-slate-900 text-sm">2.5M</div>
+                    </div>
                 </div>
 
-                <div class="px-6 -mt-8 relative z-20">
-                    <div class="bg-white p-6 rounded-[32px] shadow-xl border border-gray-100">
-                        <h2 id="det-model" class="text-2xl font-black text-slate-900 leading-tight">Model Name</h2>
-                        <p id="det-specs" class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mt-1">Specs</p>
-                        <p id="det-desc" class="text-xs text-gray-500 mt-4 leading-relaxed">Description</p>
-                    </div>
-
-                    <div class="mt-6 grid grid-cols-3 gap-2">
-                        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-                            <p class="text-[8px] uppercase font-bold text-gray-400" id="lbl-day">Day</p>
-                            <p id="p-day" class="font-bold text-slate-900 text-xs">0</p>
-                        </div>
-                        <div class="bg-blue-50 p-3 rounded-2xl text-center border border-blue-100">
-                            <p class="text-[8px] uppercase font-bold text-blue-400" id="lbl-week">Week</p>
-                            <p id="p-week" class="font-bold text-blue-600 text-xs">0</p>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
-                            <p class="text-[8px] uppercase font-bold text-gray-400" id="lbl-month">Month</p>
-                            <p id="p-month" class="font-bold text-slate-900 text-xs">0</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 space-y-4">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div><label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-start-date">Start Date</label><input type="date" id="inp-start" class="w-full bg-slate-50 p-3 rounded-xl text-xs font-bold border border-slate-100 outline-none" onchange="calcTotal()"></div>
-                            <div><label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-end-date">End Date</label><input type="date" id="inp-end" class="w-full bg-slate-50 p-3 rounded-xl text-xs font-bold border border-slate-100 outline-none" onchange="calcTotal()"></div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Start</label>
+                            <input type="date" id="inp-start" class="w-full bg-white p-2 rounded-lg text-sm font-bold border border-gray-200 outline-none focus:border-blue-500" onchange="calcTotal()">
                         </div>
                         <div>
-                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-address">Delivery Address</label>
-                            <input type="text" id="inp-address" class="w-full bg-slate-50 p-3 rounded-xl text-xs font-medium border border-slate-100 outline-none">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">End</label>
+                            <input type="date" id="inp-end" class="w-full bg-white p-2 rounded-lg text-sm font-bold border border-gray-200 outline-none focus:border-blue-500" onchange="calcTotal()">
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="absolute bottom-0 w-full bg-white border-t border-gray-100 p-4 pb-8 z-50">
-                <div class="flex items-center justify-between mb-4">
                     <div>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase" id="lbl-total-days">0 Days</p>
-                        <p id="display-total" class="text-xl font-black text-slate-900">0 IDR</p>
+                        <input type="text" id="inp-addr" placeholder="Hotel / Villa Address" class="w-full bg-white p-3 rounded-lg text-sm border border-gray-200 outline-none focus:border-blue-500">
                     </div>
-                    <button onclick="finishOrder()" class="btn-primary text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs active:scale-95 transition-all" id="btn-book">Book</button>
                 </div>
+                <div class="h-32"></div> </div>
+
+            <div class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-100 p-4 pb-8 z-50 flex items-center justify-between shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+                <div>
+                    <div class="text-[10px] font-bold text-gray-400 uppercase" id="lbl-total-days">0 Days</div>
+                    <div id="display-total" class="text-2xl font-black text-blue-600">0 IDR</div>
+                </div>
+                <button onclick="finishOrder()" id="btn-book" class="btn-primary text-white px-8 py-3 rounded-xl font-bold uppercase tracking-wider shadow-lg active:scale-95 transition-transform">
+                    Book Now
+                </button>
             </div>
         </div>
     </div>
 
     <script>
+        // Инициализация Telegram
         const tg = window.Telegram.WebApp;
-        tg.expand();
+        tg.ready();
+        try { tg.expand(); } catch(e) {}
 
+        // --- БАЗА ДАННЫХ (ВСЕ ВАШИ МОДЕЛИ) ---
         const db = [
-            // СКУТЕРЫ
-            { id: 1, type: 'bike', model: 'Yamaha NMax 155', prices: { day: 150000, week: 1000000, month: 2500000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/794665444979707852_0', specs: '155cc | 2022', desc: { ru: 'Классика Бали. Надежный и комфортный.', en: 'Bali classic. Reliable and comfortable.' }},
-            { id: 2, type: 'bike', model: 'Yamaha NMax 2025', prices: { day: 200000, week: 1300000, month: 2700000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/16106817378200745544_0', specs: '155cc | New Model', desc: { ru: 'Новое поколение. LED оптика и ABS.', en: 'New generation. LED and ABS.' }},
-            { id: 3, type: 'bike', model: 'Yamaha XMax 250', prices: { day: 249000, week: 1900000, month: 3500000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/14731384838727532980_0', specs: '250cc | Maxi', desc: { ru: 'Для дальних поездок. Огромный багажник.', en: 'For long trips. Huge trunk.' }},
-            { id: 4, type: 'bike', model: 'Honda ADV 160', prices: { day: 200000, week: 1300000, month: 2700000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/1886254463873933798_0', specs: '160cc | Adventure', desc: { ru: 'Кроссовер-скутер. Мягкая подвеска.', en: 'Crossover scooter. Soft suspension.' }},
-            { id: 5, type: 'bike', model: 'Honda PCX 160', prices: { day: 150000, week: 1000000, month: 2500000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/16572137842887602567_0', specs: '160cc | Comfort', desc: { ru: 'Плавный ход и премиальный дизайн.', en: 'Smooth ride and premium design.' }},
-            { id: 6, type: 'bike', model: 'Vespa Sprint 150', prices: { day: 175000, week: 2500000, month: 2900000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/1864875489290000742_0', specs: '150cc | 2025', desc: { ru: 'Итальянский стиль для красивых фото.', en: 'Italian style for beautiful photos.' }},
-            
-            // СПОРТ И ЭНДУРО
-            { id: 7, type: 'bike', model: 'Kawasaki Ninja 250', prices: { day: 350000, week: 2500000, month: 6000000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/8915004758341919393_0', specs: '2 Cyl | Sport', desc: { ru: 'Спортивный байк для скорости.', en: 'Sport bike for speed.' }},
-            { id: 8, type: 'bike', model: 'Kawasaki ZX-25R', prices: { day: 650000, week: 4000000, month: 10000000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/11168014279557126606_0', specs: '4 Cyl | 2026', desc: { ru: 'Звук 4 цилиндров. Настоящий драйв.', en: '4 cylinders sound. Real drive.' }},
-            { id: 9, type: 'bike', model: 'Honda CRF 150L', prices: { day: 200000, week: 1300000, month: 2900000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/14343844098554587191_0', specs: '150cc | Off-road', desc: { ru: 'Для джунглей и бездорожья.', en: 'For jungle and off-road.' }},
-            
-            // АВТОМОБИЛИ
-            { id: 10, type: 'car', model: 'Honda Brio', prices: { day: 350000, week: 2000000, month: 5000000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/3514426632394680098_0', specs: 'Compact | 5 Seats', desc: { ru: 'Идеально для узких улиц.', en: 'Perfect for narrow streets.' }},
-            { id: 11, type: 'car', model: 'Mitsubishi Xpander', prices: { day: 450000, week: 3500000, month: 8000000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/15295194636354381677_0', specs: 'MPV | 7 Seats', desc: { ru: 'Большой семейный автомобиль.', en: 'Large family car.' }},
-            { id: 12, type: 'car', model: 'Honda HR-V RS', prices: { day: 650000, week: 4500000, month: 13500000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/10368144206329733771_0', specs: 'SUV | Premium', desc: { ru: 'Максимальный комфорт и кожаный салон.', en: 'Max comfort and leather interior.' }}
-        ];
-
-        const i18n = {
-            ru: {
-                moto: "Мотоциклы", cars: "Автомобили", start_bike: "От 150к IDR / день", start_car: "От 350к IDR / день",
-                cat: "Выберите модель", day: "День", week: "Неделя", month: "Месяц", start_date: "Дата начала",
-                end_date: "Дата конца", address: "Адрес доставки", book: "Забронировать", days: "дней", subtitle: "Премиум аренда на Бали"
-            },
-            en: {
-                moto: "Motorcycles", cars: "Premium Cars", start_bike: "From 150k IDR / day", start_car: "From 350k IDR / day",
-                cat: "Select Model", day: "Day", week: "Week", month: "Month", start_date: "Start Date",
-                end_date: "End Date", address: "Delivery Address", book: "Book Now", days: "days", subtitle: "Premium Bali Rental"
-            }
-        };
-
-        let state = { lang: 'ru', item: null };
-
-        function setLang(lang) {
-            state.lang = lang;
-            document.getElementById('btn-ru').classList.toggle('lang-active', lang === 'ru');
-            document.getElementById('btn-en').classList.toggle('lang-active', lang === 'en');
-            updateUI();
-        }
-
-        function updateUI() {
-            const t = i18n[state.lang];
-            document.getElementById('lbl-moto').innerText = t.moto;
-            document.getElementById('lbl-cars').innerText = t.cars;
-            document.getElementById('lbl-start-bike').innerText = t.start_bike;
-            document.getElementById('lbl-start-car').innerText = t.start_car;
-            document.getElementById('lbl-category-title').innerText = t.cat;
-            document.getElementById('lbl-day').innerText = t.day;
-            document.getElementById('lbl-week').innerText = t.week;
-            document.getElementById('lbl-month').innerText = t.month;
-            document.getElementById('lbl-start-date').innerText = t.start_date;
-            document.getElementById('lbl-end-date').innerText = t.end_date;
-            document.getElementById('lbl-address').innerText = t.address;
-            document.getElementById('btn-book').innerText = t.book;
-            document.getElementById('lbl-subtitle').innerText = t.subtitle;
-        }
-
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function showCategory(type) {
-            const container = document.getElementById('items-container');
-            const items = db.filter(i => i.type === type);
-            container.innerHTML = items.map(item => `
-                <div onclick="openDetails(${item.id})" class="bg-white rounded-[24px] p-3 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all">
-                    <img src="${item.img}" class="w-20 h-20 object-cover rounded-2xl bg-slate-50">
-                    <div class="flex-1 flex flex-col justify-center">
-                        <h3 class="font-black text-sm uppercase">${item.model}</h3>
-                        <p class="text-[9px] font-bold text-blue-500 uppercase tracking-tighter">${item.specs}</p>
-                        <p class="text-[10px] font-black text-slate-400 mt-1">${(item.prices.day/1000)}k IDR / ${i18n[state.lang].day}</p>
-                    </div>
-                </div>
-            `).join('');
-            showPage('step-list');
-        }
-
-        function openDetails(id) {
-            state.item = db.find(i => i.id === id);
-            document.getElementById('det-img').src = state.item.img;
-            document.getElementById('det-model').innerText = state.item.model;
-            document.getElementById('det-specs').innerText = state.item.specs;
-            document.getElementById('det-desc').innerText = state.item.desc[state.lang];
-            document.getElementById('p-day').innerText = (state.item.prices.day/1000) + 'k';
-            document.getElementById('p-week').innerText = (state.item.prices.week/1000) + 'k';
-            document.getElementById('p-month').innerText = (state.item.prices.month/1000000).toFixed(1) + 'M';
-            calcTotal();
-            showPage('step-details');
-        }
-
-        function calcTotal() {
-            const s = document.getElementById('inp-start').value;
-            const e = document.getElementById('inp-end').value;
-            if(!s || !e) return;
-            const days = Math.ceil((new Date(e) - new Date(s)) / (1000*60*60*24));
-            if(days <= 0) return;
-
-            let price = 0;
-            if(days >= 30) price = (state.item.prices.month / 30) * days;
-            else if(days >= 7) price = (state.item.prices.week / 7) * days;
-            else price = state.item.prices.day * days;
-
-            document.getElementById('display-total').innerText = Math.round(price).toLocaleString() + " IDR";
-            document.getElementById('lbl-total-days').innerText = days + " " + i18n[state.lang].days;
-            return { price, days };
-        }
-
-        function finishOrder() {
-            const calc = calcTotal();
-            if(!calc) return tg.showAlert("Select dates!");
-            const addr = document.getElementById('inp-address').value;
-            if(!addr) return tg.showAlert("Enter address!");
-
-            const data = {
-                model: state.item.model,
-                total: calc.price,
-                days: calc.days,
-                address: addr,
-                user: tg.initDataUnsafe?.user?.username || "Guest"
-            };
-
-            tg.showConfirm(`Confirm: ${state.item.model} for ${calc.days} days?`, (ok) => {
-                if(ok) {
-                    tg.sendData(JSON.stringify(data));
-                    tg.close();
-                }
-            });
-        }
-
-        setLang('ru');
-    </script>
-</body>
-</html>
+            // SCOOTERS
+            { id: 1, type: 'bike', model: 'Yamaha NMax 155', price: {d:150000, w:1000000,
