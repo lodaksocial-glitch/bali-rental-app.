@@ -9,36 +9,59 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; background: #000; color: #fff; }
-        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .glass { background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
         .btn-blue { background: #2563eb; box-shadow: 0 10px 20px rgba(37,99,235,0.3); }
         .page { display: none; min-height: 100vh; }
         .active { display: flex; }
+        .lang-active { background: #2563eb; color: white; border-color: #2563eb; }
+        /* Анимация нажатия */
+        .click-anim:active { transform: scale(0.97); transition: 0.1s; }
     </style>
 </head>
 <body>
-    <div id="app" class="max-w-md mx-auto relative">
-        <div id="step-type" class="page active flex-col p-4 gap-4 h-screen">
-            <div onclick="showCategory('bike')" class="relative flex-1 rounded-[40px] overflow-hidden group">
-                <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800" class="absolute inset-0 w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent flex items-end p-8">
-                    <h2 class="text-4xl font-black italic uppercase tracking-tighter">Motorcycles</h2>
+    <div id="app" class="max-w-md mx-auto relative h-screen overflow-hidden flex flex-col">
+        <div class="absolute top-6 right-6 z-50 flex glass rounded-full p-1">
+            <button onclick="setLang('ru')" id="btn-ru" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">RU</button>
+            <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">EN</button>
+        </div>
+
+        <div id="step-type" class="page active flex-col p-2 gap-2 h-full">
+            <div onclick="showCategory('bike')" class="relative flex-1 rounded-[40px] overflow-hidden click-anim cursor-pointer">
+                <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&q=80" class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                <div class="absolute bottom-10 left-8 right-8">
+                    <span class="glass px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase text-white mb-2 inline-block" id="lbl-rent-bike">Rent a Bike</span>
+                    <h2 class="text-4xl font-black italic tracking-tighter mb-1" id="lbl-moto">MOTORCYCLES</h2>
+                    <p class="text-gray-300 text-sm font-medium" id="lbl-start-bike">Starting from 150k IDR</p>
+                    <p class="text-gray-400 text-[10px] mt-2 leading-tight" id="lbl-desc-bike">Best scooters & motorbikes in Bali. New models 2024-2025.</p>
                 </div>
             </div>
-            <div onclick="showCategory('car')" class="relative flex-1 rounded-[40px] overflow-hidden group">
-                <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800" class="absolute inset-0 w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent flex items-end p-8">
-                    <h2 class="text-4xl font-black italic uppercase tracking-tighter">Premium Cars</h2>
+
+            <div onclick="showCategory('car')" class="relative flex-1 rounded-[40px] overflow-hidden click-anim cursor-pointer">
+                <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80" class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                <div class="absolute bottom-10 left-8 right-8">
+                    <span class="glass px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase text-white mb-2 inline-block" id="lbl-rent-car">Rent a Car</span>
+                    <h2 class="text-4xl font-black italic tracking-tighter mb-1" id="lbl-cars">PREMIUM CARS</h2>
+                    <p class="text-gray-300 text-sm font-medium" id="lbl-start-car">Starting from 300k IDR</p>
+                    <p class="text-gray-400 text-[10px] mt-2 leading-tight" id="lbl-desc-car">Comfortable cars with full insurance. Delivery available.</p>
                 </div>
             </div>
         </div>
 
-        <div id="step-list" class="page flex-col p-4 bg-[#f8f9fb] text-slate-900 min-h-screen">
-            <button onclick="showPage('step-type')" class="mb-6 self-start bg-white p-3 rounded-2xl shadow-md text-blue-600">← Назад</button>
-            <div id="items-container" class="space-y-6 pb-20"></div>
+        <div id="step-list" class="page flex-col bg-[#f8f9fb] text-slate-900 h-full overflow-y-auto">
+            <div class="p-6 sticky top-0 bg-[#f8f9fb]/90 backdrop-blur z-40 flex items-center justify-between">
+                <button onclick="showPage('step-type')" class="bg-white p-3 rounded-2xl shadow-sm text-blue-600 font-bold click-anim">
+                    ← <span id="lbl-back">Back</span>
+                </button>
+                <h2 class="text-xl font-black uppercase tracking-widest" id="lbl-category">CATEGORY</h2>
+                <div class="w-10"></div> 
+            </div>
+            <div id="items-container" class="space-y-6 px-6 pb-24"></div>
         </div>
 
-        <div id="step-details" class="page flex-col bg-white text-slate-900 min-h-screen">
-            <div id="details-content"></div>
+        <div id="step-details" class="page flex-col bg-white text-slate-900 h-full overflow-y-auto relative">
+            <div id="details-content" class="pb-10"></div>
         </div>
     </div>
 
@@ -46,129 +69,193 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        const GOOGLE_URL = "ТВОЙ_URL_СКРИПТА"; // Вставь сюда свою ссылку
+        // ⚠️ ВСТАВЬ СЮДА СВОЮ ССЫЛКУ НА GOOGLE SCRIPT
+        const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbxU9Xu2bvMa4hZbIlj6nsVlyelvCFsRsr1zd3rtnrWvrYINZZrs1LXXnzs5lf8f-_Xf/exec";
 
-        // БАЗА ДАННЫХ ИЗ ФАЙЛА
+        // --- БАЗА ДАННЫХ (ТОЧНО ПО ТВОЕМУ ФАЙЛУ RENT-2.XLSX) ---
         const db = [
-    // --- YAMAHA NMAX SERIES ---
-    { 
-        id: 1, type: 'bike', model: 'Yamaha NMax 2022', 
-        prices: { day: 150000, week: 1000000, month: 2500000 },
-        img: 'https://images.unsplash.com/photo-1620510625142-b45cbb784397?w=800',
-        specs: "155cc, Standard Version",
-        desc: { ru: "Надежный и проверенный временем макси-скутер. Модель 2022 года.", en: "Reliable and time-tested maxi-scooter. 2022 model." }
-    },
-    { 
-        id: 2, type: 'bike', model: 'Yamaha NMax 2025/26', 
-        prices: { day: 200000, week: 1300000, month: 2700000 },
-        img: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=800',
-        specs: "155cc, ABS / Connected",
-        desc: { ru: "Новейшее поколение NMax. Система ABS и подключение к смартфону.", en: "Latest NMax generation. ABS system and smartphone connectivity." }
-    },
+            // YAMAHA NMAX
+            { 
+                id: 1, type: 'bike', model: 'Yamaha NMax 2022', 
+                prices: { day: 150000, week: 1000000, month: 2500000 },
+                img: 'https://images.unsplash.com/photo-1620510625142-b45cbb784397?w=800',
+                specs: "155cc, Standard",
+                desc: { ru: "Проверенная классика. Комфортная посадка, большой багажник. Идеально для двоих.", en: "Proven classic. Comfortable seating, large trunk. Ideal for two people." }
+            },
+            { 
+                id: 2, type: 'bike', model: 'Yamaha NMax 2025/26', 
+                prices: { day: 200000, week: 1300000, month: 2900000 },
+                img: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=800',
+                specs: "155cc, New Gen, Connected",
+                desc: { ru: "Абсолютно новый NMax последнего поколения. Современный дизайн, улучшенная подвеска.", en: "Brand new latest generation NMax. Modern design, improved suspension." }
+            },
+            // YAMAHA XMAX
+            { 
+                id: 3, type: 'bike', model: 'Yamaha XMax (22-23)', 
+                prices: { day: 249000, week: 1900000, month: 3500000 },
+                img: 'https://images.unsplash.com/photo-1595304323282-359f427f711f?w=800',
+                specs: "250cc, Maxi Scooter",
+                desc: { ru: "Мощный байк для дальних поездок. Огромный багажник (влезают 2 шлема).", en: "Powerful bike for long trips. Huge trunk (fits 2 helmets)." }
+            },
+            { 
+                id: 4, type: 'bike', model: 'Yamaha XMax Tech Max 2026', 
+                prices: { day: 250000, week: 2700000, month: 4200000 },
+                img: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800',
+                specs: "250cc, Tech Max Edition",
+                desc: { ru: "Топовая версия Tech Max. Премиальные материалы, специальное сиденье, золотые диски.", en: "Top-tier Tech Max version. Premium materials, special seat, gold rims." }
+            },
+            // HONDA MODELS (Stylo, Scoopy, ADV)
+            { 
+                id: 5, type: 'bike', model: 'Honda Stylo 160', 
+                prices: { day: 150000, week: 1000000, month: 1700000 },
+                img: 'https://images.unsplash.com/photo-1591438202812-78d10b784860?w=800',
+                specs: "160cc, Retro Fashion",
+                desc: { ru: "Стильная новинка 2024. Мощный мотор 160cc в ретро-корпусе. Очень красивый.", en: "Stylish new 2024 model. Powerful 160cc engine in a retro body. Very beautiful." }
+            },
+            { 
+                id: 6, type: 'bike', model: 'Honda Scoopy', 
+                prices: { day: 150000, week: 1000000, month: 1700000 },
+                img: 'https://images.unsplash.com/photo-1616439162388-30113220455e?w=800',
+                specs: "110cc, Cute & Light",
+                desc: { ru: "Любимец девушек. Очень легкий, маневренный, с зарядкой для телефона.", en: "Ladies' favorite. Very light, maneuverable, with phone charger." }
+            },
+            { 
+                id: 7, type: 'bike', model: 'Honda ADV 160', 
+                prices: { day: 200000, week: 1300000, month: 2900000 },
+                img: 'https://images.unsplash.com/photo-1631525130029-79017637b789?w=800',
+                specs: "160cc, Adventure",
+                desc: { ru: "Внедорожный скутер. Мягкая подвеска, высокий клиренс. Не боится ям.", en: "Off-road scooter. Soft suspension, high clearance. Handles potholes well." }
+            },
+            // OTHER YAMAHA
+            { 
+                id: 8, type: 'bike', model: 'Yamaha Fazzio', 
+                prices: { day: 150000, week: 1000000, month: 1700000 },
+                img: 'https://images.unsplash.com/photo-1505246756857-41829e3a6c43?w=800', 
+                specs: "125cc, Hybrid",
+                desc: { ru: "Гибридный мотор (экономия бензина). Уникальный дизайн, выделяется в потоке.", en: "Hybrid engine (fuel efficient). Unique design, stands out in traffic." }
+            },
+            { 
+                id: 9, type: 'bike', model: 'Yamaha Aerox 155', 
+                prices: { day: 150000, week: 1000000, month: 2500000 },
+                img: 'https://images.unsplash.com/photo-1610444583713-3932e6a97067?w=800',
+                specs: "155cc, Sport Scooter",
+                desc: { ru: "Спортивный характер. Резкий разгон, широкие шины, агрессивный вид.", en: "Sporty character. Sharp acceleration, wide tires, aggressive look." }
+            },
+            { 
+                id: 10, type: 'bike', model: 'Yamaha Lexi', 
+                prices: { day: 150000, week: 1000000, month: 1700000 },
+                img: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800',
+                specs: "125cc, Maxi Family",
+                desc: { ru: "Младший брат NMax. Удобный ровный пол (можно поставить сумку).", en: "NMax's little brother. Convenient flat floor (can fit a bag)." }
+            },
+            { 
+                id: 11, type: 'bike', model: 'Vespa Sprint (25-26)', 
+                prices: { day: 175000, week: 2500000, month: 2900000 },
+                img: 'https://images.unsplash.com/photo-1605335017643-980482da0891?w=800',
+                specs: "150cc, Italian Style",
+                desc: { ru: "Икона стиля. Идеальное состояние, красивые цвета. Для лучших фото.", en: "Style icon. Perfect condition, beautiful colors. For the best photos." }
+            },
+            // CARS
+            { 
+                id: 12, type: 'car', model: 'Suzuki Brio', 
+                prices: { day: 300000, week: 1900000, month: 5500000 },
+                img: 'https://images.unsplash.com/photo-1590362891175-3066494957e1?w=800',
+                specs: "5 Seats, Compact",
+                desc: { ru: "Компактный, юркий, экономичный. Паркуется где угодно.", en: "Compact, agile, economical. Parks anywhere." }
+            },
+            { 
+                id: 13, type: 'car', model: 'Mitsubishi Xpander', 
+                prices: { day: 650000, week: 3800000, month: 11000000 },
+                img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800',
+                specs: "7 Seats, Premium",
+                desc: { ru: "Самый комфортный 7-местный авто. Двойной кондиционер, мягкая подвеска.", en: "Most comfortable 7-seater. Double AC, soft suspension." }
+            },
+            { 
+                id: 14, type: 'bike', model: 'Kawasaki ZX-25R', 
+                prices: { day: 500000, week: 3500000, month: 8000000 }, 
+                img: 'https://images.unsplash.com/photo-1635073908681-3069178309a6?w=800',
+                specs: "4 Cylinder, Sport",
+                desc: { ru: "Зверь. 4 цилиндра, звук как у Формулы-1. Для опытных райдеров.", en: "Beast. 4 cylinders, F1-like sound. For experienced riders." }
+            }
+        ];
 
-    // --- YAMAHA XMAX SERIES ---
-    { 
-        id: 3, type: 'bike', model: 'Yamaha XMax 250 (22-23)', 
-        prices: { day: 249000, week: 1900000, month: 3500000 },
-        img: 'https://images.unsplash.com/photo-1595304323282-359f427f711f?w=800',
-        specs: "250cc, Standard",
-        desc: { ru: "Комфортный и мощный скутер для длительных поездок по острову.", en: "Comfortable and powerful scooter for long trips around the island." }
-    },
-    { 
-        id: 4, type: 'bike', model: 'Yamaha XMax 250 (25-26)', 
-        prices: { day: 250000, week: 2700000, month: 4200000 },
-        img: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800',
-        specs: "250cc, Tech Max Edition",
-        desc: { ru: "Премиальная версия Tech Max. Лучший комфорт и объем багажника.", en: "Premium Tech Max version. Best comfort and storage capacity." }
-    },
+        // --- ПЕРЕВОДЫ 1 В 1 ---
+        const i18n = {
+            ru: {
+                rent_bike: "Аренда байка",
+                moto_title: "МОТОЦИКЛЫ",
+                moto_start: "От 150k IDR / день",
+                moto_desc: "Лучшие скутеры и байки на Бали. Новые модели 2024-2025.",
+                rent_car: "Аренда авто",
+                car_title: "ПРЕМИУМ АВТО",
+                car_start: "От 300k IDR / день",
+                car_desc: "Комфортные авто с полной страховкой. Доступна доставка.",
+                back: "Назад",
+                day: "День",
+                week: "Неделя",
+                month: "Месяц",
+                book: "ЗАБРОНИРОВАТЬ",
+                confirm: "Подтвердите бронь",
+                success: "✅ Заявка отправлена!",
+                select_model: "Выберите модель",
+                idr: "IDR"
+            },
+            en: {
+                rent_bike: "Rent a Bike",
+                moto_title: "MOTORCYCLES",
+                moto_start: "Starting from 150k IDR / day",
+                moto_desc: "Best scooters & motorbikes in Bali. New models 2024-2025.",
+                rent_car: "Rent a Car",
+                car_title: "PREMIUM CARS",
+                car_start: "Starting from 300k IDR / day",
+                car_desc: "Comfortable cars with full insurance. Delivery available.",
+                back: "Back",
+                day: "Day",
+                week: "Week",
+                month: "Month",
+                book: "BOOK NOW",
+                confirm: "Confirm booking",
+                success: "✅ Order sent!",
+                select_model: "Select Model",
+                idr: "IDR"
+            }
+        };
 
-    // --- HONDA ADV ---
-    { 
-        id: 5, type: 'bike', model: 'Honda ADV 160 (22-23)', 
-        prices: { day: 200000, week: 1300000, month: 2700000 },
-        img: 'https://images.unsplash.com/photo-1631525130029-79017637b789?w=800',
-        specs: "160cc, CBS Edition",
-        desc: { ru: "Кроссовер-скутер. Отличная подвеска для любых дорог Бали.", en: "Adventure scooter. Great suspension for any Bali roads." }
-    },
+        let state = { 
+            lang: 'ru', 
+            category: 'bike', 
+            selectedItem: null 
+        };
 
-    // --- FASHION & RETRO BIKES ---
-    { 
-        id: 6, type: 'bike', model: 'Honda Stylo 160', 
-        prices: { day: 150000, week: 1000000, month: 1700000 },
-        img: 'https://images.unsplash.com/photo-1591438202812-78d10b784860?w=800',
-        specs: "160cc, Retro Modern 2024",
-        desc: { ru: "Новинка от Honda. Сочетание ретро-стиля и мощного мотора.", en: "New from Honda. Combination of retro style and powerful engine." }
-    },
-    { 
-        id: 7, type: 'bike', model: 'Honda Scoopy', 
-        prices: { day: 150000, week: 1000000, month: 1700000 },
-        img: 'https://images.unsplash.com/photo-1616439162388-30113220455e?w=800',
-        specs: "110cc, Compact & Lightweight",
-        desc: { ru: "Идеальный выбор для девушек и новичков. Очень легкий.", en: "Perfect choice for ladies and beginners. Very lightweight." }
-    },
-    { 
-        id: 8, type: 'bike', model: 'Yamaha Fazzio', 
-        prices: { day: 150000, week: 1000000, month: 1700000 },
-        img: 'https://images.unsplash.com/photo-1595304323282-359f427f711f?w=800',
-        specs: "125cc, Hybrid Technology",
-        desc: { ru: "Экономичный гибридный скутер в уникальном стиле.", en: "Economic hybrid scooter with a unique style." }
-    },
-    { 
-        id: 9, type: 'bike', model: 'Vespa Sprint 150 (25-26)', 
-        prices: { day: 175000, week: 2500000, month: 2900000 },
-        img: 'https://images.unsplash.com/photo-1605335017643-980482da0891?w=800',
-        specs: "150cc, Italian Classic",
-        desc: { ru: "Символ стиля. Новые модели 2025-2026 годов.", en: "Icon of style. Brand new models for 2025-2026." }
-    },
+        function setLang(lang) {
+            state.lang = lang;
+            document.getElementById('btn-ru').className = `px-3 py-1 rounded-full text-[10px] font-bold transition-all ${lang === 'ru' ? 'lang-active' : ''}`;
+            document.getElementById('btn-en').className = `px-3 py-1 rounded-full text-[10px] font-bold transition-all ${lang === 'en' ? 'lang-active' : ''}`;
+            updateTexts();
+        }
 
-    // --- OTHER BIKES ---
-    { 
-        id: 10, type: 'bike', model: 'Yamaha Lexi 155', 
-        prices: { day: 150000, week: 1000000, month: 1700000 },
-        img: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800',
-        specs: "155cc, VVA Engine",
-        desc: { ru: "Просторное место для ног и бодрый двигатель.", en: "Spacious legroom and punchy engine." }
-    },
-    { 
-        id: 11, type: 'bike', model: 'Yamaha Aerox 155', 
-        prices: { day: 150000, week: 1000000, month: 2500000 },
-        img: 'https://images.unsplash.com/photo-1610444583713-3932e6a97067?w=800',
-        specs: "155cc, Sporty Look",
-        desc: { ru: "Спортивный дизайн и отличная динамика разгона.", en: "Sporty design and excellent acceleration." }
-    },
-    { 
-        id: 12, type: 'bike', model: 'Honda Vario 160', 
-        prices: { day: 150000, week: 1000000, month: 1700000 },
-        img: 'https://images.unsplash.com/photo-1620510625142-b45cbb784397?w=800',
-        specs: "160cc, Agile City Bike",
-        desc: { ru: "Быстрый и узкий — лучший выбор для пробок в Чангу.", en: "Fast and narrow — the best choice for Canggu traffic." }
-    },
-    { 
-        id: 13, type: 'bike', model: 'Kawasaki Ninja ZX-25R', 
-        prices: { day: 500000, week: 3500000, month: 8000000 },
-        img: 'https://images.unsplash.com/photo-1635073908681-3069178309a6?w=800',
-        specs: "250cc, 4-Cylinder Sport",
-        desc: { ru: "Звук 4-х цилиндров. Мощность и адреналин.", en: "4-cylinder sound. Power and adrenaline." }
-    },
+        function updateTexts() {
+            const t = i18n[state.lang];
+            // Home screen
+            document.getElementById('lbl-rent-bike').innerText = t.rent_bike;
+            document.getElementById('lbl-moto').innerText = t.moto_title;
+            document.getElementById('lbl-start-bike').innerText = t.moto_start;
+            document.getElementById('lbl-desc-bike').innerText = t.moto_desc;
+            
+            document.getElementById('lbl-rent-car').innerText = t.rent_car;
+            document.getElementById('lbl-cars').innerText = t.car_title;
+            document.getElementById('lbl-start-car').innerText = t.car_start;
+            document.getElementById('lbl-desc-car').innerText = t.car_desc;
 
-    // --- АВТОМОБИЛИ (CARS) ---
-    { 
-        id: 14, type: 'car', model: 'Suzuki Brio', 
-        prices: { day: 300000, week: 1900000, month: 5500000 },
-        img: 'https://images.unsplash.com/photo-1590362891175-3066494957e1?w=800',
-        specs: "5 seats, Auto, Compact",
-        desc: { ru: "Компактный хэтчбек. Легко парковаться везде.", en: "Compact hatchback. Easy to park anywhere." }
-    },
-    { 
-        id: 15, type: 'car', model: 'Mitsubishi Xpander', 
-        prices: { day: 650000, week: 3800000, month: 11000000 },
-        img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800',
-        specs: "7 seats, Auto, High Ground Clearance",
-        desc: { ru: "Идеально для семьи. Очень просторный и комфортный.", en: "Ideal for family. Very spacious and comfortable." }
-    }
-];
-
-        let state = { category: 'bike', selectedItem: null, startDate: '', endDate: '' };
+            // Inner pages
+            document.getElementById('lbl-back').innerText = t.back;
+            
+            // Если мы в деталях - обновить кнопку
+            if(state.selectedItem) showDetails(state.selectedItem.id, false);
+            // Если в списке - обновить заголовок
+            const catTitle = state.category === 'bike' ? t.moto_title : t.car_title;
+            document.getElementById('lbl-category').innerText = catTitle;
+        }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -178,77 +265,110 @@
 
         function showCategory(cat) {
             state.category = cat;
+            updateTexts();
+            
             const container = document.getElementById('items-container');
             const items = db.filter(v => v.type === cat);
             
             container.innerHTML = items.map(v => `
-                <div onclick="showDetails(${v.id})" class="bg-white rounded-[35px] overflow-hidden shadow-lg border border-gray-100 transition-all active:scale-95">
+                <div onclick="showDetails(${v.id}, true)" class="bg-white rounded-[35px] overflow-hidden shadow-lg border border-gray-100 transition-all click-anim">
                     <img src="${v.img}" class="w-full h-48 object-cover">
                     <div class="p-6">
-                        <h3 class="text-2xl font-black">${v.model}</h3>
-                        <p class="text-blue-600 font-bold">${v.prices.day.toLocaleString()} IDR / day</p>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-2xl font-black leading-tight">${v.model}</h3>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">${v.specs}</p>
+                            </div>
+                            <div class="bg-blue-50 text-blue-600 px-3 py-1 rounded-xl text-xs font-black">
+                                ${(v.prices.day/1000).toFixed(0)}k
+                            </div>
+                        </div>
                     </div>
                 </div>
             `).join('');
+            
             showPage('step-list');
         }
 
-        function showDetails(id) {
+        function showDetails(id, navigate = true) {
             const item = db.find(v => v.id === id);
             state.selectedItem = item;
+            const t = i18n[state.lang];
             const content = document.getElementById('details-content');
             
             content.innerHTML = `
-                <div class="relative h-[40vh]">
+                <div class="relative h-[45vh]">
                     <img src="${item.img}" class="w-full h-full object-cover">
-                    <button onclick="showPage('step-list')" class="absolute top-6 left-6 bg-white/80 p-3 rounded-2xl backdrop-blur">←</button>
+                    <button onclick="showPage('step-list')" class="absolute top-6 left-6 bg-white/80 p-3 rounded-2xl backdrop-blur shadow-lg click-anim text-blue-600 z-10">
+                        ←
+                    </button>
+                    <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
                 </div>
-                <div class="p-8 -mt-10 bg-white rounded-t-[40px] relative">
-                    <h2 class="text-4xl font-black mb-2">${item.model}</h2>
-                    <p class="text-gray-400 font-bold uppercase tracking-widest text-[10px] mb-6">${item.specs}</p>
+                
+                <div class="px-8 -mt-10 relative z-10">
+                    <h2 class="text-4xl font-black mb-2 text-slate-900 leading-tight">${item.model}</h2>
+                    <p class="text-blue-600 font-bold uppercase tracking-widest text-[10px] mb-6 bg-blue-50 inline-block px-3 py-1 rounded-lg">${item.specs}</p>
                     
-                    <div class="bg-slate-50 p-6 rounded-3xl mb-8">
-                        <p class="text-slate-600 leading-relaxed">${item.desc}</p>
+                    <div class="bg-slate-50 p-6 rounded-3xl mb-8 border border-slate-100">
+                        <p class="text-slate-600 leading-relaxed text-sm font-medium">${item.desc[state.lang]}</p>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-2 mb-8 text-center">
-                        <div class="bg-blue-50 p-4 rounded-2xl">
-                            <p class="text-[9px] uppercase font-bold text-blue-400">Day</p>
-                            <p class="font-black text-blue-700">${(item.prices.day/1000)}k</p>
+                    <div class="grid grid-cols-3 gap-3 mb-8 text-center">
+                        <div class="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+                            <p class="text-[9px] uppercase font-bold text-gray-400 mb-1">${t.day}</p>
+                            <p class="font-black text-slate-800 text-lg">${(item.prices.day/1000)}k</p>
                         </div>
-                        <div class="bg-blue-50 p-4 rounded-2xl">
-                            <p class="text-[9px] uppercase font-bold text-blue-400">Week</p>
-                            <p class="font-black text-blue-700">${(item.prices.week/1000000).toFixed(1)}M</p>
+                        <div class="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+                            <p class="text-[9px] uppercase font-bold text-gray-400 mb-1">${t.week}</p>
+                            <p class="font-black text-slate-800 text-lg">${(item.prices.week/1000000).toFixed(1)}M</p>
                         </div>
-                        <div class="bg-blue-50 p-4 rounded-2xl">
-                            <p class="text-[9px] uppercase font-bold text-blue-400">Month</p>
-                            <p class="font-black text-blue-700">${(item.prices.month/1000000).toFixed(1)}M</p>
+                        <div class="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+                            <p class="text-[9px] uppercase font-bold text-gray-400 mb-1">${t.month}</p>
+                            <p class="font-black text-slate-800 text-lg">${(item.prices.month/1000000).toFixed(1)}M</p>
                         </div>
                     </div>
 
-                    <button onclick="confirmBooking()" class="w-full btn-blue text-white py-5 rounded-3xl font-black uppercase tracking-widest">Забронировать</button>
+                    <button onclick="confirmBooking()" class="w-full btn-blue text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl click-anim mb-10">
+                        ${t.book}
+                    </button>
                 </div>
             `;
-            showPage('step-details');
+            if (navigate) showPage('step-details');
         }
 
         async function confirmBooking() {
             const item = state.selectedItem;
-            tg.showConfirm(`Забронировать ${item.model}?`, async (ok) => {
+            const t = i18n[state.lang];
+            
+            tg.showConfirm(`${t.confirm} ${item.model}?`, async (ok) => {
                 if(ok) {
                     const order = {
                         user: tg.initDataUnsafe?.user?.username || "Guest",
                         model: item.model,
                         total: item.prices.day,
-                        dates: "Check in chat",
-                        loc: "Direct"
+                        dates: "Check Chat",
+                        loc: "Direct Selection",
+                        lang: state.lang
                     };
-                    await fetch(GOOGLE_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(order) });
-                    tg.showAlert("✅ Заявка отправлена! Мы свяжемся с вами.");
-                    tg.close();
+                    
+                    try {
+                        await fetch(GOOGLE_URL, { 
+                            method: "POST", 
+                            mode: "no-cors", 
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(order) 
+                        });
+                        tg.showAlert(t.success);
+                        tg.close();
+                    } catch (e) {
+                        tg.showAlert("Error. Try again.");
+                    }
                 }
             });
         }
+
+        // Init
+        setLang('ru');
     </script>
 </body>
 </html>
