@@ -12,156 +12,336 @@
         body { 
             font-family: 'Inter', sans-serif; 
             background: #0f172a; 
-            color: #fff; 
-            overscroll-behavior: none;
+            color: #1e293b;
             -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
         }
 
-        /* Стили для кнопок и карточек */
-        .btn-primary { 
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); 
-            box-shadow: 0 4px 15px rgba(37,99,235,0.4); 
-            transition: transform 0.1s;
-        }
-        .btn-primary:active { transform: scale(0.96); }
-
-        .card-hover:active { transform: scale(0.98); opacity: 0.9; }
-
-        /* Анимация страниц */
-        .page { display: none; min-height: 100vh; animation: fadeIn 0.3s ease; padding-bottom: 120px; }
+        /* Анимации и стили */
+        .page { display: none; min-height: 100vh; animation: fadeIn 0.2s ease; padding-bottom: 100px; }
         .active { display: flex; }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Переключатель языка */
-        .lang-btn { opacity: 0.6; }
-        .lang-active { opacity: 1; background: #3b82f6; color: white; }
+        /* Кнопка языка */
+        .lang-btn { background: rgba(255,255,255,0.2); color: white; }
+        .lang-active { background: #3b82f6; color: white; font-weight: 800; box-shadow: 0 4px 12px rgba(59,130,246,0.5); }
+
+        /* Карточки */
+        .card-press:active { transform: scale(0.97); transition: 0.1s; opacity: 0.9; }
         
-        /* Скроллбар */
+        /* Скролл */
         ::-webkit-scrollbar { width: 0; }
-        
-        /* Исправление кликабельности */
-        .clickable { cursor: pointer; z-index: 10; position: relative; }
     </style>
 </head>
-<body class="bg-[#0f172a]">
-    <div id="app" class="max-w-md mx-auto relative min-h-screen flex flex-col bg-[#f8fafc]">
+<body class="bg-[#0f172a]"> <div id="app" class="max-w-md mx-auto relative min-h-screen bg-[#f8fafc] shadow-2xl overflow-hidden flex flex-col">
         
-        <div class="fixed top-0 left-0 w-full z-50 p-4 pointer-events-none">
-            <div class="max-w-md mx-auto relative">
-                <div class="absolute top-0 right-0 pointer-events-auto bg-black/80 backdrop-blur rounded-full p-1 flex shadow-lg border border-white/10">
-                    <button onclick="setLang('ru')" id="btn-ru" class="lang-btn px-3 py-1 rounded-full text-[10px] font-bold text-white transition-all">RU</button>
-                    <button onclick="setLang('en')" id="btn-en" class="lang-btn px-3 py-1 rounded-full text-[10px] font-bold text-white transition-all">EN</button>
+        <div class="absolute top-5 right-5 z-50 flex gap-2">
+            <button onclick="setLang('ru')" id="btn-ru" class="lang-btn px-4 py-2 rounded-full text-xs font-bold backdrop-blur-md transition-all border border-white/20">RU</button>
+            <button onclick="setLang('en')" id="btn-en" class="lang-btn px-4 py-2 rounded-full text-xs font-bold backdrop-blur-md transition-all border border-white/20">EN</button>
+        </div>
+
+        <div id="step-home" class="page active flex-col bg-[#0f172a] h-full relative">
+            
+            <div class="px-6 pt-16 pb-6">
+                <h1 class="text-4xl font-black italic uppercase tracking-tighter text-white">Bali Elite</h1>
+                <p class="text-blue-500 text-xs font-bold uppercase tracking-widest mt-1">Premium Rental Service</p>
+            </div>
+
+            <div class="flex-1 flex flex-col gap-6 px-4 pb-10 overflow-y-auto">
+                
+                <div onclick="showCategory('bike')" class="card-press relative h-64 rounded-[40px] overflow-hidden shadow-2xl bg-gray-900 cursor-pointer group">
+                    <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-8 left-8">
+                        <span class="bg-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider mb-2 inline-block">Popular</span>
+                        <h2 class="text-4xl font-black italic uppercase text-white leading-none" id="lbl-moto">Bikes</h2>
+                        <p class="text-gray-300 text-xs font-medium mt-2" id="lbl-start-bike">Scooters, Sport & Custom</p>
+                    </div>
                 </div>
+
+                <div onclick="showCategory('car')" class="card-press relative h-64 rounded-[40px] overflow-hidden shadow-2xl bg-gray-900 cursor-pointer group">
+                    <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-8 left-8">
+                        <h2 class="text-4xl font-black italic uppercase text-white leading-none" id="lbl-cars">Cars</h2>
+                        <p class="text-gray-300 text-xs font-medium mt-2" id="lbl-start-car">City Cars & SUV</p>
+                    </div>
+                </div>
+
             </div>
         </div>
 
-        <div id="step-type" class="page active flex-col p-4 gap-4 bg-[#0f172a]">
-            <div class="mt-12 mb-4 px-2">
-                <h1 class="text-4xl font-black italic uppercase tracking-tighter text-white">Bali Elite</h1>
-                <p class="text-blue-500 text-xs font-bold uppercase tracking-widest pl-1">Premium Rental Service</p>
-            </div>
-
-            <div onclick="showCategory('bike')" class="clickable card-hover relative h-56 rounded-[32px] overflow-hidden shadow-2xl bg-gray-900">
-                <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                <div class="absolute bottom-6 left-6">
-                    <h2 class="text-3xl font-black italic uppercase text-white" id="lbl-moto">Bikes</h2>
-                    <p class="text-gray-300 text-[10px] font-bold uppercase tracking-widest mt-1" id="lbl-start-bike">From 150k</p>
-                </div>
-            </div>
-
-            <div onclick="showCategory('car')" class="clickable card-hover relative h-56 rounded-[32px] overflow-hidden shadow-2xl bg-gray-900">
-                <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                <div class="absolute bottom-6 left-6">
-                    <h2 class="text-3xl font-black italic uppercase text-white" id="lbl-cars">Cars</h2>
-                    <p class="text-gray-300 text-[10px] font-bold uppercase tracking-widest mt-1" id="lbl-start-car">From 350k</p>
-                </div>
+        <div id="step-list" class="page flex-col bg-[#f1f5f9] pt-20">
+            <div class="fixed top-0 left-0 w-full max-w-md bg-white/90 backdrop-blur-md p-4 shadow-sm z-40 flex items-center justify-between">
+                <button onclick="showPage('step-home')" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-900 font-bold active:bg-slate-200">←</button>
+                <h2 class="text-sm font-black uppercase tracking-widest text-slate-800" id="lbl-cat-title">Models</h2>
+                <div class="w-10"></div>
             </div>
             
-            <div onclick="showCategory('sport')" class="clickable card-hover relative h-40 rounded-[32px] overflow-hidden shadow-2xl bg-gray-900 border border-white/10">
-                <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-70">
-                <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-transparent"></div>
-                <div class="absolute bottom-6 left-6">
-                    <h2 class="text-2xl font-black italic uppercase text-white" id="lbl-sport">Sport & Luxury</h2>
-                    <p class="text-blue-300 text-[10px] font-bold uppercase tracking-widest mt-1">Ninja, ZX-25R, Harley</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="step-list" class="page flex-col bg-slate-50 text-slate-900 pt-20">
-            <div class="fixed top-0 max-w-md w-full bg-white/90 backdrop-blur-md p-4 pt-4 shadow-sm z-40 flex items-center gap-4">
-                <button onclick="showPage('step-type')" class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-900 font-bold hover:bg-slate-200">←</button>
-                <h2 class="text-sm font-black uppercase tracking-widest" id="lbl-cat-title">Models</h2>
-            </div>
-            <div id="items-container" class="px-4 space-y-3 pb-24"></div>
+            <div id="items-container" class="px-4 space-y-4 pb-24"></div>
         </div>
 
         <div id="step-details" class="page flex-col bg-white h-full relative">
-            <button onclick="showPage('step-list')" class="absolute top-4 left-4 z-20 bg-white/80 backdrop-blur p-2 rounded-full shadow-lg font-bold w-10 h-10">←</button>
             
-            <div class="h-72 w-full bg-gray-200 relative">
+            <button onclick="showPage('step-list')" class="absolute top-4 left-4 z-20 bg-white/50 backdrop-blur p-2 rounded-full shadow-lg font-bold w-10 h-10 text-black">←</button>
+
+            <div class="h-[40vh] w-full bg-gray-200 relative">
                 <img id="det-img" src="" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+                <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
             </div>
 
-            <div class="px-6 -mt-8 relative z-10">
-                <h1 id="det-model" class="text-3xl font-black text-slate-900 leading-none mb-2">Model</h1>
-                <span id="det-specs" class="inline-block bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider mb-4">Specs</span>
-                <p id="det-desc" class="text-sm text-gray-500 leading-relaxed mb-6">Description text...</p>
+            <div class="px-6 -mt-6 relative z-10 flex-1 flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h1 id="det-model" class="text-3xl font-black text-slate-900 leading-none max-w-[70%]">Model</h1>
+                    <div class="text-right">
+                        <span id="det-specs" class="inline-block bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider">Specs</span>
+                    </div>
+                </div>
+                
+                <p id="det-desc" class="text-sm text-gray-500 leading-relaxed mb-6 font-medium">Description text...</p>
 
-                <div class="grid grid-cols-3 gap-2 mb-6">
-                    <div class="text-center p-3 border border-slate-100 rounded-xl bg-slate-50">
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <div class="text-center p-3 border border-slate-100 rounded-2xl bg-slate-50">
                         <div class="text-[9px] uppercase font-bold text-gray-400 mb-1" id="lbl-day">Day</div>
                         <div id="p-day" class="font-bold text-slate-900 text-sm">150k</div>
                     </div>
-                    <div class="text-center p-3 border border-blue-100 rounded-xl bg-blue-50/50">
-                        <div class="text-[9px] uppercase font-bold text-blue-400 mb-1" id="lbl-week">Week</div>
+                    <div class="text-center p-3 border border-blue-100 rounded-2xl bg-blue-50">
+                        <div class="text-[9px] uppercase font-bold text-blue-500 mb-1" id="lbl-week">Week</div>
                         <div id="p-week" class="font-bold text-blue-700 text-sm">1M</div>
                     </div>
-                    <div class="text-center p-3 border border-slate-100 rounded-xl bg-slate-50">
+                    <div class="text-center p-3 border border-slate-100 rounded-2xl bg-slate-50">
                         <div class="text-[9px] uppercase font-bold text-gray-400 mb-1" id="lbl-month">Month</div>
                         <div id="p-month" class="font-bold text-slate-900 text-sm">2.5M</div>
                     </div>
                 </div>
 
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
-                    <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100 space-y-4 mb-20">
+                    <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Start</label>
-                            <input type="date" id="inp-start" class="w-full bg-white p-2 rounded-lg text-sm font-bold border border-gray-200 outline-none focus:border-blue-500" onchange="calcTotal()">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1 block mb-1" id="lbl-start">Start Date</label>
+                            <input type="date" id="inp-start" class="w-full bg-white p-3 rounded-xl text-xs font-bold border border-gray-200 outline-none focus:border-blue-500 appearance-none text-slate-900" onchange="calcTotal()">
                         </div>
                         <div>
-                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">End</label>
-                            <input type="date" id="inp-end" class="w-full bg-white p-2 rounded-lg text-sm font-bold border border-gray-200 outline-none focus:border-blue-500" onchange="calcTotal()">
+                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1 block mb-1" id="lbl-end">End Date</label>
+                            <input type="date" id="inp-end" class="w-full bg-white p-3 rounded-xl text-xs font-bold border border-gray-200 outline-none focus:border-blue-500 appearance-none text-slate-900" onchange="calcTotal()">
                         </div>
                     </div>
                     <div>
-                        <input type="text" id="inp-addr" placeholder="Hotel / Villa Address" class="w-full bg-white p-3 rounded-lg text-sm border border-gray-200 outline-none focus:border-blue-500">
+                        <input type="text" id="inp-addr" placeholder="Hotel / Villa Address" class="w-full bg-white p-3 rounded-xl text-sm border border-gray-200 outline-none focus:border-blue-500 text-slate-900 placeholder:text-gray-300">
                     </div>
                 </div>
-                <div class="h-32"></div> </div>
+            </div>
 
-            <div class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-100 p-4 pb-8 z-50 flex items-center justify-between shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-                <div>
+            <div class="fixed bottom-0 left-0 w-full z-50 p-4 bg-white border-t border-gray-100 flex items-center justify-between shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+                <div class="pl-2">
                     <div class="text-[10px] font-bold text-gray-400 uppercase" id="lbl-total-days">0 Days</div>
                     <div id="display-total" class="text-2xl font-black text-blue-600">0 IDR</div>
                 </div>
-                <button onclick="finishOrder()" id="btn-book" class="btn-primary text-white px-8 py-3 rounded-xl font-bold uppercase tracking-wider shadow-lg active:scale-95 transition-transform">
-                    Book Now
+                <button onclick="finishOrder()" id="btn-book" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-200 active:scale-95 transition-transform">
+                    Book
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // Инициализация Telegram
         const tg = window.Telegram.WebApp;
         tg.ready();
-        try { tg.expand(); } catch(e) {}
+        tg.expand();
 
-        // --- БАЗА ДАННЫХ (ВСЕ ВАШИ МОДЕЛИ) ---
+        // === БАЗА ДАННЫХ ===
         const db = [
-            // SCOOTERS
-            { id: 1, type: 'bike', model: 'Yamaha NMax 155', price: {d:150000, w:1000000,
+            // --- 1. СКУТЕРЫ (BIKES) ---
+            { id: 1, type: 'bike', model: 'Yamaha NMax 155', price: {d:150000, w:1000000, m:2500000}, img: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=800', specs: '2022 | ABS', desc: {ru: 'Классика. Надежный и удобный.', en: 'Classic. Reliable and comfy.'}},
+            { id: 2, type: 'bike', model: 'Yamaha NMax 2025', price: {d:200000, w:1300000, m:2700000}, img: 'https://images.unsplash.com/photo-1620510625142-b45cbb784397?w=800', specs: '2025 | New Gen', desc: {ru: 'Новая модель. LED + Bluetooth.', en: 'New model. LED + Bluetooth.'}},
+            { id: 3, type: 'bike', model: 'Yamaha XMax 250', price: {d:249000, w:1900000, m:3500000}, img: 'https://images.unsplash.com/photo-1595304323282-359f427f711f?w=800', specs: '250cc | Maxi', desc: {ru: 'Мощный скутер с большим багажником.', en: 'Powerful scooter, big trunk.'}},
+            { id: 4, type: 'bike', model: 'Yamaha XMax Tech Max', price: {d:250000, w:2700000, m:4200000}, img: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800', specs: '2026 | Tech Max', desc: {ru: 'Топовая комплектация 2026.', en: 'Top spec 2026 model.'}},
+            { id: 5, type: 'bike', model: 'Honda ADV 160', price: {d:200000, w:1300000, m:2700000}, img: 'https://images.unsplash.com/photo-1631525130029-79017637b789?w=800', specs: '160cc | Crossover', desc: {ru: 'Идеален для любых дорог.', en: 'Perfect for any road.'}},
+            { id: 6, type: 'bike', model: 'Honda PCX 160', price: {d:150000, w:1000000, m:2500000}, img: 'https://images.unsplash.com/photo-1591438202812-78d10b784860?w=800', specs: '160cc | Comfort', desc: {ru: 'Максимальный комфорт для пассажира.', en: 'Max comfort for pillion.'}},
+            { id: 7, type: 'bike', model: 'Honda Stylo 160', price: {d:150000, w:1000000, m:1700000}, img: 'https://images.unsplash.com/photo-1605335017643-980482da0891?w=800', specs: 'Retro | 2024', desc: {ru: 'Стильная ретро новинка.', en: 'Stylish new retro.'}},
+            { id: 8, type: 'bike', model: 'Vespa Sprint 150', price: {d:175000, w:2500000, m:2900000}, img: 'https://images.unsplash.com/photo-1614163973305-144d2e5a47e6?w=800', specs: 'Italian Style', desc: {ru: 'Икона стиля. Отличные фото.', en: 'Style icon. Great photos.'}},
+            { id: 9, type: 'bike', model: 'Honda Scoopy', price: {d:150000, w:1000000, m:1700000}, img: 'https://images.unsplash.com/photo-1616439162388-30113220455e?w=800', specs: 'Cute | 110cc', desc: {ru: 'Легкий и послушный.', en: 'Light and easy.'}},
+            { id: 10, type: 'bike', model: 'Yamaha Fazzio', price: {d:150000, w:1000000, m:1700000}, img: 'https://images.unsplash.com/photo-1505246756857-41829e3a6c43?w=800', specs: 'Hybrid | 125cc', desc: {ru: 'Гибридный мотор, свежий дизайн.', en: 'Hybrid engine, fresh design.'}},
+            { id: 11, type: 'bike', model: 'Yamaha Aerox', price: {d:150000, w:1000000, m:2500000}, img: 'https://images.unsplash.com/photo-1610444583713-3932e6a97067?w=800', specs: 'Sport Scooter', desc: {ru: 'Агрессивный дизайн и динамика.', en: 'Aggressive design and dynamic.'}},
+            { id: 12, type: 'bike', model: 'Honda Vario 160', price: {d:150000, w:1000000, m:1700000}, img: 'https://images.unsplash.com/photo-1620510625142-b45cbb784397?w=800', specs: 'Flat Floor', desc: {ru: 'Ровный пол, удобно для сумок.', en: 'Flat floor, good for bags.'}},
+            
+            // --- СПОРТ, КАСТОМ, ЛЮКС (ТЕПЕРЬ В "BIKE") ---
+            { id: 13, type: 'bike', model: 'Kawasaki Ninja 250', price: {d:350000, w:2500000, m:6000000}, img: 'https://images.unsplash.com/photo-1635073908681-3069178309a6?w=800', specs: '2 Cyl | Sport', desc: {ru: 'Спортбайк. 2 цилиндра.', en: 'Sportbike. 2 cylinders.'}},
+            { id: 14, type: 'bike', model: 'Kawasaki ZX-25R', price: {d:650000, w:4000000, m:10000000}, img: 'https://images.unsplash.com/photo-1602985854823-9c299c83693e?w=800', specs: '4 Cylinder', desc: {ru: 'Зверь. 4 цилиндра, звук болида.', en: 'Beast. 4 cylinders, race sound.'}},
+            { id: 15, type: 'bike', model: 'Honda CRF 150L', price: {d:200000, w:1300000, m:2900000}, img: 'https://images.unsplash.com/photo-1558981285-6f0c94958bb6?w=800', specs: 'Enduro', desc: {ru: 'Для бездорожья и приключений.', en: 'For off-road adventures.'}},
+            { id: 16, type: 'bike', model: 'Yamaha XSR 155', price: {d:200000, w:1300000, m:2900000}, img: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800', specs: 'Retro Sport', desc: {ru: 'Механика. Ретро стиль.', en: 'Manual. Retro style.'}},
+            { id: 17, type: 'bike', model: 'Harley Davidson', price: {d:3500000, w:7500000, m:25000000}, img: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800', specs: 'Luxury', desc: {ru: 'Эксклюзивный круизер.', en: 'Exclusive cruiser.'}},
+
+            // --- 2. АВТОМОБИЛИ (CAR) ---
+            { id: 18, type: 'car', model: 'Honda Brio', price: {d:350000, w:2000000, m:5000000}, img: 'https://images.unsplash.com/photo-1590362891175-3066494957e1?w=800', specs: 'Compact | 5 Seats', desc: {ru: 'Компактный, легко парковать.', en: 'Compact, easy to park.'}},
+            { id: 19, type: 'car', model: 'Toyota Raize', price: {d:350000, w:2500000, m:7500000}, img: 'https://images.unsplash.com/photo-1626296317454-049830537063?w=800', specs: 'Compact SUV', desc: {ru: 'Высокий клиренс, компактный.', en: 'High clearance, compact.'}},
+            { id: 20, type: 'car', model: 'Toyota Avanza', price: {d:350000, w:2500000, m:7500000}, img: 'https://images.unsplash.com/photo-1619682817481-e994891cd1f5?w=800', specs: '7 Seats', desc: {ru: 'Надежный минивэн для семьи.', en: 'Reliable MPV for family.'}},
+            { id: 21, type: 'car', model: 'Mitsubishi Xpander', price: {d:450000, w:3500000, m:8000000}, img: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800', specs: 'Premium MPV', desc: {ru: 'Самый комфортный в классе.', en: 'Most comfortable in class.'}},
+            { id: 22, type: 'car', model: 'Honda HR-V RS', price: {d:650000, w:4500000, m:13500000}, img: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800', specs: 'SUV | Luxury', desc: {ru: 'Панорама, кожа, престиж.', en: 'Panoramic roof, leather.'}}
+        ];
+
+        // === ПЕРЕВОДЫ ===
+        const i18n = {
+            ru: { moto:"Мотоциклы", cars:"Автомобили", book:"Забронировать", day:"День", week:"Неделя", month:"Месяц", start:"От", days:"дн", s_date:"Дата начала", e_date:"Дата конца" },
+            en: { moto:"Motorcycles", cars:"Cars", book:"Book Now", day:"Day", week:"Week", month:"Month", start:"From", days:"days", s_date:"Start Date", e_date:"End Date" }
+        };
+
+        let state = { lang: 'ru', item: null };
+
+        // Устанавливаем минимальную дату (сегодня)
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('inp-start').min = today;
+        document.getElementById('inp-end').min = today;
+
+        function setLang(l) {
+            state.lang = l;
+            // Обновляем стиль кнопок
+            document.getElementById('btn-ru').className = l === 'ru' ? 
+                'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all lang-active' : 
+                'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all border border-white/20';
+            document.getElementById('btn-en').className = l === 'en' ? 
+                'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all lang-active' : 
+                'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all border border-white/20';
+            updateUI();
+        }
+
+        function updateUI() {
+            const t = i18n[state.lang];
+            document.getElementById('lbl-moto').innerText = t.moto;
+            document.getElementById('lbl-cars').innerText = t.cars;
+            document.getElementById('lbl-start-bike').innerText = t.start + " 150k";
+            document.getElementById('lbl-start-car').innerText = t.start + " 350k";
+            document.getElementById('lbl-day').innerText = t.day;
+            document.getElementById('lbl-week').innerText = t.week;
+            document.getElementById('lbl-month').innerText = t.month;
+            document.getElementById('btn-book').innerText = t.book;
+            document.getElementById('lbl-start').innerText = t.s_date;
+            document.getElementById('lbl-end').innerText = t.e_date;
+            
+            // Если открыт товар - обновим его
+            if(state.item) renderDetails(state.item);
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function showCategory(type) {
+            const container = document.getElementById('items-container');
+            // Фильтруем базу
+            const items = db.filter(i => i.type === type);
+            
+            container.innerHTML = items.map(item => `
+                <div onclick="openDetails(${item.id})" class="bg-white rounded-[24px] p-3 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all cursor-pointer">
+                    <div class="w-24 h-24 shrink-0 bg-gray-100 rounded-2xl overflow-hidden">
+                        <img src="${item.img}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center">
+                        <h3 class="font-black text-slate-800 text-lg leading-tight mb-1">${item.model}</h3>
+                        <span class="inline-block self-start bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide mb-2">${item.specs}</span>
+                        <p class="text-xs font-bold text-slate-400">${(item.price.d/1000).toFixed(0)}k IDR / ${i18n[state.lang].day}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('lbl-cat-title').innerText = type === 'bike' ? i18n[state.lang].moto : i18n[state.lang].cars;
+            showPage('step-list');
+        }
+
+        function openDetails(id) {
+            state.item = db.find(i => i.id === id);
+            renderDetails(state.item);
+            showPage('step-details');
+        }
+
+        function renderDetails(item) {
+            document.getElementById('det-img').src = item.img;
+            document.getElementById('det-model').innerText = item.model;
+            document.getElementById('det-specs').innerText = item.specs;
+            document.getElementById('det-desc').innerText = item.desc[state.lang];
+            
+            const k = (n) => n >= 1000000 ? (n/1000000).toFixed(1)+'M' : (n/1000).toFixed(0)+'k';
+            document.getElementById('p-day').innerText = k(item.price.d);
+            document.getElementById('p-week').innerText = k(item.price.w);
+            document.getElementById('p-month').innerText = k(item.price.m);
+            
+            // Сброс калькулятора при открытии
+            document.getElementById('inp-start').value = '';
+            document.getElementById('inp-end').value = '';
+            document.getElementById('display-total').innerText = "0 IDR";
+            document.getElementById('lbl-total-days').innerText = "0 " + i18n[state.lang].days;
+        }
+
+        function calcTotal() {
+            const sVal = document.getElementById('inp-start').value;
+            const eVal = document.getElementById('inp-end').value;
+            if(!sVal || !eVal) return;
+
+            const diff = new Date(eVal) - new Date(sVal);
+            const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+            if(days <= 0) {
+                document.getElementById('display-total').innerText = "ERROR";
+                return;
+            }
+
+            let total = 0;
+            const p = state.item.price;
+            
+            // Умный расчет тарифа
+            if(days >= 30) total = (p.m / 30) * days;
+            else if(days >= 7) total = (p.w / 7) * days;
+            else total = p.d * days;
+            
+            total = Math.ceil(total / 1000) * 1000; // Округление
+
+            document.getElementById('display-total').innerText = total.toLocaleString() + " IDR";
+            document.getElementById('lbl-total-days').innerText = days + " " + i18n[state.lang].days;
+            return { total, days };
+        }
+
+        function finishOrder() {
+            const calc = calcTotal();
+            if(!calc) {
+                alert("Please select valid dates!");
+                return;
+            }
+            const addr = document.getElementById('inp-addr').value;
+            if(!addr) {
+                alert("Please enter delivery address!");
+                return;
+            }
+
+            const data = {
+                model: state.item.model,
+                total: calc.total,
+                days: calc.days,
+                dates: `${document.getElementById('inp-start').value} to ${document.getElementById('inp-end').value}`,
+                address: addr,
+                lang: state.lang
+            };
+
+            const msg = `Confirm Booking:\n${data.model}\n${data.days} days\nTotal: ${data.total.toLocaleString()}`;
+            
+            if(tg.initDataUnsafe && tg.initDataUnsafe.query_id) {
+                tg.showConfirm(msg, (ok) => {
+                    if(ok) {
+                        tg.sendData(JSON.stringify(data));
+                        tg.close();
+                    }
+                });
+            } else {
+                // Если открыто в браузере (тест)
+                if(confirm(msg)) {
+                    console.log("Data sent:", data);
+                }
+            }
+        }
+
+        // Старт
+        setLang('ru');
+    </script>
+</body>
+</html>
