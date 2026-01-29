@@ -3,130 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bali Elite Pro</title>
+    <title>Bali Elite Pro Rental</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; background: #0f172a; color: #fff; }
-        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        .glass-dark { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.1); }
-        .btn-primary { background: #3b82f6; box-shadow: 0 4px 20px rgba(59,130,246,0.4); }
-        .page { display: none; min-height: 100vh; animation: fadeIn 0.3s ease; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 15px rgba(37,99,235,0.4); }
+        .page { display: none; min-height: 100vh; animation: fadeIn 0.2s ease; }
         .active { display: flex; }
         .lang-active { background: #3b82f6; color: white; }
-        .price-card-active { border: 2px solid #3b82f6; background: rgba(59,130,246,0.1); }
-        input, select { color-scheme: dark; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 0; }
     </style>
 </head>
-<body>
-    <div id="app" class="max-w-md mx-auto relative h-screen overflow-hidden flex flex-col bg-[#0f172a]">
+<body class="bg-[#0f172a]">
+    <div id="app" class="max-w-md mx-auto relative h-screen overflow-hidden flex flex-col">
         
-        <div class="absolute top-4 right-4 z-50 flex glass rounded-full p-1">
+        <div class="absolute top-4 right-4 z-50 flex glass rounded-full p-1 scale-90">
             <button onclick="setLang('ru')" id="btn-ru" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">RU</button>
             <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">EN</button>
         </div>
 
-        <div id="step-type" class="page active flex-col p-3 gap-3 h-full overflow-y-auto">
-            <div onclick="showCategory('bike')" class="relative h-64 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all">
-                <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&q=80" class="absolute inset-0 w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                <div class="absolute bottom-6 left-6 right-6">
-                    <span class="bg-blue-600/80 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest text-white mb-2 inline-block" id="lbl-rent-bike">Rent a Bike</span>
-                    <h2 class="text-3xl font-black italic uppercase tracking-tighter" id="lbl-moto">MOTORCYCLES</h2>
-                    <p class="text-gray-300 text-xs mt-1" id="lbl-start-bike">From 150k IDR / day</p>
+        <div id="step-type" class="page active flex-col p-4 gap-4 h-full overflow-y-auto pb-10">
+            <div class="mt-8 mb-2">
+                <h1 class="text-3xl font-black italic uppercase tracking-tighter">Bali Elite Pro</h1>
+                <p class="text-gray-400 text-xs font-bold uppercase tracking-widest" id="lbl-subtitle">Premium Rental Service</p>
+            </div>
+
+            <div onclick="showCategory('bike')" class="relative h-48 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-2xl">
+                <img src="http://googleusercontent.com/image_collection/image_retrieval/1886254463873933798_0" class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-6 left-6">
+                    <h2 class="text-2xl font-black italic uppercase" id="lbl-moto">Motorcycles</h2>
+                    <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest" id="lbl-start-bike">From 150k IDR / day</p>
                 </div>
             </div>
 
-            <div onclick="showCategory('car')" class="relative h-64 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all">
-                <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80" class="absolute inset-0 w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                <div class="absolute bottom-6 left-6 right-6">
-                    <span class="bg-blue-600/80 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest text-white mb-2 inline-block" id="lbl-rent-car">Rent a Car</span>
-                    <h2 class="text-3xl font-black italic uppercase tracking-tighter" id="lbl-cars">PREMIUM CARS</h2>
-                    <p class="text-gray-300 text-xs mt-1" id="lbl-start-car">From 300k IDR / day</p>
+            <div onclick="showCategory('car')" class="relative h-48 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-2xl">
+                <img src="http://googleusercontent.com/image_collection/image_retrieval/10368144206329733771_0" class="absolute inset-0 w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-6 left-6">
+                    <h2 class="text-2xl font-black italic uppercase" id="lbl-cars">Premium Cars</h2>
+                    <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest" id="lbl-start-car">From 350k IDR / day</p>
                 </div>
-            </div>
-            
-            <div class="p-4 glass rounded-[24px] mt-2">
-                <h3 class="font-bold text-sm mb-1 text-center" id="lbl-why">⭐ Bali Elite Pro Service</h3>
-                <p class="text-[10px] text-gray-400 text-center leading-relaxed" id="lbl-why-desc">New bikes 2024-25. Full insurance. Free delivery to Canggu area.</p>
             </div>
         </div>
 
-        <div id="step-list" class="page flex-col bg-[#f1f5f9] text-slate-900 h-full">
+        <div id="step-list" class="page flex-col bg-[#f8fafc] text-slate-900 h-full">
             <div class="p-4 bg-white shadow-sm flex items-center justify-between sticky top-0 z-40">
                 <button onclick="showPage('step-type')" class="p-2 rounded-xl bg-slate-100 text-blue-600 font-bold">←</button>
-                <h2 class="text-lg font-black uppercase tracking-widest" id="lbl-category">CATEGORY</h2>
+                <h2 class="text-sm font-black uppercase tracking-widest" id="lbl-category-title">Select Model</h2>
                 <div class="w-8"></div>
             </div>
-            <div id="items-container" class="space-y-4 p-4 pb-24 overflow-y-auto"></div>
+            <div id="items-container" class="space-y-3 p-4 pb-20 overflow-y-auto"></div>
         </div>
 
         <div id="step-details" class="page flex-col bg-white text-slate-900 h-full overflow-hidden relative">
-            <div class="flex-1 overflow-y-auto pb-40">
+            <div class="flex-1 overflow-y-auto pb-44">
                 <div class="relative h-64">
                     <img id="det-img" src="" class="w-full h-full object-cover">
-                    <button onclick="showPage('step-list')" class="absolute top-4 left-4 bg-white/90 p-2 rounded-xl text-slate-900 shadow-lg z-10 font-bold">← <span id="lbl-back-btn">Back</span></button>
-                    <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
+                    <button onclick="showPage('step-list')" class="absolute top-4 left-4 bg-white/90 p-2 rounded-xl text-slate-900 shadow-lg z-10 font-bold">←</button>
                 </div>
 
                 <div class="px-6 -mt-8 relative z-20">
-                    <h2 id="det-model" class="text-3xl font-black text-slate-900 leading-tight mb-2">Model Name</h2>
-                    <span id="det-specs" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest">Specs</span>
-                    <p id="det-desc" class="text-sm text-gray-500 mt-4 leading-relaxed">Description goes here.</p>
+                    <div class="bg-white p-6 rounded-[32px] shadow-xl border border-gray-100">
+                        <h2 id="det-model" class="text-2xl font-black text-slate-900 leading-tight">Model Name</h2>
+                        <p id="det-specs" class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mt-1">Specs</p>
+                        <p id="det-desc" class="text-xs text-gray-500 mt-4 leading-relaxed">Description</p>
+                    </div>
 
-                    <p class="text-xs font-bold text-slate-400 uppercase mt-6 mb-3" id="lbl-tariffs">Select Tariff Duration</p>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div onclick="selectDuration(1)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 transition-all active:scale-95" id="btn-price-day">
-                            <p class="text-[9px] uppercase font-bold text-gray-400" id="lbl-day">Day</p>
-                            <p id="p-day" class="font-bold text-slate-900 text-xs">150k</p>
+                    <div class="mt-6 grid grid-cols-3 gap-2">
+                        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
+                            <p class="text-[8px] uppercase font-bold text-gray-400" id="lbl-day">Day</p>
+                            <p id="p-day" class="font-bold text-slate-900 text-xs">0</p>
                         </div>
-                        <div onclick="selectDuration(7)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 transition-all active:scale-95" id="btn-price-week">
-                            <p class="text-[9px] uppercase font-bold text-gray-400 text-green-500" id="lbl-week">Week (-15%)</p>
-                            <p id="p-week" class="font-bold text-slate-900 text-xs">1.0M</p>
+                        <div class="bg-blue-50 p-3 rounded-2xl text-center border border-blue-100">
+                            <p class="text-[8px] uppercase font-bold text-blue-400" id="lbl-week">Week</p>
+                            <p id="p-week" class="font-bold text-blue-600 text-xs">0</p>
                         </div>
-                        <div onclick="selectDuration(30)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 transition-all active:scale-95" id="btn-price-month">
-                            <p class="text-[9px] uppercase font-bold text-gray-400 text-blue-500" id="lbl-month">Month (-40%)</p>
-                            <p id="p-month" class="font-bold text-slate-900 text-xs">2.5M</p>
+                        <div class="bg-slate-50 p-3 rounded-2xl text-center border border-slate-100">
+                            <p class="text-[8px] uppercase font-bold text-gray-400" id="lbl-month">Month</p>
+                            <p id="p-month" class="font-bold text-slate-900 text-xs">0</p>
                         </div>
                     </div>
 
-                    <div class="mt-6 bg-slate-50 p-4 rounded-[24px] border border-slate-100">
-                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2">📅 <span id="lbl-dates">Rental Dates</span></h3>
-                        <div class="grid grid-cols-2 gap-3 mb-4">
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Start</label>
-                                <input type="date" id="inp-start" class="w-full bg-white p-2 rounded-xl text-sm font-bold border border-gray-200 outline-none" onchange="calcTotal()">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">End</label>
-                                <input type="date" id="inp-end" class="w-full bg-white p-2 rounded-xl text-sm font-bold border border-gray-200 outline-none" onchange="calcTotal()">
-                            </div>
+                    <div class="mt-6 space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div><label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-start-date">Start Date</label><input type="date" id="inp-start" class="w-full bg-slate-50 p-3 rounded-xl text-xs font-bold border border-slate-100 outline-none" onchange="calcTotal()"></div>
+                            <div><label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-end-date">End Date</label><input type="date" id="inp-end" class="w-full bg-slate-50 p-3 rounded-xl text-xs font-bold border border-slate-100 outline-none" onchange="calcTotal()"></div>
                         </div>
-
-                        <h3 class="font-bold text-sm mb-4 mt-6 flex items-center gap-2">📍 <span id="lbl-delivery">Delivery</span></h3>
-                        <div class="space-y-3">
-                            <div class="flex gap-2">
-                                <input type="text" id="inp-address" placeholder="Address / Hotel Name" class="flex-1 bg-white p-3 rounded-xl text-xs font-medium border border-gray-200 outline-none">
-                                <button onclick="getMyLocation()" class="bg-blue-100 text-blue-600 p-3 rounded-xl text-xs font-bold active:scale-90 transition-all">📍</button>
-                            </div>
-                            <input type="text" id="inp-time" placeholder="Time (e.g. 10:00 AM)" class="w-full bg-white p-3 rounded-xl text-xs font-medium border border-gray-200 outline-none">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-address">Delivery Address</label>
+                            <input type="text" id="inp-address" class="w-full bg-slate-50 p-3 rounded-xl text-xs font-medium border border-slate-100 outline-none">
                         </div>
                     </div>
-                    <div class="h-10"></div>
                 </div>
             </div>
 
-            <div class="absolute bottom-0 w-full bg-white border-t border-gray-100 p-4 pb-6 z-50 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-bold text-gray-400" id="lbl-total-days">0 Days</span>
-                    <span id="display-total" class="text-2xl font-black text-blue-600">0 IDR</span>
+            <div class="absolute bottom-0 w-full bg-white border-t border-gray-100 p-4 pb-8 z-50">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase" id="lbl-total-days">0 Days</p>
+                        <p id="display-total" class="text-xl font-black text-slate-900">0 IDR</p>
+                    </div>
+                    <button onclick="finishOrder()" class="btn-primary text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs active:scale-95 transition-all" id="btn-book">Book</button>
                 </div>
-                <button onclick="finishOrder()" class="w-full btn-primary text-white py-4 rounded-2xl font-black uppercase tracking-widest text-sm active:scale-[0.98] transition-all" id="btn-book">
-                    Book Now
-                </button>
             </div>
         </div>
     </div>
@@ -134,50 +117,41 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        
-        // ⚠️ ЗАМЕНИ НА СВОЙ SKRIPT URL
-        const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbxU9Xu2bvMa4hZbIlj6nsVlyelvCFsRsr1zd3rtnrWvrYINZZrs1LXXnzs5lf8f-_Xf/exec";
 
-        // REAL PHOTOS UPDATED
         const db = [
-            // BIKES
-            { id: 1, type: 'bike', model: 'Yamaha NMax 2022', prices: { day: 150000, week: 1000000, month: 2500000 }, img: 'https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=800', specs: "155cc, Standard", desc: { ru: "Комфортный скутер. Большое сиденье, идеально для двоих.", en: "Comfortable scooter. Big seat, perfect for two." }},
-            { id: 2, type: 'bike', model: 'Yamaha NMax 2025', prices: { day: 200000, week: 1300000, month: 2700000 }, img: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800', specs: "155cc, Connected", desc: { ru: "Новая модель. ABS, Bluetooth, улучшенная подвеска.", en: "New model. ABS, Bluetooth, improved suspension." }},
-            { id: 3, type: 'bike', model: 'Yamaha XMax 250', prices: { day: 250000, week: 2700000, month: 4200000 }, img: 'https://images.unsplash.com/photo-1595304323282-359f427f711f?w=800', specs: "250cc, Maxi", desc: { ru: "Мощный макси-скутер. Огромный багажник под 2 шлема.", en: "Powerful maxi-scooter. Huge trunk for 2 helmets." }},
-            { id: 4, type: 'bike', model: 'Honda Stylo 160', prices: { day: 150000, week: 1000000, month: 1700000 }, img: 'https://images.unsplash.com/photo-1591438202812-78d10b784860?w=800', specs: "160cc, Retro", desc: { ru: "Стильный ретро дизайн 2024 года. Мощный мотор 160cc.", en: "Stylish retro design 2024. Powerful 160cc engine." }},
-            { id: 5, type: 'bike', model: 'Honda Scoopy', prices: { day: 150000, week: 1000000, month: 1700000 }, img: 'https://images.unsplash.com/photo-1616439162388-30113220455e?w=800', specs: "110cc, Lite", desc: { ru: "Легкий, милый, маневренный. Зарядка USB.", en: "Light, cute, agile. USB charger." }},
-            { id: 6, type: 'bike', model: 'Honda ADV 160', prices: { day: 200000, week: 1300000, month: 2700000 }, img: 'https://images.unsplash.com/photo-1631525130029-79017637b789?w=800', specs: "160cc, Adventure", desc: { ru: "Для любых дорог. Высокий клиренс, мягкая подвеска.", en: "For any roads. High clearance, soft suspension." }},
-            { id: 7, type: 'bike', model: 'Vespa Sprint 150', prices: { day: 175000, week: 2500000, month: 2900000 }, img: 'https://images.unsplash.com/photo-1605335017643-980482da0891?w=800', specs: "150cc, Classic", desc: { ru: "Итальянский стиль. Для лучших фотографий в Instagram.", en: "Italian style. For the best Instagram photos." }},
-            { id: 8, type: 'bike', model: 'Kawasaki ZX-25R', prices: { day: 500000, week: 3500000, month: 8000000 }, img: 'https://images.unsplash.com/photo-1635073908681-3069178309a6?w=800', specs: "4-Cylinder Sport", desc: { ru: "Спортбайк. 4 цилиндра, невероятный звук.", en: "Sportbike. 4 cylinders, incredible sound." }},
-            // CARS
-            { id: 10, type: 'car', model: 'Suzuki Brio', prices: { day: 300000, week: 1900000, month: 5500000 }, img: 'https://images.unsplash.com/photo-1590362891175-3066494957e1?w=800', specs: "5 Seats, Compact", desc: { ru: "Компактный и экономичный. Легко парковать.", en: "Compact and economical. Easy to park." }},
-            { id: 11, type: 'car', model: 'Mitsubishi Xpander', prices: { day: 650000, week: 3800000, month: 11000000 }, img: 'https://images.unsplash.com/photo-1619682817481-e994891cd1f5?w=800', specs: "7 Seats, MPV", desc: { ru: "Большой семейный авто. 7 мест, двойной кондиционер.", en: "Big family car. 7 seats, double AC." }}
+            // СКУТЕРЫ
+            { id: 1, type: 'bike', model: 'Yamaha NMax 155', prices: { day: 150000, week: 1000000, month: 2500000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/794665444979707852_0', specs: '155cc | 2022', desc: { ru: 'Классика Бали. Надежный и комфортный.', en: 'Bali classic. Reliable and comfortable.' }},
+            { id: 2, type: 'bike', model: 'Yamaha NMax 2025', prices: { day: 200000, week: 1300000, month: 2700000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/16106817378200745544_0', specs: '155cc | New Model', desc: { ru: 'Новое поколение. LED оптика и ABS.', en: 'New generation. LED and ABS.' }},
+            { id: 3, type: 'bike', model: 'Yamaha XMax 250', prices: { day: 249000, week: 1900000, month: 3500000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/14731384838727532980_0', specs: '250cc | Maxi', desc: { ru: 'Для дальних поездок. Огромный багажник.', en: 'For long trips. Huge trunk.' }},
+            { id: 4, type: 'bike', model: 'Honda ADV 160', prices: { day: 200000, week: 1300000, month: 2700000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/1886254463873933798_0', specs: '160cc | Adventure', desc: { ru: 'Кроссовер-скутер. Мягкая подвеска.', en: 'Crossover scooter. Soft suspension.' }},
+            { id: 5, type: 'bike', model: 'Honda PCX 160', prices: { day: 150000, week: 1000000, month: 2500000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/16572137842887602567_0', specs: '160cc | Comfort', desc: { ru: 'Плавный ход и премиальный дизайн.', en: 'Smooth ride and premium design.' }},
+            { id: 6, type: 'bike', model: 'Vespa Sprint 150', prices: { day: 175000, week: 2500000, month: 2900000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/1864875489290000742_0', specs: '150cc | 2025', desc: { ru: 'Итальянский стиль для красивых фото.', en: 'Italian style for beautiful photos.' }},
+            
+            // СПОРТ И ЭНДУРО
+            { id: 7, type: 'bike', model: 'Kawasaki Ninja 250', prices: { day: 350000, week: 2500000, month: 6000000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/8915004758341919393_0', specs: '2 Cyl | Sport', desc: { ru: 'Спортивный байк для скорости.', en: 'Sport bike for speed.' }},
+            { id: 8, type: 'bike', model: 'Kawasaki ZX-25R', prices: { day: 650000, week: 4000000, month: 10000000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/11168014279557126606_0', specs: '4 Cyl | 2026', desc: { ru: 'Звук 4 цилиндров. Настоящий драйв.', en: '4 cylinders sound. Real drive.' }},
+            { id: 9, type: 'bike', model: 'Honda CRF 150L', prices: { day: 200000, week: 1300000, month: 2900000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/14343844098554587191_0', specs: '150cc | Off-road', desc: { ru: 'Для джунглей и бездорожья.', en: 'For jungle and off-road.' }},
+            
+            // АВТОМОБИЛИ
+            { id: 10, type: 'car', model: 'Honda Brio', prices: { day: 350000, week: 2000000, month: 5000000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/3514426632394680098_0', specs: 'Compact | 5 Seats', desc: { ru: 'Идеально для узких улиц.', en: 'Perfect for narrow streets.' }},
+            { id: 11, type: 'car', model: 'Mitsubishi Xpander', prices: { day: 450000, week: 3500000, month: 8000000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/15295194636354381677_0', specs: 'MPV | 7 Seats', desc: { ru: 'Большой семейный автомобиль.', en: 'Large family car.' }},
+            { id: 12, type: 'car', model: 'Honda HR-V RS', prices: { day: 650000, week: 4500000, month: 13500000 }, img: 'http://googleusercontent.com/image_collection/image_retrieval/10368144206329733771_0', specs: 'SUV | Premium', desc: { ru: 'Максимальный комфорт и кожаный салон.', en: 'Max comfort and leather interior.' }}
         ];
 
         const i18n = {
             ru: {
-                rent_bike: "Аренда Мото", moto_title: "МОТОЦИКЛЫ", start: "От", rent_car: "Аренда Авто", car_title: "АВТОМОБИЛИ",
-                why: "⭐ Bali Elite Pro Сервис", why_desc: "Новые байки, полная страховка, бесплатная доставка в Чангу.",
-                cat: "КАТЕГОРИЯ", back: "Назад", day: "День", week: "Неделя", month: "Месяц",
-                tariffs: "Выберите срок аренды", dates: "Даты аренды", delivery: "Доставка",
-                book: "ЗАБРОНИРОВАТЬ", confirm: "Подтвердить бронь", sent: "✅ Заказ отправлен!", error: "Ошибка сети",
-                addr_ph: "Адрес виллы / отеля", time_ph: "Время (напр. 10:00)", days: "дней"
+                moto: "Мотоциклы", cars: "Автомобили", start_bike: "От 150к IDR / день", start_car: "От 350к IDR / день",
+                cat: "Выберите модель", day: "День", week: "Неделя", month: "Месяц", start_date: "Дата начала",
+                end_date: "Дата конца", address: "Адрес доставки", book: "Забронировать", days: "дней", subtitle: "Премиум аренда на Бали"
             },
             en: {
-                rent_bike: "Rent a Bike", moto_title: "MOTORCYCLES", start: "From", rent_car: "Rent a Car", car_title: "PREMIUM CARS",
-                why: "⭐ Bali Elite Pro Service", why_desc: "New bikes, full insurance, free delivery to Canggu.",
-                cat: "CATEGORY", back: "Back", day: "Day", week: "Week", month: "Month",
-                tariffs: "Select Rental Duration", dates: "Rental Dates", delivery: "Delivery",
-                book: "BOOK NOW", confirm: "Confirm Booking", sent: "✅ Order Sent!", error: "Network Error",
-                addr_ph: "Villa Address / Hotel", time_ph: "Time (e.g. 10:00 AM)", days: "days"
+                moto: "Motorcycles", cars: "Premium Cars", start_bike: "From 150k IDR / day", start_car: "From 350k IDR / day",
+                cat: "Select Model", day: "Day", week: "Week", month: "Month", start_date: "Start Date",
+                end_date: "End Date", address: "Delivery Address", book: "Book Now", days: "days", subtitle: "Premium Bali Rental"
             }
         };
 
         let state = { lang: 'ru', item: null };
-        
-        // Setup Date Min Limits
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('inp-start').min = today;
 
         function setLang(lang) {
             state.lang = lang;
@@ -188,52 +162,36 @@
 
         function updateUI() {
             const t = i18n[state.lang];
-            // Main Titles
-            document.getElementById('lbl-rent-bike').innerText = t.rent_bike;
-            document.getElementById('lbl-moto').innerText = t.moto_title;
-            document.getElementById('lbl-start-bike').innerText = `${t.start} 150k IDR`;
-            
-            document.getElementById('lbl-rent-car').innerText = t.rent_car;
-            document.getElementById('lbl-cars').innerText = t.car_title;
-            document.getElementById('lbl-start-car').innerText = `${t.start} 300k IDR`;
-
-            document.getElementById('lbl-why').innerText = t.why;
-            document.getElementById('lbl-why-desc').innerText = t.why_desc;
-            document.getElementById('lbl-category').innerText = t.cat;
-            document.getElementById('lbl-back-btn').innerText = t.back;
-            
-            // Details
-            document.getElementById('lbl-tariffs').innerText = t.tariffs;
+            document.getElementById('lbl-moto').innerText = t.moto;
+            document.getElementById('lbl-cars').innerText = t.cars;
+            document.getElementById('lbl-start-bike').innerText = t.start_bike;
+            document.getElementById('lbl-start-car').innerText = t.start_car;
+            document.getElementById('lbl-category-title').innerText = t.cat;
             document.getElementById('lbl-day').innerText = t.day;
             document.getElementById('lbl-week').innerText = t.week;
             document.getElementById('lbl-month').innerText = t.month;
-            document.getElementById('lbl-dates').innerText = t.dates;
-            document.getElementById('lbl-delivery').innerText = t.delivery;
-            document.getElementById('inp-address').placeholder = t.addr_ph;
-            document.getElementById('inp-time').placeholder = t.time_ph;
+            document.getElementById('lbl-start-date').innerText = t.start_date;
+            document.getElementById('lbl-end-date').innerText = t.end_date;
+            document.getElementById('lbl-address').innerText = t.address;
             document.getElementById('btn-book').innerText = t.book;
-
-            if (state.item) renderDetails(state.item);
+            document.getElementById('lbl-subtitle').innerText = t.subtitle;
         }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            window.scrollTo(0,0);
         }
 
         function showCategory(type) {
             const container = document.getElementById('items-container');
             const items = db.filter(i => i.type === type);
             container.innerHTML = items.map(item => `
-                <div onclick="openDetails(${item.id})" class="bg-white rounded-[24px] p-4 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all">
-                    <img src="${item.img}" class="w-24 h-24 object-cover rounded-2xl bg-gray-100">
-                    <div class="flex-1 py-1">
-                        <h3 class="font-black text-lg leading-tight">${item.model}</h3>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1 mb-2">${item.specs}</p>
-                        <div class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold">
-                            ${(item.prices.day/1000).toFixed(0)}k / ${i18n[state.lang].day}
-                        </div>
+                <div onclick="openDetails(${item.id})" class="bg-white rounded-[24px] p-3 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all">
+                    <img src="${item.img}" class="w-20 h-20 object-cover rounded-2xl bg-slate-50">
+                    <div class="flex-1 flex flex-col justify-center">
+                        <h3 class="font-black text-sm uppercase">${item.model}</h3>
+                        <p class="text-[9px] font-bold text-blue-500 uppercase tracking-tighter">${item.specs}</p>
+                        <p class="text-[10px] font-black text-slate-400 mt-1">${(item.prices.day/1000)}k IDR / ${i18n[state.lang].day}</p>
                     </div>
                 </div>
             `).join('');
@@ -241,129 +199,57 @@
         }
 
         function openDetails(id) {
-            const item = db.find(i => i.id === id);
-            state.item = item;
-            
-            document.getElementById('det-img').src = item.img;
-            document.getElementById('det-model').innerText = item.model;
-            document.getElementById('det-specs').innerText = item.specs;
-            document.getElementById('det-desc').innerText = item.desc[state.lang];
-            
-            document.getElementById('p-day').innerText = (item.prices.day/1000).toFixed(0) + 'k';
-            document.getElementById('p-week').innerText = (item.prices.week/1000000).toFixed(1) + 'M';
-            document.getElementById('p-month').innerText = (item.prices.month/1000000).toFixed(1) + 'M';
-
-            // Reset Inputs
-            document.getElementById('inp-start').value = '';
-            document.getElementById('inp-end').value = '';
-            document.getElementById('display-total').innerText = "0 IDR";
-            document.getElementById('lbl-total-days').innerText = "0 " + i18n[state.lang].days;
-
+            state.item = db.find(i => i.id === id);
+            document.getElementById('det-img').src = state.item.img;
+            document.getElementById('det-model').innerText = state.item.model;
+            document.getElementById('det-specs').innerText = state.item.specs;
+            document.getElementById('det-desc').innerText = state.item.desc[state.lang];
+            document.getElementById('p-day').innerText = (state.item.prices.day/1000) + 'k';
+            document.getElementById('p-week').innerText = (state.item.prices.week/1000) + 'k';
+            document.getElementById('p-month').innerText = (state.item.prices.month/1000000).toFixed(1) + 'M';
+            calcTotal();
             showPage('step-details');
         }
 
-        // --- CALENDAR LOGIC ---
-        function selectDuration(days) {
-            const start = new Date();
-            const end = new Date();
-            end.setDate(start.getDate() + days);
-            
-            document.getElementById('inp-start').valueAsDate = start;
-            document.getElementById('inp-end').valueAsDate = end;
-            calcTotal();
-        }
-
         function calcTotal() {
-            const sVal = document.getElementById('inp-start').value;
-            const eVal = document.getElementById('inp-end').value;
-            if(!sVal || !eVal || !state.item) return;
-
-            const start = new Date(sVal);
-            const end = new Date(eVal);
-            const diffTime = Math.abs(end - start);
-            const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-
-            if (days <= 0) return;
+            const s = document.getElementById('inp-start').value;
+            const e = document.getElementById('inp-end').value;
+            if(!s || !e) return;
+            const days = Math.ceil((new Date(e) - new Date(s)) / (1000*60*60*24));
+            if(days <= 0) return;
 
             let price = 0;
-            const prices = state.item.prices;
+            if(days >= 30) price = (state.item.prices.month / 30) * days;
+            else if(days >= 7) price = (state.item.prices.week / 7) * days;
+            else price = state.item.prices.day * days;
 
-            // SMART PRICING LOGIC
-            if (days >= 30) {
-                // Monthly rate pro-rated
-                price = (prices.month / 30) * days;
-            } else if (days >= 7) {
-                // Weekly rate pro-rated
-                price = (prices.week / 7) * days;
-            } else {
-                // Daily rate
-                price = prices.day * days;
-            }
-
-            // Round to thousands
-            price = Math.floor(price / 1000) * 1000;
-
-            document.getElementById('display-total').innerText = price.toLocaleString() + " IDR";
+            document.getElementById('display-total').innerText = Math.round(price).toLocaleString() + " IDR";
             document.getElementById('lbl-total-days').innerText = days + " " + i18n[state.lang].days;
             return { price, days };
         }
 
-        // --- GEO & ORDER ---
-        function getMyLocation() {
-            if (navigator.geolocation) {
-                tg.showAlert("Locating...");
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    const link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    document.getElementById('inp-address').value = link;
-                    tg.showAlert("Location found!");
-                }, () => {
-                    tg.showAlert("Could not get location. Type address manually.");
-                });
-            }
-        }
-
-        async function finishOrder() {
+        function finishOrder() {
             const calc = calcTotal();
-            if (!calc || calc.price === 0) return tg.showAlert(i18n[state.lang].tariffs);
-            
+            if(!calc) return tg.showAlert("Select dates!");
             const addr = document.getElementById('inp-address').value;
-            const time = document.getElementById('inp-time').value;
-            if(!addr) return tg.showAlert("Please enter address");
+            if(!addr) return tg.showAlert("Enter address!");
 
-            const t = i18n[state.lang];
-            const msg = `${t.confirm} ${state.item.model}?\n${calc.days} ${t.days} = ${calc.price.toLocaleString()} IDR\n📍 ${addr}`;
+            const data = {
+                model: state.item.model,
+                total: calc.price,
+                days: calc.days,
+                address: addr,
+                user: tg.initDataUnsafe?.user?.username || "Guest"
+            };
 
-            tg.showConfirm(msg, async (ok) => {
+            tg.showConfirm(`Confirm: ${state.item.model} for ${calc.days} days?`, (ok) => {
                 if(ok) {
-                    const order = {
-                        user: tg.initDataUnsafe?.user?.username || "Guest",
-                        model: state.item.model,
-                        total: calc.price,
-                        days: calc.days,
-                        dates: `${document.getElementById('inp-start').value} to ${document.getElementById('inp-end').value}`,
-                        loc: addr,
-                        time: time,
-                        lang: state.lang
-                    };
-
-                    try {
-                        // Send to Google Sheets
-                        await fetch(GOOGLE_URL, { 
-                            method: "POST", 
-                            mode: "no-cors", 
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(order) 
-                        });
-                        tg.showAlert(t.sent);
-                        tg.close();
-                    } catch (e) {
-                        tg.showAlert(t.error);
-                    }
+                    tg.sendData(JSON.stringify(data));
+                    tg.close();
                 }
             });
         }
-        
-        // Init
+
         setLang('ru');
     </script>
 </body>
