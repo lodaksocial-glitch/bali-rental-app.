@@ -21,13 +21,10 @@
         .active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Кнопки и карточки */
         .card-press:active { transform: scale(0.97); transition: 0.1s; opacity: 0.9; }
         .price-btn { transition: all 0.2s; border: 1px solid #e2e8f0; cursor: pointer; }
         .price-btn:active { transform: scale(0.95); background: #eff6ff; border-color: #3b82f6; }
-        .price-selected { background: #eff6ff; border-color: #3b82f6; ring: 2px solid #3b82f6; }
 
-        /* Языковой переключатель */
         .lang-btn { background: rgba(0,0,0,0.3); color: white; backdrop-filter: blur(4px); }
         .lang-active { background: #3b82f6; color: white; font-weight: 800; box-shadow: 0 4px 12px rgba(59,130,246,0.5); }
         
@@ -97,7 +94,7 @@
 
                 <p class="text-[10px] font-bold text-gray-400 uppercase mb-2 text-center" id="lbl-tap-hint">Tap to select duration</p>
                 <div class="grid grid-cols-3 gap-2 mb-6">
-                    <div onclick="setDuration(1)" class="price-btn text-center p-2 rounded-xl bg-white shadow-sm group">
+                    <div onclick="setDuration(1)" class="price-btn text-center p-2 rounded-xl bg-white shadow-sm">
                         <div class="text-[8px] uppercase font-bold text-gray-400 mb-1" id="lbl-day">Day</div>
                         <div id="p-day" class="font-bold text-slate-900 text-xs">150k</div>
                     </div>
@@ -143,15 +140,12 @@
         tg.ready();
         tg.expand();
 
-        // === ДАННЫЕ С РЕАЛЬНЫМИ (ИЛИ ПОХОЖИМИ) ФОТО ===
-        // Я использовал Unsplash с ключевыми словами под конкретные модел
         const db = [
-            // --- BIKES ---
             { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', price: {d:150000, w:1000000, m:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический NMax 155.', en: 'Classic NMax 155.'}},
             { id: 2, type: 'bike', model: 'Yamaha NMax New (2025)', price: {d:200000, w:1300000, m:2700000}, img: 'https://brdsg.com/img/800/bw5d48ohbw5jup2tq9_3/CT79WSw0akV4fenCTIXNpDJVwe6BJTXCLRs2cLNUJNQ.png', specs: 'New Gen | ABS', desc: {ru: 'Новый кузов, LED, Bluetooth.', en: 'New body, LED, Bluetooth.'}},
             { id: 3, type: 'bike', model: 'Yamaha NMax (2026)', price: {d:200000, w:1300000, m:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/84/2967/yamaha-nmax-turbo-slant-rear-view-full-image-125296.jpg', specs: '2026 Model', desc: {ru: 'Самая свежая модель.', en: 'Latest model.'}},
             { id: 4, type: 'bike', model: 'Yamaha XMax 250 (2023)', price: {d:249000, w:1900000, m:3500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | Maxi', desc: {ru: 'Комфорт и мощь.', en: 'Comfort and power.'}},
-            { id: 5, type: 'bike', model: 'XMax Tech Max (2026)', price: {d:250000, w:2700000, m:4200000}, img: 'https://www.yamahamotor.co.id/wp-content/uploads/2024/10/Yamaha-nmax-Turbo-Tech-MAX-Magma-Black-1.pngimg:.jpg?v=1', specs: 'Tech Max', desc: {ru: 'Премиум версия, навигация, кожа.', en: 'Premium version, navi, leather.'}},
+            { id: 5, type: 'bike', model: 'XMax Tech Max (2026)', price: {d:250000, w:2700000, m:4200000}, img: 'https://www.yamahamotor.co.id/wp-content/uploads/2024/10/Yamaha-nmax-Turbo-Tech-MAX-Magma-Black-1.png', specs: 'Tech Max', desc: {ru: 'Премиум версия, навигация, кожа.', en: 'Premium version, navi, leather.'}},
             { id: 6, type: 'bike', model: 'Honda ADV 160', price: {d:200000, w:1300000, m:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/73/2617/honda-adv-160-slant-rear-view-full-image-937505.jpg', specs: 'Adventure', desc: {ru: 'Внедорожный скутер.', en: 'Off-road scooter.'}},
             { id: 7, type: 'bike', model: 'Honda PCX 160', price: {d:150000, w:1000000, m:2500000}, img: 'https://motortrade.com.ph/wp-content/uploads/2021/06/1-2.jpg', specs: 'Comfort', desc: {ru: 'Плавный и тихий.', en: 'Smooth and quiet.'}},
             { id: 8, type: 'bike', model: 'Honda Stylo 160', price: {d:150000, w:1000000, m:1700000}, img: 'https://www.hondacengkareng.com/wp-content/uploads/2024/02/Stylo-160-ABS-Royal-Green.png', specs: 'Retro 2024', desc: {ru: 'Новинка 2024. Ретро стиль.', en: 'New 2024. Retro style.'}},
@@ -160,8 +154,6 @@
             { id: 11, type: 'bike', model: 'Vespa Sprint 150', price: {d:175000, w:2500000, m:2900000}, img: 'https://www.olx.co.id/news/wp-content/uploads/2024/05/Vespa-Sprint-150-i-Get-ABS-696x464.webp', specs: 'Italian', desc: {ru: 'Стиль и харизма.', en: 'Style and charisma.'}},
             { id: 12, type: 'bike', model: 'Kawasaki Ninja 250', price: {d:350000, w:2500000, m:6000000}, img: 'https://kawasaki-global-admin.com/ContentStorage/KMI/Products/5218/29470c6f-3ed1-423e-8784-f0f8a6b00044.png?w=767', specs: 'Sport', desc: {ru: '2 цилиндра, спорт.', en: '2 cylinder, sport.'}},
             { id: 13, type: 'bike', model: 'Kawasaki ZX-25R', price: {d:650000, w:4000000, m:10000000}, img: 'https://www.inanews.co.id/wp-content/uploads/2020/07/HIJAU_compress56-scaled.jpg', specs: '4 Cylinder', desc: {ru: '4 цилиндра! Звук F1.', en: '4 Cyl! F1 Sound.'}},
-            
-            // --- CARS ---
             { id: 20, type: 'car', model: 'Honda Brio', price: {d:350000, w:2000000, m:5000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/2020_Honda_Brio_Satya_S_1.2_DD1_%2820211001%29_01.jpg', specs: 'Compact', desc: {ru: 'Маленькая, юркая.', en: 'Small, agile.'}},
             { id: 21, type: 'car', model: 'Toyota Avanza', price: {d:350000, w:2500000, m:7500000}, img: 'https://d1g6w7sntckt92.cloudfront.net/public/images/car_gallery_images/4EDvToNaBOUF2HSWws675vEM0MzXeTMJI5eeNMrN.jpg', specs: '7 Seater', desc: {ru: 'Минивэн для компании.', en: 'Minivan for groups.'}},
             { id: 22, type: 'car', model: 'Mitsubishi Xpander', price: {d:450000, w:3500000, m:8000000}, img: 'https://cdn.motor1.com/images/mgl/A8J36/s1/2020-mitsubishi-xpander-cross.webp', specs: 'Premium MPV', desc: {ru: 'Очень просторный и мягкий.', en: 'Very spacious and soft.'}},
@@ -174,11 +166,7 @@
         };
 
         let state = { lang: 'ru', item: null };
-        const today = new Date();
-        const dateStr = today.toISOString().split('T')[0];
-        document.getElementById('inp-start').min = dateStr;
-        document.getElementById('inp-end').min = dateStr;
-
+        
         function setLang(l) {
             state.lang = l;
             document.getElementById('btn-ru').className = l==='ru'?'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all lang-active':'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all border border-white/20';
@@ -209,7 +197,6 @@
         function showCategory(type) {
             const container = document.getElementById('items-container');
             const items = db.filter(i => i.type === type);
-            
             container.innerHTML = items.map(item => `
                 <div onclick="openDetails(${item.id})" class="bg-white rounded-[20px] p-3 flex gap-3 shadow-sm border border-slate-100 active:scale-95 transition-all cursor-pointer">
                     <div class="w-20 h-20 shrink-0 bg-gray-100 rounded-xl overflow-hidden relative">
@@ -237,51 +224,40 @@
             document.getElementById('det-model').innerText = item.model;
             document.getElementById('det-specs').innerText = item.specs;
             document.getElementById('det-desc').innerText = item.desc[state.lang];
-            
             const k = (n) => n >= 1000000 ? (n/1000000).toFixed(1)+'M' : (n/1000).toFixed(0)+'k';
             document.getElementById('p-day').innerText = k(item.price.d);
             document.getElementById('p-week').innerText = k(item.price.w);
             document.getElementById('p-month').innerText = k(item.price.m);
-            
-            // Сброс полей
             document.getElementById('inp-start').value = '';
             document.getElementById('inp-end').value = '';
             document.getElementById('display-total').innerText = "0 IDR";
         }
 
-        // НОВАЯ ФУНКЦИЯ: Установка длительности по клику на цену
         function setDuration(days) {
             const start = new Date();
             const end = new Date();
             end.setDate(start.getDate() + days);
-
             document.getElementById('inp-start').valueAsDate = start;
             document.getElementById('inp-end').valueAsDate = end;
-            calcTotal(); // Сразу пересчитываем
+            calcTotal();
         }
 
         function calcTotal() {
             const sVal = document.getElementById('inp-start').value;
             const eVal = document.getElementById('inp-end').value;
             if(!sVal || !eVal) return;
-
             const diff = new Date(eVal) - new Date(sVal);
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
             if(days <= 0) {
                 document.getElementById('display-total').innerText = "...";
                 return;
             }
-
             let total = 0;
             const p = state.item.price;
-            
             if(days >= 30) total = (p.m / 30) * days;
             else if(days >= 7) total = (p.w / 7) * days;
             else total = p.d * days;
-            
             total = Math.ceil(total / 1000) * 1000;
-
             document.getElementById('display-total').innerText = total.toLocaleString() + " IDR";
             document.getElementById('lbl-total-days').innerText = days + " " + (state.lang==='ru'?'дн':'days');
             return { total, days };
@@ -290,18 +266,9 @@
         function finishOrder() {
             const calc = calcTotal();
             if(!calc) return alert(state.lang==='ru'?"Выберите даты!":"Select dates!");
-            
             const addr = document.getElementById('inp-addr').value;
             if(!addr) return alert(state.lang==='ru'?"Введите адрес!":"Enter address!");
-
-            const data = {
-                model: state.item.model,
-                total: calc.total,
-                days: calc.days,
-                dates: `${document.getElementById('inp-start').value} - ${document.getElementById('inp-end').value}`,
-                address: addr
-            };
-
+            const data = { model: state.item.model, total: calc.total, days: calc.days, dates: `${document.getElementById('inp-start').value} - ${document.getElementById('inp-end').value}`, address: addr };
             if(tg.initDataUnsafe?.query_id) {
                 tg.sendData(JSON.stringify(data));
                 tg.close();
@@ -309,6 +276,11 @@
                 alert("Order Sent: " + JSON.stringify(data));
             }
         }
+
+        // Установка минимальных дат
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('inp-start').min = today;
+        document.getElementById('inp-end').min = today;
 
         setLang('ru');
     </script>
