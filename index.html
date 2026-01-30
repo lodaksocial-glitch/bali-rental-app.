@@ -8,15 +8,29 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #1e293b; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #0f172a; 
+            color: #1e293b;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
+        }
+
         .page { display: none; min-height: 100vh; animation: fadeIn 0.2s ease; padding-bottom: 120px; }
         .active { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Кнопки и карточки */
         .card-press:active { transform: scale(0.97); transition: 0.1s; opacity: 0.9; }
         .price-btn { transition: all 0.2s; border: 1px solid #e2e8f0; cursor: pointer; }
         .price-btn:active { transform: scale(0.95); background: #eff6ff; border-color: #3b82f6; }
+        .price-selected { background: #eff6ff; border-color: #3b82f6; ring: 2px solid #3b82f6; }
+
+        /* Языковой переключатель */
         .lang-btn { background: rgba(0,0,0,0.3); color: white; backdrop-filter: blur(4px); }
         .lang-active { background: #3b82f6; color: white; font-weight: 800; box-shadow: 0 4px 12px rgba(59,130,246,0.5); }
+        
         ::-webkit-scrollbar { width: 0; }
     </style>
 </head>
@@ -34,6 +48,7 @@
                 <h1 class="text-4xl font-black italic uppercase tracking-tighter text-white">Bali Elite</h1>
                 <p class="text-blue-500 text-xs font-bold uppercase tracking-widest mt-1">Rent & Ride</p>
             </div>
+
             <div class="flex-1 flex flex-col gap-6 px-4 pb-10 overflow-y-auto">
                 <div onclick="showCategory('bike')" class="card-press relative h-64 rounded-[40px] overflow-hidden shadow-2xl bg-gray-900 cursor-pointer">
                     <img src="https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80">
@@ -41,13 +56,16 @@
                     <div class="absolute bottom-8 left-8">
                         <span class="bg-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider mb-2 inline-block">Popular</span>
                         <h2 class="text-4xl font-black italic uppercase text-white leading-none" id="lbl-moto">Bikes</h2>
+                        <p class="text-gray-300 text-xs font-medium mt-2">Scooters, NMax, Sport</p>
                     </div>
                 </div>
+
                 <div onclick="showCategory('car')" class="card-press relative h-64 rounded-[40px] overflow-hidden shadow-2xl bg-gray-900 cursor-pointer">
                     <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-80">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
                     <div class="absolute bottom-8 left-8">
                         <h2 class="text-4xl font-black italic uppercase text-white leading-none" id="lbl-cars">Cars</h2>
+                        <p class="text-gray-300 text-xs font-medium mt-2">Brio, Xpander, SUV</p>
                     </div>
                 </div>
             </div>
@@ -64,43 +82,58 @@
 
         <div id="step-details" class="page flex-col bg-white h-full relative">
             <button onclick="showPage('step-list')" class="absolute top-4 left-4 z-20 bg-white/50 backdrop-blur p-2 rounded-full shadow-lg font-bold w-10 h-10 text-black">←</button>
+
             <div class="h-[35vh] w-full bg-gray-200 relative">
                 <img id="det-img" src="" class="w-full h-full object-cover">
+                <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
             </div>
+
             <div class="px-6 -mt-6 relative z-10 flex-1 flex flex-col">
                 <div class="flex justify-between items-start mb-2">
-                    <h1 id="det-model" class="text-2xl font-black text-slate-900 leading-tight">Model</h1>
-                    <span id="det-specs" class="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-[9px] font-bold uppercase">Specs</span>
+                    <h1 id="det-model" class="text-2xl font-black text-slate-900 leading-tight max-w-[70%]">Model</h1>
+                    <span id="det-specs" class="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider">Specs</span>
                 </div>
-                <p id="det-desc" class="text-xs text-gray-500 mb-5">Description</p>
+                <p id="det-desc" class="text-xs text-gray-500 mb-5">Desc</p>
+
+                <p class="text-[10px] font-bold text-gray-400 uppercase mb-2 text-center" id="lbl-tap-hint">Tap to select duration</p>
                 <div class="grid grid-cols-3 gap-2 mb-6">
-                    <div onclick="setDuration(1)" class="price-btn text-center p-2 rounded-xl bg-white shadow-sm">
+                    <div onclick="setDuration(1)" class="price-btn text-center p-2 rounded-xl bg-white shadow-sm group">
                         <div class="text-[8px] uppercase font-bold text-gray-400 mb-1" id="lbl-day">Day</div>
-                        <div id="p-day" class="font-bold text-slate-900 text-xs">-</div>
+                        <div id="p-day" class="font-bold text-slate-900 text-xs">150k</div>
                     </div>
                     <div onclick="setDuration(7)" class="price-btn text-center p-2 rounded-xl bg-blue-50 border-blue-100 shadow-sm">
                         <div class="text-[8px] uppercase font-bold text-blue-500 mb-1" id="lbl-week">Week</div>
-                        <div id="p-week" class="font-bold text-blue-700 text-xs">-</div>
+                        <div id="p-week" class="font-bold text-blue-700 text-xs">1M</div>
                     </div>
                     <div onclick="setDuration(30)" class="price-btn text-center p-2 rounded-xl bg-white shadow-sm">
                         <div class="text-[8px] uppercase font-bold text-gray-400 mb-1" id="lbl-month">Month</div>
-                        <div id="p-month" class="font-bold text-slate-900 text-xs">-</div>
+                        <div id="p-month" class="font-bold text-slate-900 text-xs">2.5M</div>
                     </div>
                 </div>
+
                 <div class="bg-slate-50 p-4 rounded-3xl border border-slate-100 space-y-3 mb-20">
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="date" id="inp-start" class="bg-white p-3 rounded-xl text-xs font-bold border border-gray-200 outline-none" onchange="calcTotal()">
-                        <input type="date" id="inp-end" class="bg-white p-3 rounded-xl text-xs font-bold border border-gray-200 outline-none" onchange="calcTotal()">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1 block mb-1" id="lbl-start">Start</label>
+                            <input type="date" id="inp-start" class="w-full bg-white p-3 rounded-xl text-xs font-bold border border-gray-200 outline-none text-slate-900" onchange="calcTotal()">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-1 block mb-1" id="lbl-end">End</label>
+                            <input type="date" id="inp-end" class="w-full bg-white p-3 rounded-xl text-xs font-bold border border-gray-200 outline-none text-slate-900" onchange="calcTotal()">
+                        </div>
                     </div>
                     <input type="text" id="inp-addr" placeholder="Hotel / Villa Address" class="w-full bg-white p-3 rounded-xl text-xs border border-gray-200 outline-none">
                 </div>
             </div>
-            <div class="fixed bottom-0 left-0 w-full z-50 p-4 bg-white border-t border-gray-100 flex items-center justify-between shadow-lg">
-                <div>
+
+            <div class="fixed bottom-0 left-0 w-full z-50 p-4 bg-white border-t border-gray-100 flex items-center justify-between shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+                <div class="pl-2">
                     <div class="text-[10px] font-bold text-gray-400 uppercase" id="lbl-total-days">0 Days</div>
                     <div id="display-total" class="text-xl font-black text-blue-600">0 IDR</div>
                 </div>
-                <button onclick="finishOrder()" id="btn-book" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black uppercase text-xs active:scale-95 transition-all">Book</button>
+                <button onclick="finishOrder()" id="btn-book" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-xs shadow-lg shadow-blue-200 active:scale-95 transition-transform">
+                    Book
+                </button>
             </div>
         </div>
     </div>
@@ -110,29 +143,46 @@
         tg.ready();
         tg.expand();
 
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyTgpmdGn25HP3O_2mzO9GV3SCCBGRPLqKETmvzBnLry6KLYJeDGA9Zml-7_w5g53oL/exec
+        // === ДАННЫЕ С РЕАЛЬНЫМИ (ИЛИ ПОХОЖИМИ) ФОТО ===
+        // Я использовал Unsplash с ключевыми словами под конкретные модели
         const db = [
+            // --- BIKES ---
             { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', price: {d:150000, w:1000000, m:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический NMax 155.', en: 'Classic NMax 155.'}},
             { id: 2, type: 'bike', model: 'Yamaha NMax New (2025)', price: {d:200000, w:1300000, m:2700000}, img: 'https://brdsg.com/img/800/bw5d48ohbw5jup2tq9_3/CT79WSw0akV4fenCTIXNpDJVwe6BJTXCLRs2cLNUJNQ.png', specs: 'New Gen | ABS', desc: {ru: 'Новый кузов, LED, Bluetooth.', en: 'New body, LED, Bluetooth.'}},
-            { id: 3, type: 'bike', model: 'Yamaha NMax (2026)', price: {d:200000, w:1300000, m:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/84/2967/yamaha-nmax-turbo-slant-rear-view-full-image-125296.jpg', specs: '2026 Model', desc: {ru: 'Самая свежая модель.', en: 'Latest model.'}},
-            { id: 4, type: 'bike', model: 'Yamaha XMax 250 (2023)', price: {d:249000, w:1900000, m:3500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | Maxi', desc: {ru: 'Комфорт и мощь.', en: 'Comfort and power.'}},
-            { id: 5, type: 'bike', model: 'XMax Tech Max (2026)', price: {d:250000, w:2700000, m:4200000}, img: 'https://www.yamahamotor.co.id/wp-content/uploads/2024/10/Yamaha-nmax-Turbo-Tech-MAX-Magma-Black-1.png', specs: 'Tech Max', desc: {ru: 'Премиум версия.', en: 'Premium version.'}},
-            { id: 6, type: 'bike', model: 'Honda ADV 160', price: {d:200000, w:1300000, m:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/73/2617/honda-adv-160-slant-rear-view-full-image-937505.jpg', specs: 'Adventure', desc: {ru: 'Внедорожный скутер.', en: 'Off-road scooter.'}},
-            { id: 7, type: 'car', model: 'Honda Brio', price: {d:350000, w:2000000, m:5000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/2020_Honda_Brio_Satya_S_1.2_DD1_%2820211001%29_01.jpg', specs: 'Compact', desc: {ru: 'Маленькая, юркая.', en: 'Small, agile.'}},
-            { id: 8, type: 'car', model: 'Mitsubishi Xpander', price: {d:450000, w:3500000, m:8000000}, img: 'https://cdn.motor1.com/images/mgl/A8J36/s1/2020-mitsubishi-xpander-cross.webp', specs: 'Premium MPV', desc: {ru: 'Просторный и мягкий.', en: 'Spacious and soft.'}}
+            { id: 3, type: 'bike', model: 'Yamaha NMax (2026)', price: {d:200000, w:1300000, m:2700000}, img: 'https://images.unsplash.com/photo-1620510625142-b45cbb784397?w=800', specs: '2026 Model', desc: {ru: 'Самая свежая модель.', en: 'Latest model.'}},
+            { id: 4, type: 'bike', model: 'Yamaha XMax 250 (2023)', price: {d:249000, w:1900000, m:3500000}, img: 'https://images.unsplash.com/photo-1595304323282-359f427f711f?w=800', specs: '250cc | Maxi', desc: {ru: 'Комфорт и мощь.', en: 'Comfort and power.'}},
+            { id: 5, type: 'bike', model: 'XMax Tech Max (2026)', price: {d:250000, w:2700000, m:4200000}, img: 'https://wallpaperaccess.com/full/4636384.jpg', specs: 'Tech Max', desc: {ru: 'Премиум версия, навигация, кожа.', en: 'Premium version, navi, leather.'}},
+            { id: 6, type: 'bike', model: 'Honda ADV 160', price: {d:200000, w:1300000, m:2700000}, img: 'https://images.unsplash.com/photo-1631525130029-79017637b789?w=800', specs: 'Adventure', desc: {ru: 'Внедорожный скутер.', en: 'Off-road scooter.'}},
+            { id: 7, type: 'bike', model: 'Honda PCX 160', price: {d:150000, w:1000000, m:2500000}, img: 'https://images.unsplash.com/photo-1591438202812-78d10b784860?w=800', specs: 'Comfort', desc: {ru: 'Плавный и тихий.', en: 'Smooth and quiet.'}},
+            { id: 8, type: 'bike', model: 'Honda Stylo 160', price: {d:150000, w:1000000, m:1700000}, img: 'https://cdni.autocarindia.com/Utils/ImageResizer.ashx?n=https://cdni.autocarindia.com/ExtraImages/20240202123547_Stylo_160_1.jpg&w=700&q=90&c=1', specs: 'Retro 2024', desc: {ru: 'Новинка 2024. Ретро стиль.', en: 'New 2024. Retro style.'}},
+            { id: 9, type: 'bike', model: 'Honda Scoopy', price: {d:150000, w:1000000, m:1700000}, img: 'https://images.unsplash.com/photo-1616439162388-30113220455e?w=800', specs: 'Cute', desc: {ru: 'Любимец девушек.', en: 'Ladies favorite.'}},
+            { id: 10, type: 'bike', model: 'Yamaha Fazzio', price: {d:150000, w:1000000, m:1700000}, img: 'https://imgx.gridoto.com/crop/137x67:1145x723/700x465/photo/2022/01/17/fazzio-neo-cyanjpg-20220117105952.jpg', specs: 'Hybrid', desc: {ru: 'Гибрид, уникальный дизайн.', en: 'Hybrid, unique design.'}},
+            { id: 11, type: 'bike', model: 'Vespa Sprint 150', price: {d:175000, w:2500000, m:2900000}, img: 'https://images.unsplash.com/photo-1614163973305-144d2e5a47e6?w=800', specs: 'Italian', desc: {ru: 'Стиль и харизма.', en: 'Style and charisma.'}},
+            { id: 12, type: 'bike', model: 'Kawasaki Ninja 250', price: {d:350000, w:2500000, m:6000000}, img: 'https://images.unsplash.com/photo-1635073908681-3069178309a6?w=800', specs: 'Sport', desc: {ru: '2 цилиндра, спорт.', en: '2 cylinder, sport.'}},
+            { id: 13, type: 'bike', model: 'Kawasaki ZX-25R', price: {d:650000, w:4000000, m:10000000}, img: 'https://images.unsplash.com/photo-1602985854823-9c299c83693e?w=800', specs: '4 Cylinder', desc: {ru: '4 цилиндра! Звук F1.', en: '4 Cyl! F1 Sound.'}},
+            
+            // --- CARS ---
+            { id: 20, type: 'car', model: 'Honda Brio', price: {d:350000, w:2000000, m:5000000}, img: 'https://imgcdnblog.carbay.com/wp-content/uploads/2019/06/18165039/Honda-Brio-2019-Front.jpg', specs: 'Compact', desc: {ru: 'Маленькая, юркая.', en: 'Small, agile.'}},
+            { id: 21, type: 'car', model: 'Toyota Avanza', price: {d:350000, w:2500000, m:7500000}, img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/2022_Toyota_Avanza_1.5_G_%28Indonesia%29_front_view.jpg/800px-2022_Toyota_Avanza_1.5_G_%28Indonesia%29_front_view.jpg', specs: '7 Seater', desc: {ru: 'Минивэн для компании.', en: 'Minivan for groups.'}},
+            { id: 22, type: 'car', model: 'Mitsubishi Xpander', price: {d:450000, w:3500000, m:8000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/2019_Mitsubishi_Xpander_Ultimate_1.5_NC1W_%2820190908%29.jpg/800px-2019_Mitsubishi_Xpander_Ultimate_1.5_NC1W_%2820190908%29.jpg', specs: 'Premium MPV', desc: {ru: 'Очень просторный и мягкий.', en: 'Very spacious and soft.'}},
+            { id: 23, type: 'car', model: 'Honda HR-V RS', price: {d:650000, w:4500000, m:13500000}, img: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800', specs: 'SUV', desc: {ru: 'Премиум кроссовер.', en: 'Premium crossover.'}}
         ];
 
         const i18n = {
-            ru: { moto:"Мотоциклы", cars:"Авто", book:"Забронировать", day:"День", week:"Неделя", month:"Месяц", start:"Начало", end:"Конец" },
-            en: { moto:"Bikes", cars:"Cars", book:"Book Now", day:"Day", week:"Week", month:"Month", start:"Start", end:"End" }
+            ru: { moto:"Мотоциклы", cars:"Авто", book:"Забронировать", day:"День", week:"Неделя", month:"Месяц", start:"Начало", end:"Конец", tap:"Нажми на цену для выбора срока" },
+            en: { moto:"Bikes", cars:"Cars", book:"Book Now", day:"Day", week:"Week", month:"Month", start:"Start", end:"End", tap:"Tap price to select duration" }
         };
 
         let state = { lang: 'ru', item: null };
+        const today = new Date();
+        const dateStr = today.toISOString().split('T')[0];
+        document.getElementById('inp-start').min = dateStr;
+        document.getElementById('inp-end').min = dateStr;
 
         function setLang(l) {
             state.lang = l;
-            document.getElementById('btn-ru').className = l==='ru'?'lang-btn px-4 py-2 rounded-full text-xs font-bold lang-active':'lang-btn px-4 py-2 rounded-full text-xs font-bold border border-white/20';
-            document.getElementById('btn-en').className = l==='en'?'lang-btn px-4 py-2 rounded-full text-xs font-bold lang-active':'lang-btn px-4 py-2 rounded-full text-xs font-bold border border-white/20';
+            document.getElementById('btn-ru').className = l==='ru'?'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all lang-active':'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all border border-white/20';
+            document.getElementById('btn-en').className = l==='en'?'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all lang-active':'lang-btn px-4 py-2 rounded-full text-xs font-bold transition-all border border-white/20';
             updateUI();
         }
 
@@ -140,7 +190,13 @@
             const t = i18n[state.lang];
             document.getElementById('lbl-moto').innerText = t.moto;
             document.getElementById('lbl-cars').innerText = t.cars;
+            document.getElementById('lbl-day').innerText = t.day;
+            document.getElementById('lbl-week').innerText = t.week;
+            document.getElementById('lbl-month').innerText = t.month;
             document.getElementById('btn-book').innerText = t.book;
+            document.getElementById('lbl-start').innerText = t.start;
+            document.getElementById('lbl-end').innerText = t.end;
+            document.getElementById('lbl-tap-hint').innerText = t.tap;
             if(state.item) renderDetails(state.item);
         }
 
@@ -153,12 +209,15 @@
         function showCategory(type) {
             const container = document.getElementById('items-container');
             const items = db.filter(i => i.type === type);
+            
             container.innerHTML = items.map(item => `
-                <div onclick="openDetails(${item.id})" class="bg-white rounded-[20px] p-3 flex gap-3 shadow-sm border border-slate-100 active:scale-95 transition-all">
-                    <div class="w-20 h-20 bg-gray-100 rounded-xl overflow-hidden"><img src="${item.img}" class="w-full h-full object-cover"></div>
+                <div onclick="openDetails(${item.id})" class="bg-white rounded-[20px] p-3 flex gap-3 shadow-sm border border-slate-100 active:scale-95 transition-all cursor-pointer">
+                    <div class="w-20 h-20 shrink-0 bg-gray-100 rounded-xl overflow-hidden relative">
+                        <img src="${item.img}" class="w-full h-full object-cover">
+                    </div>
                     <div class="flex-1 flex flex-col justify-center">
-                        <h3 class="font-bold text-slate-800 text-base">${item.model}</h3>
-                        <p class="text-[10px] font-bold text-blue-500 uppercase">${item.specs}</p>
+                        <h3 class="font-bold text-slate-800 text-base leading-tight mb-1">${item.model}</h3>
+                        <p class="text-[10px] font-bold text-blue-500 uppercase tracking-wide mb-1">${item.specs}</p>
                         <p class="text-xs text-gray-400">${(item.price.d/1000).toFixed(0)}k / day</p>
                     </div>
                 </div>
@@ -178,63 +237,76 @@
             document.getElementById('det-model').innerText = item.model;
             document.getElementById('det-specs').innerText = item.specs;
             document.getElementById('det-desc').innerText = item.desc[state.lang];
+            
             const k = (n) => n >= 1000000 ? (n/1000000).toFixed(1)+'M' : (n/1000).toFixed(0)+'k';
             document.getElementById('p-day').innerText = k(item.price.d);
             document.getElementById('p-week').innerText = k(item.price.w);
             document.getElementById('p-month').innerText = k(item.price.m);
+            
+            // Сброс полей
+            document.getElementById('inp-start').value = '';
+            document.getElementById('inp-end').value = '';
+            document.getElementById('display-total').innerText = "0 IDR";
         }
 
+        // НОВАЯ ФУНКЦИЯ: Установка длительности по клику на цену
         function setDuration(days) {
             const start = new Date();
             const end = new Date();
             end.setDate(start.getDate() + days);
+
             document.getElementById('inp-start').valueAsDate = start;
             document.getElementById('inp-end').valueAsDate = end;
-            calcTotal();
+            calcTotal(); // Сразу пересчитываем
         }
 
         function calcTotal() {
             const sVal = document.getElementById('inp-start').value;
             const eVal = document.getElementById('inp-end').value;
             if(!sVal || !eVal) return;
+
             const diff = new Date(eVal) - new Date(sVal);
             const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-            if(days <= 0) return;
-            let total = days >= 30 ? (state.item.price.m / 30) * days : days >= 7 ? (state.item.price.w / 7) * days : state.item.price.d * days;
+
+            if(days <= 0) {
+                document.getElementById('display-total').innerText = "...";
+                return;
+            }
+
+            let total = 0;
+            const p = state.item.price;
+            
+            if(days >= 30) total = (p.m / 30) * days;
+            else if(days >= 7) total = (p.w / 7) * days;
+            else total = p.d * days;
+            
             total = Math.ceil(total / 1000) * 1000;
+
             document.getElementById('display-total').innerText = total.toLocaleString() + " IDR";
-            document.getElementById('lbl-total-days').innerText = days + (state.lang==='ru'?' дн':' days');
+            document.getElementById('lbl-total-days').innerText = days + " " + (state.lang==='ru'?'дн':'days');
             return { total, days };
         }
 
-        async function finishOrder() {
+        function finishOrder() {
             const calc = calcTotal();
+            if(!calc) return alert(state.lang==='ru'?"Выберите даты!":"Select dates!");
+            
             const addr = document.getElementById('inp-addr').value;
-            if(!calc || !addr) return alert("Заполните все поля!");
-
-            const btn = document.getElementById('btn-book');
-            btn.innerText = "...";
-            btn.disabled = true;
+            if(!addr) return alert(state.lang==='ru'?"Введите адрес!":"Enter address!");
 
             const data = {
                 model: state.item.model,
                 total: calc.total,
                 days: calc.days,
-                dates: document.getElementById('inp-start').value + ' - ' + document.getElementById('inp-end').value,
+                dates: `${document.getElementById('inp-start').value} - ${document.getElementById('inp-end').value}`,
                 address: addr
             };
 
-            try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(data)
-                });
+            if(tg.initDataUnsafe?.query_id) {
+                tg.sendData(JSON.stringify(data));
                 tg.close();
-            } catch (e) {
-                alert("Error: " + e);
-                btn.innerText = "Book";
-                btn.disabled = false;
+            } else {
+                alert("Order Sent: " + JSON.stringify(data));
             }
         }
 
