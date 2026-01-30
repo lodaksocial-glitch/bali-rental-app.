@@ -137,7 +137,7 @@
         
         // Используем тестовый URL для Google Apps Script
         // В продакшене замените на свой
-        const GOOGLE_URL = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbwbLnBjJ1V2FIordSt2gTbodL3UH15EWpm6pOiWiFAFGJHAOagiWHYd9mFiKqdph0Qw/exec";
+        const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbwbLnBjJ1V2FIordSt2gTbodL3UH15EWpm6pOiWiFAFGJHAOagiWHYd9mFiKqdph0Qw/exec";
         
         const db = [
             { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический и надежный NMax 155.', en: 'Classic and reliable NMax 155.'}},
@@ -180,7 +180,8 @@
                 tariffs: "Выберите срок аренды", book: "ЗАБРОНИРОВАТЬ", confirm: "Подтвердить бронь", sent: "✅ Заказ отправлен!", error: "Ошибка сети",
                 addr_ph: "Адрес виллы / отеля", time_ph: "Время (напр. 10:00)", days: "дней", start_lbl: "Начало", end_lbl: "Конец",
                 enter_addr: "Введите адрес", date_error: "Дата окончания не может быть раньше начала", 
-                select_vehicle: "Выберите транспорт", loading: "Отправка..."
+                select_vehicle: "Выберите транспорт", loading: "Отправка...",
+                get_location: "Определение местоположения", allow_location: "Разрешите доступ к геолокации"
             },
             en: {
                 rent_bike: "Rent a Bike", moto_title: "MOTORCYCLES", start: "From", rent_car: "Rent a Car", car_title: "PREMIUM CARS",
@@ -189,7 +190,8 @@
                 tariffs: "Select Rental Duration", book: "BOOK NOW", confirm: "Confirm Booking", sent: "✅ Order Sent!", error: "Network Error",
                 addr_ph: "Villa Address / Hotel", time_ph: "Time (e.g. 10:00 AM)", days: "days", start_lbl: "Start", end_lbl: "End",
                 enter_addr: "Enter address", date_error: "End date cannot be earlier than start", 
-                select_vehicle: "Select vehicle", loading: "Sending..."
+                select_vehicle: "Select vehicle", loading: "Sending...",
+                get_location: "Getting location", allow_location: "Allow access to geolocation"
             }
         };
 
@@ -267,9 +269,19 @@
         }
 
         function openDetails(id) {
-            state.item = db.find(i => i.id === id);
-            renderDetails(state.item);
-            showPage('step-details');
+            try {
+                state.item = db.find(i => i.id === id);
+                if (!state.item) {
+                    console.error('Item not found:', id);
+                    tg.showAlert("Транспорт не найден");
+                    return;
+                }
+                renderDetails(state.item);
+                showPage('step-details');
+            } catch (error) {
+                console.error('Error in openDetails:', error);
+                tg.showAlert("Ошибка при открытии деталей");
+            }
         }
 
         function renderDetails(item) {
@@ -283,9 +295,11 @@
             
             // Reset duration selection
             [1,7,30].forEach(d => {
-                document.getElementById(`dur-${d}`).classList.remove('duration-selected');
+                const el = document.getElementById(`dur-${d}`);
+                if (el) el.classList.remove('duration-selected');
             });
-            document.getElementById(`dur-${state.selectedDuration}`).classList.add('duration-selected');
+            const selectedEl = document.getElementById(`dur-${state.selectedDuration}`);
+            if (selectedEl) selectedEl.classList.add('duration-selected');
             
             // Set default dates
             const today = new Date();
@@ -301,15 +315,21 @@
         function selectDuration(days) {
             state.selectedDuration = days;
             [1,7,30].forEach(d => {
-                document.getElementById(`dur-${d}`).classList.remove('duration-selected');
+                const el = document.getElementById(`dur-${d}`);
+                if (el) el.classList.remove('duration-selected');
             });
-            document.getElementById(`dur-${days}`).classList.add('duration-selected');
+            const selectedEl = document.getElementById(`dur-${days}`);
+            if (selectedEl) selectedEl.classList.add('duration-selected');
             
-            const start = new Date(document.getElementById('inp-start').value || new Date());
-            const end = new Date(start);
-            end.setDate(start.getDate() + days);
+            const startInput = document.getElementById('inp-start');
+            const endInput = document.getElementById('inp-end');
             
-            document.getElementById('inp-end').valueAsDate = end;
+            if (startInput.value) {
+                const start = new Date(startInput.value);
+                const end = new Date(start);
+                end.setDate(start.getDate() + days);
+                endInput.valueAsDate = end;
+            }
             validateDates();
         }
 
@@ -317,8 +337,8 @@
             const start = document.getElementById('inp-start');
             const end = document.getElementById('inp-end');
             
-            start.classList.remove('error-border');
-            end.classList.remove('error-border');
+            if (start) start.classList.remove('error-border');
+            if (end) end.classList.remove('error-border');
             
             if (!start.value || !end.value) {
                 calcTotal();
@@ -329,7 +349,7 @@
             const endDate = new Date(end.value);
             
             if (endDate < startDate) {
-                end.classList.add('error-border');
+                if (end) end.classList.add('error-border');
                 tg.showAlert(i18n[state.lang].date_error);
                 document.getElementById('display-total').innerText = "0 IDR";
                 return;
@@ -341,6 +361,7 @@
         function calcTotal() {
             const sVal = document.getElementById('inp-start').value;
             const eVal = document.getElementById('inp-end').value;
+            
             if(!sVal || !eVal || !state.item) {
                 document.getElementById('display-total').innerText = "0 IDR";
                 return null;
@@ -371,21 +392,23 @@
 
         function getMyLocation() {
             if (navigator.geolocation) {
-                tg.showPopup({
-                    title: i18n[state.lang].get_location,
-                    message: i18n[state.lang].allow_location,
-                    buttons: [{
-                        type: 'ok',
-                        text: 'OK'
-                    }]
-                });
-                
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    const link = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    document.getElementById('inp-address').value = link;
-                }, () => {
-                    tg.showAlert("Location access denied");
-                });
+                tg.showConfirm(
+                    i18n[state.lang].allow_location,
+                    "OK",
+                    (confirmed) => {
+                        if (confirmed) {
+                            navigator.geolocation.getCurrentPosition(
+                                (pos) => {
+                                    const link = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                                    document.getElementById('inp-address').value = link;
+                                },
+                                () => {
+                                    tg.showAlert("Location access denied or failed");
+                                }
+                            );
+                        }
+                    }
+                );
             } else {
                 tg.showAlert("Geolocation not supported");
             }
@@ -427,16 +450,14 @@
                 btn.innerText = i18n[state.lang].loading;
 
                 try {
-                    // В тестовом режиме просто показываем сообщение
-                    // В продакшене раскомментируйте fetch
-                    
-                    // Тестовый режим:
                     console.log('Order data:', order);
-                    await new Promise(resolve => setTimeout(resolve, 1000)); // Имитация задержки
+                    
+                    // В тестовом режиме
+                    await new Promise(resolve => setTimeout(resolve, 1000));
                     
                     tg.showAlert(i18n[state.lang].sent);
                     
-                    // В продакшене:
+                    // В продакшене раскомментируйте:
                     // await fetch(GOOGLE_URL, { 
                     //     method: "POST", 
                     //     mode: "no-cors",
@@ -462,13 +483,20 @@
         
         // Set min date for inputs
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('inp-start').min = today;
-        document.getElementById('inp-start').value = today;
+        const startInput = document.getElementById('inp-start');
+        const endInput = document.getElementById('inp-end');
         
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        document.getElementById('inp-end').min = tomorrow.toISOString().split('T')[0];
-        document.getElementById('inp-end').value = tomorrow.toISOString().split('T')[0];
+        if (startInput) {
+            startInput.min = today;
+            startInput.value = today;
+        }
+        
+        if (endInput) {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            endInput.min = tomorrow.toISOString().split('T')[0];
+            endInput.value = tomorrow.toISOString().split('T')[0];
+        }
     </script>
 </body>
 </html>
