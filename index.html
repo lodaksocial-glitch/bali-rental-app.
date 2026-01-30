@@ -8,10 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; background: #0f172a; color: #fff; }
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; background: #0f172a; color: #fff; overflow: hidden; }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
         .btn-primary { background: #3b82f6; box-shadow: 0 4px 20px rgba(59,130,246,0.4); }
-        .page { display: none; min-height: 100vh; animation: fadeIn 0.3s ease; }
+        .page { display: none; height: 100vh; animation: fadeIn 0.3s ease; flex-direction: column; }
         .active { display: flex; }
         .lang-active { background: #3b82f6; color: white; }
         input, select { color-scheme: dark; }
@@ -20,14 +20,14 @@
     </style>
 </head>
 <body>
-    <div id="app" class="max-w-md mx-auto relative h-screen overflow-hidden flex flex-col bg-[#0f172a]">
+    <div id="app" class="max-w-md mx-auto relative h-screen flex flex-col bg-[#0f172a]">
         
-        <div class="absolute top-4 right-4 z-50 flex glass rounded-full p-1">
+        <div class="absolute top-4 right-4 z-[60] flex glass rounded-full p-1">
             <button onclick="setLang('ru')" id="btn-ru" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">RU</button>
             <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">EN</button>
         </div>
 
-        <div id="step-type" class="page active flex-col p-3 gap-3 h-full overflow-y-auto">
+        <div id="step-type" class="page active p-3 gap-3 overflow-y-auto">
             <div onclick="showCategory('bike')" class="relative h-60 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all flex-shrink-0">
                 <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&q=80" class="absolute inset-0 w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
@@ -53,25 +53,20 @@
                 <p class="text-[14px] font-semibold text-white/90 text-center leading-relaxed italic" id="lbl-footer-main">
                     Премиальный сервис аренды на Бали.<br>Ваш комфорт — наш приоритет.
                 </p>
-                <div class="flex items-center justify-center gap-2 mt-5">
-                    <span class="h-[1px] w-8 bg-blue-500/30"></span>
-                    <p class="text-[10px] font-black text-blue-500 uppercase tracking-[0.15em]">New models 2025-2026</p>
-                    <span class="h-[1px] w-8 bg-blue-500/30"></span>
-                </div>
             </div>
         </div>
 
-        <div id="step-list" class="page flex-col bg-[#f1f5f9] text-slate-900 h-full">
-            <div class="p-4 bg-white shadow-sm flex items-center justify-between sticky top-0 z-40">
+        <div id="step-list" class="page bg-[#f1f5f9] text-slate-900 overflow-hidden">
+            <div class="p-4 bg-white shadow-sm flex items-center justify-between sticky top-0 z-50">
                 <button onclick="showPage('step-type')" class="p-2 rounded-xl bg-slate-100 text-blue-600 font-bold">←</button>
                 <h2 class="text-lg font-black uppercase tracking-widest" id="lbl-category">CATEGORY</h2>
                 <div class="w-8"></div>
             </div>
-            <div id="items-container" class="space-y-4 p-4 pb-24 overflow-y-auto flex-1"></div>
+            <div id="items-container" class="space-y-4 p-4 pb-10 overflow-y-auto flex-1"></div>
         </div>
 
-        <div id="step-details" class="page flex-col bg-white text-slate-900 h-full overflow-hidden relative">
-            <div class="flex-1 overflow-y-auto pb-40">
+        <div id="step-details" class="page bg-white text-slate-900 overflow-y-auto">
+            <div class="flex-1">
                 <div class="relative h-64">
                     <img id="det-img" src="" class="w-full h-full object-cover">
                     <button onclick="showPage('step-list')" class="absolute top-4 left-4 bg-white/90 p-2 rounded-xl text-slate-900 shadow-lg z-10 font-bold">← <span id="lbl-back-btn">Back</span></button>
@@ -99,7 +94,7 @@
                         </div>
                     </div>
 
-                    <div class="mt-6 bg-slate-50 p-4 rounded-[24px] border border-slate-100 space-y-4">
+                    <div class="mt-6 bg-slate-50 p-4 rounded-[24px] border border-slate-100 space-y-4 mb-6">
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-start-date">Start</label>
@@ -119,7 +114,7 @@
                 </div>
             </div>
 
-            <div class="absolute bottom-0 w-full bg-white border-t border-gray-100 p-4 pb-6 z-50 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+            <div class="sticky bottom-0 w-full bg-white border-t border-gray-100 p-4 pb-8 z-50 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-xs font-bold text-gray-400" id="lbl-total-days">0 Days</span>
                     <span id="display-total" class="text-2xl font-black text-blue-600">0 IDR</span>
@@ -144,25 +139,6 @@
             { id: 6, type: 'bike', model: 'Honda ADV 160', prices: {day:200000, week:1300000, month:2700000}, img: 'https://honda-motor.id/wp-content/uploads/2024/02/Honda-ADV-160-ABS-Tough-Matte-White-1.png', specs: 'Adventure', desc: {ru: 'Скутер повышенной проходимости.', en: 'Adventure style scooter.'}},
             { id: 7, type: 'car', model: 'Honda Brio', prices: {day:350000, week:2000000, month:5000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/2020_Honda_Brio_Satya_S_1.2_DD1_%2820211001%29_01.jpg', specs: 'Compact', desc: {ru: 'Экономичный и юркий городской автомобиль.', en: 'Economic and agile city car.'}},
             { id: 8, type: 'car', model: 'Mitsubishi Xpander', prices: {day:450000, week:3500000, month:8000000}, img: 'https://cdn.motor1.com/images/mgl/A8J36/s1/2020-mitsubishi-xpander-cross.webp', specs: 'Premium MPV', desc: {ru: '7-местный просторный кроссовер.', en: '7-seater spacious crossover.'}},
-            { id: 9, type: 'bike', model: 'Yamaha XMax 250 (2025)', prices: {day:250000, week:2700000, month:4000000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | New Gen', desc: {ru: 'Модель 2025 года. Комфорт и мощь.', en: '2025 model. Power and comfort.'}},
-            { id: 10, type: 'bike', model: 'Honda ADV 160 (2026)', prices: {day:200000, week:1900000, month:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/73/2617/honda-adv-160-slant-rear-view-full-image-937505.jpg', specs: 'ABS | 2026', desc: {ru: 'Обновленная версия 2026 года с ABS.', en: 'Updated 2026 version with ABS.'}},
-            { id: 11, type: 'bike', model: 'Honda PCX 160 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://thumb.katadata.co.id/frontend/thumbnail/2022/12/14/zigi-63992e5298583-dijual-rp32-juta-new-honda-pcx-160-tampil-dengan-warna-baru_665_374.jpg', specs: 'CBS | 160cc', desc: {ru: 'Надежный городской скутер.', en: 'Reliable city scooter.'}},
-            { id: 12, type: 'bike', model: 'Honda PCX 160 (2026)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://img.autofun.co.id/file/178d31a78c9e4c29a61bc09372781775.jpg', specs: 'ABS | 2026', desc: {ru: 'Топовая комплектация 2026 года.', en: 'Top edition 2026 model.'}},
-            { id: 13, type: 'bike', model: 'Yamaha XSR 155', prices: {day:200000, week:1300000, month:2900000}, img: 'https://yamahamotorjabodetabek.id/wp-content/uploads/2023/11/XSR-Matte-Silver-Premium.png', specs: 'Retro Style', desc: {ru: 'Стильный ретро-байк для ценителей.', en: 'Stylish retro-bike.'}},
-            { id: 14, type: 'bike', model: 'Honda Stylo 160', prices: {day:150000, week:1000000, month:1700000}, img: 'https://honda-motor.id/wp-content/uploads/2024/02/Stylo-160-CBS-Glam-Black.png', specs: 'Fashionable', desc: {ru: 'Новинка в классическом стиле.', en: 'Classic fashion scooter.'}},
-            { id: 15, type: 'bike', model: 'Honda Scoopy', prices: {day:150000, week:1000000, month:1700000}, img: 'https://cdn.antaranews.com/cache/1200x800/2024/11/18/New-Honda-Scoopy-Prestige-White.jpg', specs: 'Classic 110cc', desc: {ru: 'Легкий и стильный скутер.', en: 'Light and stylish scooter.'}},
-            { id: 16, type: 'bike', model: 'Yamaha Grand Filano', prices: {day:150000, week:1000000, month:1700000}, img: 'https://yamahametro.com/wp-content/uploads/2023/10/FILANO-NEO5.jpg', specs: 'Hybrid', desc: {ru: 'Премиальный гибридный скутер.', en: 'Premium hybrid scooter.'}},
-            { id: 17, type: 'bike', model: 'Yamaha Fazzio', prices: {day:150000, week:1000000, month:1700000}, img: 'https://www.tjahaja-baru.com/uploads/products/thumbnail/29d13bc7850504f7772ae1d65835aaf0.png', specs: 'Smart Hybrid', desc: {ru: 'Молодежный и экономичный.', en: 'Modern and economic.'}},
-            { id: 18, type: 'bike', model: 'Yamaha Lexi 155', prices: {day:150000, week:1000000, month:1700000}, img: 'https://imgcdn.oto.com/large/gallery/color/84/2870/yamaha-lexi-lx-155-color-518959.jpg', specs: 'VVA | 155cc', desc: {ru: 'Удобный байк с плоским полом.', en: 'Comfortable bike with flat floor.'}},
-            { id: 19, type: 'bike', model: 'Yamaha Aerox 155', prices: {day:150000, week:1000000, month:2500000}, img: 'https://www.auksi.co.id/get-image/artikel/1711412949MotorYamahaAerox155.png', specs: 'Sporty', desc: {ru: 'Спортивный дизайн и динамика.', en: 'Sporty design and dynamics.'}},
-            { id: 20, type: 'bike', model: 'Honda Vario 160', prices: {day:150000, week:1000000, month:1700000}, img: 'https://imgcdn.oto.com/large/gallery/color/73/2569/honda-vario-160-color-223651.jpg', specs: 'Powerful 160cc', desc: {ru: 'Резвый городской скутер.', en: 'Fast city scooter.'}},
-            { id: 21, type: 'bike', model: 'Yamaha Gear 125', prices: {day:150000, week:1000000, month:1700000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Gear-std-2-600x400.png', specs: 'Compact 125cc', desc: {ru: 'Компактный и надежный.', en: 'Compact and reliable.'}},
-            { id: 22, type: 'bike', model: 'Vespa Sprint (2026)', prices: {day:175000, week:2500000, month:2900000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/87/1114/vespa-sprint-slant-front-view-full-image-819066.jpg', specs: 'Italian Style', desc: {ru: 'Итальянский стиль 2026 года.', en: 'Italian style 2026.'}},
-            { id: 23, type: 'bike', model: 'Kawasaki Ninja FI', prices: {day:350000, week:2500000, month:6000000}, img: 'https://kawasaki-global-admin.com/ContentStorage/KMI/ProductTopFeature/1229/86ed658d-e280-47e9-88cc-9d80167dfc64.jpg?w=800', specs: '2 Cylinder Sport', desc: {ru: 'Мощный спортивный байк.', en: 'Powerful sports bike.'}},
-            { id: 24, type: 'bike', model: 'Kawasaki ZX-25R', prices: {day:650000, week:4000000, month:10000000}, img: 'https://cdn.antaranews.com/cache/1200x800/2020/07/10/WhatsApp-Image-2020-07-10-at-16.38.58.jpeg', specs: '4 Cylinder | 250cc', desc: {ru: 'Легендарные 4 цилиндра. Звук и мощь.', en: 'Legendary 4 cylinders.'}},
-            { id: 25, type: 'bike', model: 'Kawasaki KLX 150', prices: {day:200000, week:1300000, month:2900000}, img: 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/MTA-182277670/kawasaki_kawasaki_klx_150_se_sepeda_motor_-otr_jabodetabekser-_full07_rp2ogfbd.png', specs: 'Off-road', desc: {ru: 'Для бездорожья и приключений.', en: 'For off-road and adventures.'}},
-            { id: 26, type: 'bike', model: 'Honda CRF 150L', prices: {day:200000, week:1300000, month:2900000}, img: 'https://cdn.antaranews.com/cache/1200x800/2021/10/26/Extreme-Green.jpg', specs: 'Enduro', desc: {ru: 'Универсальный эндуро байк.', en: 'Universal enduro bike.'}},
-            { id: 27, type: 'bike', model: 'Harley Davidson', prices: {day:3500000, week:7500000, month:25000000}, img: 'https://htcms-prod-images.s3.ap-south-1.amazonaws.com/ht/auto/cms-images/harleydavidson_custom1250/images/exterior_harleydavidson-custom1250_right-view_600x400.jpeg', specs: 'Luxury Expensive', desc: {ru: 'Премиальный круизер для VIP.', en: 'Luxury cruiser for VIP.'}},
             { id: 28, type: 'car', model: 'Toyota Raize', prices: {day:350000, week:2500000, month:7500000}, img: 'https://auto2000ciledug.id/wp-content/uploads/2024/08/10-raize-white-black.png', specs: 'Compact SUV', desc: {ru: 'Современный кроссовер для города.', en: 'Modern city crossover.'}},
             { id: 29, type: 'car', model: 'Toyota Avanza', prices: {day:350000, week:2500000, month:7500000}, img: 'https://d1g6w7sntckt92.cloudfront.net/public/images/car_gallery_images/I3eUoPLccBunM3QyAfF0DbtNUgi1wP60VRRjt7zM.jpg', specs: '7-Seater Family', desc: {ru: 'Самый популярный семейный авто.', en: 'Most popular family car.'}},
             { id: 30, type: 'car', model: 'Honda CR-V RS', prices: {day:650000, week:4500000, month:13500000}, img: 'https://hondatugu.marketing/wp-content/uploads/2023/07/63lj249eFZNHiaMRUDed7S5hQZPhsptDLBsyMqiJ-600x343.png', specs: 'Premium SUV', desc: {ru: 'Люксовый кроссовер с комфортом бизнес-класса.', en: 'Luxury SUV with business class comfort.'}}
@@ -222,7 +198,6 @@
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            window.scrollTo(0,0);
         }
 
         function showCategory(type) {
@@ -241,12 +216,14 @@
                 </div>
             `).join('');
             showPage('step-list');
+            document.getElementById('step-list').scrollTop = 0;
         }
 
         function openDetails(id) {
             state.item = db.find(i => i.id === id);
             renderDetails(state.item);
             showPage('step-details');
+            document.getElementById('step-details').scrollTop = 0;
         }
 
         function renderDetails(item) {
@@ -272,7 +249,7 @@
         function calcTotal() {
             const sVal = document.getElementById('inp-start').value;
             const eVal = document.getElementById('inp-end').value;
-            if(!sVal || !eVal || !state.item) return;
+            if(!sVal || !eVal || !state.item) return null;
 
             const start = new Date(sVal);
             const end = new Date(eVal);
@@ -280,7 +257,7 @@
 
             if (days <= 0) {
                 document.getElementById('display-total').innerText = "0 IDR";
-                return;
+                return { price: 0, days: 0 };
             }
 
             let price = 0;
