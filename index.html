@@ -9,13 +9,14 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; background: #0f172a; color: #fff; }
-        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
         .btn-primary { background: #3b82f6; box-shadow: 0 4px 20px rgba(59,130,246,0.4); }
         .page { display: none; min-height: 100vh; animation: fadeIn 0.3s ease; }
         .active { display: flex; }
         .lang-active { background: #3b82f6; color: white; }
         input, select { color-scheme: dark; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 0; }
     </style>
 </head>
 <body>
@@ -26,7 +27,7 @@
             <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">EN</button>
         </div>
 
-        <div id="step-type" class="page active flex-col p-3 gap-3 h-full overflow-y-auto pb-10">
+        <div id="step-type" class="page active flex-col p-3 gap-3 h-full overflow-y-auto">
             <div onclick="showCategory('bike')" class="relative h-60 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all flex-shrink-0">
                 <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&q=80" class="absolute inset-0 w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
@@ -47,13 +48,16 @@
                 </div>
             </div>
             
-            <div class="p-5 glass rounded-[24px] mt-2 mb-4">
-                <h3 class="font-bold text-sm mb-1 text-center text-blue-400" id="lbl-why">⭐ Bali Elite Pro Service</h3>
-                <p class="text-[10px] text-gray-400 text-center leading-relaxed" id="lbl-why-desc">New bikes 2024-25. Full insurance. Free delivery to Canggu area.</p>
-                <hr class="my-3 border-white/10">
-                <p class="text-[11px] font-bold text-white/80 text-center uppercase tracking-tight">
-                    Прокат авто и мото на бали, <br>новые байки 2025-2026 года
+            <div class="mt-auto py-10 px-4">
+                <p class="text-[10px] font-medium text-white/30 text-center uppercase tracking-[0.3em] mb-3">Bali Elite Pro</p>
+                <p class="text-[14px] font-semibold text-white/90 text-center leading-relaxed italic" id="lbl-footer-main">
+                    Премиальный сервис аренды на Бали.<br>Ваш комфорт — наш приоритет.
                 </p>
+                <div class="flex items-center justify-center gap-2 mt-5">
+                    <span class="h-[1px] w-8 bg-blue-500/30"></span>
+                    <p class="text-[10px] font-black text-blue-500 uppercase tracking-[0.15em]">New models 2025-2026</p>
+                    <span class="h-[1px] w-8 bg-blue-500/30"></span>
+                </div>
             </div>
         </div>
 
@@ -75,45 +79,42 @@
                 </div>
 
                 <div class="px-6 -mt-8 relative z-20">
-                    <h2 id="det-model" class="text-3xl font-black text-slate-900 leading-tight mb-2">Model Name</h2>
+                    <h2 id="det-model" class="text-3xl font-black text-slate-900 leading-tight mb-2">Model</h2>
                     <span id="det-specs" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest">Specs</span>
-                    <p id="det-desc" class="text-sm text-gray-500 mt-4 leading-relaxed">Description.</p>
+                    <p id="det-desc" class="text-sm text-gray-500 mt-4 leading-relaxed"></p>
 
-                    <p class="text-xs font-bold text-slate-400 uppercase mt-6 mb-3" id="lbl-tariffs">Select Tariff Duration</p>
+                    <p class="text-xs font-bold text-slate-400 uppercase mt-6 mb-3" id="lbl-tariffs">Select Duration</p>
                     <div class="grid grid-cols-3 gap-2">
-                        <div onclick="selectDuration(1)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 active:scale-95 transition-all">
+                        <div onclick="selectDuration(1)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer active:scale-95 transition-all">
                             <p class="text-[9px] uppercase font-bold text-gray-400" id="lbl-day">Day</p>
                             <p id="p-day" class="font-bold text-slate-900 text-xs">-</p>
                         </div>
-                        <div onclick="selectDuration(7)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 active:scale-95 transition-all">
+                        <div onclick="selectDuration(7)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer active:scale-95 transition-all">
                             <p class="text-[9px] uppercase font-bold text-green-500" id="lbl-week">Week</p>
                             <p id="p-week" class="font-bold text-slate-900 text-xs">-</p>
                         </div>
-                        <div onclick="selectDuration(30)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 active:scale-95 transition-all">
+                        <div onclick="selectDuration(30)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer active:scale-95 transition-all">
                             <p class="text-[9px] uppercase font-bold text-blue-500" id="lbl-month">Month</p>
                             <p id="p-month" class="font-bold text-slate-900 text-xs">-</p>
                         </div>
                     </div>
 
                     <div class="mt-6 bg-slate-50 p-4 rounded-[24px] border border-slate-100 space-y-4">
-                        <h3 class="font-bold text-sm flex items-center gap-2">📅 <span id="lbl-dates">Rental Dates</span></h3>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Start</label>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-start-date">Start</label>
                                 <input type="date" id="inp-start" class="w-full bg-white p-2 rounded-xl text-sm font-bold border border-gray-200 outline-none" onchange="calcTotal()">
                             </div>
                             <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">End</label>
+                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-end-date">End</label>
                                 <input type="date" id="inp-end" class="w-full bg-white p-2 rounded-xl text-sm font-bold border border-gray-200 outline-none" onchange="calcTotal()">
                             </div>
                         </div>
-
-                        <h3 class="font-bold text-sm mt-4 flex items-center gap-2">📍 <span id="lbl-delivery">Delivery</span></h3>
                         <div class="flex gap-2">
-                            <input type="text" id="inp-address" placeholder="Address / Hotel Name" class="flex-1 bg-white p-3 rounded-xl text-xs font-medium border border-gray-200 outline-none">
+                            <input type="text" id="inp-address" class="flex-1 bg-white p-3 rounded-xl text-xs border border-gray-200 outline-none">
                             <button onclick="getMyLocation()" class="bg-blue-100 text-blue-600 p-3 rounded-xl text-xs font-bold active:scale-90">📍</button>
                         </div>
-                        <input type="text" id="inp-time" placeholder="Time (e.g. 10:00 AM)" class="w-full bg-white p-3 rounded-xl text-xs font-medium border border-gray-200 outline-none">
+                        <input type="text" id="inp-time" class="w-full bg-white p-3 rounded-xl text-xs border border-gray-200 outline-none">
                     </div>
                 </div>
             </div>
@@ -123,9 +124,7 @@
                     <span class="text-xs font-bold text-gray-400" id="lbl-total-days">0 Days</span>
                     <span id="display-total" class="text-2xl font-black text-blue-600">0 IDR</span>
                 </div>
-                <button onclick="finishOrder()" class="w-full btn-primary text-white py-4 rounded-2xl font-black uppercase tracking-widest text-sm active:scale-[0.98] transition-all" id="btn-book">
-                    Book Now
-                </button>
+                <button onclick="finishOrder()" class="w-full btn-primary text-white py-4 rounded-2xl font-black uppercase text-sm active:scale-95 transition-all" id="btn-book">Book</button>
             </div>
         </div>
     </div>
@@ -137,32 +136,32 @@
         const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbxU9Xu2bvMa4hZbIlj6nsVlyelvCFsRsr1zd3rtnrWvrYINZZrs1LXXnzs5lf8f-_Xf/exec";
 
         const db = [
-            { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический NMax 155.', en: 'Classic NMax 155.'}},
+            { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический и надежный NMax 155.', en: 'Classic and reliable NMax 155.'}},
             { id: 2, type: 'bike', model: 'Yamaha NMax New (2025)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://brdsg.com/img/800/bw5d48ohbw5jup2tq9_3/CT79WSw0akV4fenCTIXNpDJVwe6BJTXCLRs2cLNUJNQ.png', specs: 'New Gen | ABS', desc: {ru: 'Новый кузов 2025 года, LED оптика, Bluetooth.', en: 'New 2025 body, LED, Bluetooth.'}},
             { id: 3, type: 'bike', model: 'Yamaha NMax (2026)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/84/2967/yamaha-nmax-turbo-slant-rear-view-full-image-125296.jpg', specs: '2026 Model', desc: {ru: 'Самая свежая модель 2026 года.', en: 'Latest 2026 model.'}},
             { id: 4, type: 'bike', model: 'Yamaha XMax 250 (2023)', prices: {day:249000, week:1900000, month:3500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | Maxi', desc: {ru: 'Макси-скутер для комфортных поездок.', en: 'Comfortable maxi-scooter.'}},
             { id: 5, type: 'bike', model: 'XMax Tech Max (2026)', prices: {day:250000, week:2700000, month:4200000}, img: 'https://www.yamahamotor.co.id/wp-content/uploads/2024/10/Yamaha-nmax-Turbo-Tech-MAX-Magma-Black-1.png', specs: 'Tech Max 2026', desc: {ru: 'Премиальная комплектация Tech Max.', en: 'Premium Tech Max edition.'}},
             { id: 6, type: 'bike', model: 'Honda ADV 160', prices: {day:200000, week:1300000, month:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/73/2617/honda-adv-160-slant-rear-view-full-image-937505.jpg', specs: 'Adventure', desc: {ru: 'Скутер повышенной проходимости.', en: 'Adventure style scooter.'}},
-            { id: 7, type: 'car', model: 'Honda Brio', prices: {day:350000, week:2000000, month:5000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/2020_Honda_Brio_Satya_S_1.2_DD1_%2820211001%29_01.jpg', specs: 'Compact', desc: {ru: 'Экономичный городской автомобиль.', en: 'Economic city car.'}},
+            { id: 7, type: 'car', model: 'Honda Brio', prices: {day:350000, week:2000000, month:5000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/2020_Honda_Brio_Satya_S_1.2_DD1_%2820211001%29_01.jpg', specs: 'Compact', desc: {ru: 'Экономичный и юркий городской автомобиль.', en: 'Economic and agile city car.'}},
             { id: 8, type: 'car', model: 'Mitsubishi Xpander', prices: {day:450000, week:3500000, month:8000000}, img: 'https://cdn.motor1.com/images/mgl/A8J36/s1/2020-mitsubishi-xpander-cross.webp', specs: 'Premium MPV', desc: {ru: '7-местный просторный кроссовер.', en: '7-seater spacious crossover.'}}
         ];
 
         const i18n = {
             ru: {
                 rent_bike: "Аренда Мото", moto_title: "МОТОЦИКЛЫ", start: "От", rent_car: "Аренда Авто", car_title: "АВТОМОБИЛИ",
-                why: "⭐ Bali Elite Pro Сервис", why_desc: "Новые байки, полная страховка, бесплатная доставка в Чангу.",
+                footer_main: "Премиальный сервис аренды на Бали.<br>Ваш комфорт — наш приоритет.",
                 cat: "КАТЕГОРИЯ", back: "Назад", day: "День", week: "Неделя", month: "Месяц",
                 tariffs: "Выберите срок аренды", dates: "Даты аренды", delivery: "Доставка",
                 book: "ЗАБРОНИРОВАТЬ", confirm: "Подтвердить бронь", sent: "✅ Заказ отправлен!", error: "Ошибка сети",
-                addr_ph: "Адрес виллы / отеля", time_ph: "Время (напр. 10:00)", days: "дней"
+                addr_ph: "Адрес виллы / отеля", time_ph: "Время (напр. 10:00)", days: "дней", start_lbl: "Начало", end_lbl: "Конец"
             },
             en: {
                 rent_bike: "Rent a Bike", moto_title: "MOTORCYCLES", start: "From", rent_car: "Rent a Car", car_title: "PREMIUM CARS",
-                why: "⭐ Bali Elite Pro Service", why_desc: "New bikes, full insurance, free delivery to Canggu.",
+                footer_main: "Premium rental service in Bali.<br>Your comfort is our priority.",
                 cat: "CATEGORY", back: "Back", day: "Day", week: "Week", month: "Month",
                 tariffs: "Select Rental Duration", dates: "Rental Dates", delivery: "Delivery",
                 book: "BOOK NOW", confirm: "Confirm Booking", sent: "✅ Order Sent!", error: "Network Error",
-                addr_ph: "Villa Address / Hotel", time_ph: "Time (e.g. 10:00 AM)", days: "days"
+                addr_ph: "Villa Address / Hotel", time_ph: "Time (e.g. 10:00 AM)", days: "days", start_lbl: "Start", end_lbl: "End"
             }
         };
 
@@ -183,16 +182,15 @@
             document.getElementById('lbl-rent-car').innerText = t.rent_car;
             document.getElementById('lbl-cars').innerText = t.car_title;
             document.getElementById('lbl-start-car').innerText = `${t.start} 300k IDR`;
-            document.getElementById('lbl-why').innerText = t.why;
-            document.getElementById('lbl-why-desc').innerText = t.why_desc;
+            document.getElementById('lbl-footer-main').innerHTML = t.footer_main;
             document.getElementById('lbl-category').innerText = t.cat;
             document.getElementById('lbl-back-btn').innerText = t.back;
             document.getElementById('lbl-tariffs').innerText = t.tariffs;
             document.getElementById('lbl-day').innerText = t.day;
             document.getElementById('lbl-week').innerText = t.week;
             document.getElementById('lbl-month').innerText = t.month;
-            document.getElementById('lbl-dates').innerText = t.dates;
-            document.getElementById('lbl-delivery').innerText = t.delivery;
+            document.getElementById('lbl-start-date').innerText = t.start_lbl;
+            document.getElementById('lbl-end-date').innerText = t.end_lbl;
             document.getElementById('inp-address').placeholder = t.addr_ph;
             document.getElementById('inp-time').placeholder = t.time_ph;
             document.getElementById('btn-book').innerText = t.book;
@@ -210,7 +208,7 @@
             const items = db.filter(i => i.type === type);
             container.innerHTML = items.map(item => `
                 <div onclick="openDetails(${item.id})" class="bg-white rounded-[24px] p-4 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all">
-                    <img src="${item.img}" class="w-24 h-24 object-cover rounded-2xl bg-gray-100">
+                    <img src="${item.img}" class="w-24 h-24 object-cover rounded-2xl bg-gray-50">
                     <div class="flex-1 py-1">
                         <h3 class="font-black text-lg leading-tight text-slate-900">${item.model}</h3>
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1 mb-2">${item.specs}</p>
@@ -293,7 +291,7 @@
             tg.showConfirm(`${i18n[state.lang].confirm} ${state.item.model}?`, async (ok) => {
                 if(ok) {
                     const order = {
-                        user: tg.initDataUnsafe?.user?.username || "Guest",
+                        user: tg.initDataUnsafe?.user?.username || tg.initDataUnsafe?.user?.first_name || "Guest",
                         model: state.item.model,
                         total: calc.price,
                         days: calc.days,
@@ -303,8 +301,9 @@
                         lang: state.lang
                     };
 
-                    document.getElementById('btn-book').disabled = true;
-                    document.getElementById('btn-book').innerText = "...";
+                    const btn = document.getElementById('btn-book');
+                    btn.disabled = true;
+                    btn.innerText = "...";
 
                     try {
                         await fetch(GOOGLE_URL, { 
@@ -316,7 +315,8 @@
                         tg.close();
                     } catch (e) {
                         tg.showAlert(i18n[state.lang].error);
-                        document.getElementById('btn-book').disabled = false;
+                        btn.disabled = false;
+                        btn.innerText = i18n[state.lang].book;
                     }
                 }
             });
