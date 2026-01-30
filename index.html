@@ -10,12 +10,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; background: #0f172a; color: #fff; }
         .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        .glass-dark { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.1); }
         .btn-primary { background: #3b82f6; box-shadow: 0 4px 20px rgba(59,130,246,0.4); }
         .page { display: none; min-height: 100vh; animation: fadeIn 0.3s ease; }
         .active { display: flex; }
         .lang-active { background: #3b82f6; color: white; }
-        .price-card-active { border: 2px solid #3b82f6; background: rgba(59,130,246,0.1); }
         input, select { color-scheme: dark; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -28,8 +26,8 @@
             <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">EN</button>
         </div>
 
-        <div id="step-type" class="page active flex-col p-3 gap-3 h-full overflow-y-auto">
-            <div onclick="showCategory('bike')" class="relative h-64 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all">
+        <div id="step-type" class="page active flex-col p-3 gap-3 h-full overflow-y-auto pb-10">
+            <div onclick="showCategory('bike')" class="relative h-60 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all flex-shrink-0">
                 <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&q=80" class="absolute inset-0 w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
                 <div class="absolute bottom-6 left-6 right-6">
@@ -39,7 +37,7 @@
                 </div>
             </div>
 
-            <div onclick="showCategory('car')" class="relative h-64 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all">
+            <div onclick="showCategory('car')" class="relative h-60 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all flex-shrink-0">
                 <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80" class="absolute inset-0 w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
                 <div class="absolute bottom-6 left-6 right-6">
@@ -49,9 +47,13 @@
                 </div>
             </div>
             
-            <div class="p-4 glass rounded-[24px] mt-2">
-                <h3 class="font-bold text-sm mb-1 text-center" id="lbl-why">⭐ Bali Elite Pro Service</h3>
+            <div class="p-5 glass rounded-[24px] mt-2 mb-4">
+                <h3 class="font-bold text-sm mb-1 text-center text-blue-400" id="lbl-why">⭐ Bali Elite Pro Service</h3>
                 <p class="text-[10px] text-gray-400 text-center leading-relaxed" id="lbl-why-desc">New bikes 2024-25. Full insurance. Free delivery to Canggu area.</p>
+                <hr class="my-3 border-white/10">
+                <p class="text-[11px] font-bold text-white/80 text-center uppercase tracking-tight">
+                    Прокат авто и мото на бали, <br>новые байки 2025-2026 года
+                </p>
             </div>
         </div>
 
@@ -61,7 +63,7 @@
                 <h2 class="text-lg font-black uppercase tracking-widest" id="lbl-category">CATEGORY</h2>
                 <div class="w-8"></div>
             </div>
-            <div id="items-container" class="space-y-4 p-4 pb-24 overflow-y-auto"></div>
+            <div id="items-container" class="space-y-4 p-4 pb-24 overflow-y-auto flex-1"></div>
         </div>
 
         <div id="step-details" class="page flex-col bg-white text-slate-900 h-full overflow-hidden relative">
@@ -75,27 +77,27 @@
                 <div class="px-6 -mt-8 relative z-20">
                     <h2 id="det-model" class="text-3xl font-black text-slate-900 leading-tight mb-2">Model Name</h2>
                     <span id="det-specs" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest">Specs</span>
-                    <p id="det-desc" class="text-sm text-gray-500 mt-4 leading-relaxed">Description goes here.</p>
+                    <p id="det-desc" class="text-sm text-gray-500 mt-4 leading-relaxed">Description.</p>
 
                     <p class="text-xs font-bold text-slate-400 uppercase mt-6 mb-3" id="lbl-tariffs">Select Tariff Duration</p>
                     <div class="grid grid-cols-3 gap-2">
-                        <div onclick="selectDuration(1)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 transition-all active:scale-95" id="btn-price-day">
+                        <div onclick="selectDuration(1)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 active:scale-95 transition-all">
                             <p class="text-[9px] uppercase font-bold text-gray-400" id="lbl-day">Day</p>
-                            <p id="p-day" class="font-bold text-slate-900 text-xs">150k</p>
+                            <p id="p-day" class="font-bold text-slate-900 text-xs">-</p>
                         </div>
-                        <div onclick="selectDuration(7)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 transition-all active:scale-95" id="btn-price-week">
-                            <p class="text-[9px] uppercase font-bold text-gray-400 text-green-500" id="lbl-week">Week (-15%)</p>
-                            <p id="p-week" class="font-bold text-slate-900 text-xs">1.0M</p>
+                        <div onclick="selectDuration(7)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 active:scale-95 transition-all">
+                            <p class="text-[9px] uppercase font-bold text-green-500" id="lbl-week">Week</p>
+                            <p id="p-week" class="font-bold text-slate-900 text-xs">-</p>
                         </div>
-                        <div onclick="selectDuration(30)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 transition-all active:scale-95" id="btn-price-month">
-                            <p class="text-[9px] uppercase font-bold text-gray-400 text-blue-500" id="lbl-month">Month (-40%)</p>
-                            <p id="p-month" class="font-bold text-slate-900 text-xs">2.5M</p>
+                        <div onclick="selectDuration(30)" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer hover:border-blue-500 active:scale-95 transition-all">
+                            <p class="text-[9px] uppercase font-bold text-blue-500" id="lbl-month">Month</p>
+                            <p id="p-month" class="font-bold text-slate-900 text-xs">-</p>
                         </div>
                     </div>
 
-                    <div class="mt-6 bg-slate-50 p-4 rounded-[24px] border border-slate-100">
-                        <h3 class="font-bold text-sm mb-4 flex items-center gap-2">📅 <span id="lbl-dates">Rental Dates</span></h3>
-                        <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="mt-6 bg-slate-50 p-4 rounded-[24px] border border-slate-100 space-y-4">
+                        <h3 class="font-bold text-sm flex items-center gap-2">📅 <span id="lbl-dates">Rental Dates</span></h3>
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <label class="text-[10px] font-bold text-gray-400 uppercase ml-1">Start</label>
                                 <input type="date" id="inp-start" class="w-full bg-white p-2 rounded-xl text-sm font-bold border border-gray-200 outline-none" onchange="calcTotal()">
@@ -106,16 +108,13 @@
                             </div>
                         </div>
 
-                        <h3 class="font-bold text-sm mb-4 mt-6 flex items-center gap-2">📍 <span id="lbl-delivery">Delivery</span></h3>
-                        <div class="space-y-3">
-                            <div class="flex gap-2">
-                                <input type="text" id="inp-address" placeholder="Address / Hotel Name" class="flex-1 bg-white p-3 rounded-xl text-xs font-medium border border-gray-200 outline-none">
-                                <button onclick="getMyLocation()" class="bg-blue-100 text-blue-600 p-3 rounded-xl text-xs font-bold active:scale-90 transition-all">📍</button>
-                            </div>
-                            <input type="text" id="inp-time" placeholder="Time (e.g. 10:00 AM)" class="w-full bg-white p-3 rounded-xl text-xs font-medium border border-gray-200 outline-none">
+                        <h3 class="font-bold text-sm mt-4 flex items-center gap-2">📍 <span id="lbl-delivery">Delivery</span></h3>
+                        <div class="flex gap-2">
+                            <input type="text" id="inp-address" placeholder="Address / Hotel Name" class="flex-1 bg-white p-3 rounded-xl text-xs font-medium border border-gray-200 outline-none">
+                            <button onclick="getMyLocation()" class="bg-blue-100 text-blue-600 p-3 rounded-xl text-xs font-bold active:scale-90">📍</button>
                         </div>
+                        <input type="text" id="inp-time" placeholder="Time (e.g. 10:00 AM)" class="w-full bg-white p-3 rounded-xl text-xs font-medium border border-gray-200 outline-none">
                     </div>
-                    <div class="h-10"></div>
                 </div>
             </div>
 
@@ -135,22 +134,17 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
         
-        // ⚠️ ЗАМЕНИ НА СВОЙ SKRIPT URL
         const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbxU9Xu2bvMa4hZbIlj6nsVlyelvCFsRsr1zd3rtnrWvrYINZZrs1LXXnzs5lf8f-_Xf/exec";
 
-        // REAL PHOTOS UPDATED
         const db = [
-            // BIKES
-            { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', price: {d:150000, w:1000000, m:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический NMax 155.', en: 'Classic NMax 155.'}},
-            { id: 2, type: 'bike', model: 'Yamaha NMax New (2025)', price: {d:200000, w:1300000, m:2700000}, img: 'https://brdsg.com/img/800/bw5d48ohbw5jup2tq9_3/CT79WSw0akV4fenCTIXNpDJVwe6BJTXCLRs2cLNUJNQ.png', specs: 'New Gen | ABS', desc: {ru: 'Новый кузов, LED, Bluetooth.', en: 'New body, LED, Bluetooth.'}},
-            { id: 3, type: 'bike', model: 'Yamaha NMax (2026)', price: {d:200000, w:1300000, m:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/84/2967/yamaha-nmax-turbo-slant-rear-view-full-image-125296.jpg', specs: '2026 Model', desc: {ru: 'Самая свежая модель.', en: 'Latest model.'}},
-            { id: 4, type: 'bike', model: 'Yamaha XMax 250 (2023)', price: {d:249000, w:1900000, m:3500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | Maxi', desc: {ru: 'Комфорт и мощь.', en: 'Comfort and power.'}},
-            { id: 5, type: 'bike', model: 'XMax Tech Max (2026)', price: {d:250000, w:2700000, m:4200000}, img: 'https://www.yamahamotor.co.id/wp-content/uploads/2024/10/Yamaha-nmax-Turbo-Tech-MAX-Magma-Black-1.png', specs: 'Tech Max', desc: {ru: 'Премиум версия.', en: 'Premium version.'}},
-            { id: 6, type: 'bike', model: 'Honda ADV 160', price: {d:200000, w:1300000, m:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/73/2617/honda-adv-160-slant-rear-view-full-image-937505.jpg', specs: 'Adventure', desc: {ru: 'Внедорожный скутер.', en: 'Off-road scooter.'}},
-            { id: 7, type: 'car', model: 'Honda Brio', price: {d:350000, w:2000000, m:5000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/2020_Honda_Brio_Satya_S_1.2_DD1_%2820211001%29_01.jpg', specs: 'Compact', desc: {ru: 'Маленькая, юркая.', en: 'Small, agile.'}},
-            { id: 8, type: 'car', model: 'Mitsubishi Xpander', price: {d:450000, w:3500000, m:8000000}, img: 'https://cdn.motor1.com/images/mgl/A8J36/s1/2020-mitsubishi-xpander-cross.webp', specs: 'Premium MPV', desc: {ru: 'Просторный и мягкий.', en: 'Spacious and soft.'}}
-        ];
-
+            { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический NMax 155.', en: 'Classic NMax 155.'}},
+            { id: 2, type: 'bike', model: 'Yamaha NMax New (2025)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://brdsg.com/img/800/bw5d48ohbw5jup2tq9_3/CT79WSw0akV4fenCTIXNpDJVwe6BJTXCLRs2cLNUJNQ.png', specs: 'New Gen | ABS', desc: {ru: 'Новый кузов 2025 года, LED оптика, Bluetooth.', en: 'New 2025 body, LED, Bluetooth.'}},
+            { id: 3, type: 'bike', model: 'Yamaha NMax (2026)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/84/2967/yamaha-nmax-turbo-slant-rear-view-full-image-125296.jpg', specs: '2026 Model', desc: {ru: 'Самая свежая модель 2026 года.', en: 'Latest 2026 model.'}},
+            { id: 4, type: 'bike', model: 'Yamaha XMax 250 (2023)', prices: {day:249000, week:1900000, month:3500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | Maxi', desc: {ru: 'Макси-скутер для комфортных поездок.', en: 'Comfortable maxi-scooter.'}},
+            { id: 5, type: 'bike', model: 'XMax Tech Max (2026)', prices: {day:250000, week:2700000, month:4200000}, img: 'https://www.yamahamotor.co.id/wp-content/uploads/2024/10/Yamaha-nmax-Turbo-Tech-MAX-Magma-Black-1.png', specs: 'Tech Max 2026', desc: {ru: 'Премиальная комплектация Tech Max.', en: 'Premium Tech Max edition.'}},
+            { id: 6, type: 'bike', model: 'Honda ADV 160', prices: {day:200000, week:1300000, month:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/73/2617/honda-adv-160-slant-rear-view-full-image-937505.jpg', specs: 'Adventure', desc: {ru: 'Скутер повышенной проходимости.', en: 'Adventure style scooter.'}},
+            { id: 7, type: 'car', model: 'Honda Brio', prices: {day:350000, week:2000000, month:5000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/2020_Honda_Brio_Satya_S_1.2_DD1_%2820211001%29_01.jpg', specs: 'Compact', desc: {ru: 'Экономичный городской автомобиль.', en: 'Economic city car.'}},
+            { id: 8, type: 'car', model: 'Mitsubishi Xpander', prices: {day:450000, week:3500000, month:8000000}, img: 'https://cdn.motor1.com/images/mgl/A8J36/s1/2020-mitsubishi-xpander-cross.webp', specs: 'Premium MPV', desc: {ru: '7-местный просторный кроссовер.', en: '7-seater spacious crossover.'}}
         ];
 
         const i18n = {
@@ -174,10 +168,6 @@
 
         let state = { lang: 'ru', item: null };
         
-        // Setup Date Min Limits
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('inp-start').min = today;
-
         function setLang(lang) {
             state.lang = lang;
             document.getElementById('btn-ru').classList.toggle('lang-active', lang === 'ru');
@@ -187,21 +177,16 @@
 
         function updateUI() {
             const t = i18n[state.lang];
-            // Main Titles
             document.getElementById('lbl-rent-bike').innerText = t.rent_bike;
             document.getElementById('lbl-moto').innerText = t.moto_title;
             document.getElementById('lbl-start-bike').innerText = `${t.start} 150k IDR`;
-            
             document.getElementById('lbl-rent-car').innerText = t.rent_car;
             document.getElementById('lbl-cars').innerText = t.car_title;
             document.getElementById('lbl-start-car').innerText = `${t.start} 300k IDR`;
-
             document.getElementById('lbl-why').innerText = t.why;
             document.getElementById('lbl-why-desc').innerText = t.why_desc;
             document.getElementById('lbl-category').innerText = t.cat;
             document.getElementById('lbl-back-btn').innerText = t.back;
-            
-            // Details
             document.getElementById('lbl-tariffs').innerText = t.tariffs;
             document.getElementById('lbl-day').innerText = t.day;
             document.getElementById('lbl-week').innerText = t.week;
@@ -211,7 +196,6 @@
             document.getElementById('inp-address').placeholder = t.addr_ph;
             document.getElementById('inp-time').placeholder = t.time_ph;
             document.getElementById('btn-book').innerText = t.book;
-
             if (state.item) renderDetails(state.item);
         }
 
@@ -228,7 +212,7 @@
                 <div onclick="openDetails(${item.id})" class="bg-white rounded-[24px] p-4 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all">
                     <img src="${item.img}" class="w-24 h-24 object-cover rounded-2xl bg-gray-100">
                     <div class="flex-1 py-1">
-                        <h3 class="font-black text-lg leading-tight">${item.model}</h3>
+                        <h3 class="font-black text-lg leading-tight text-slate-900">${item.model}</h3>
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1 mb-2">${item.specs}</p>
                         <div class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold">
                             ${(item.prices.day/1000).toFixed(0)}k / ${i18n[state.lang].day}
@@ -240,33 +224,26 @@
         }
 
         function openDetails(id) {
-            const item = db.find(i => i.id === id);
-            state.item = item;
-            
+            state.item = db.find(i => i.id === id);
+            renderDetails(state.item);
+            showPage('step-details');
+        }
+
+        function renderDetails(item) {
             document.getElementById('det-img').src = item.img;
             document.getElementById('det-model').innerText = item.model;
             document.getElementById('det-specs').innerText = item.specs;
             document.getElementById('det-desc').innerText = item.desc[state.lang];
-            
             document.getElementById('p-day').innerText = (item.prices.day/1000).toFixed(0) + 'k';
             document.getElementById('p-week').innerText = (item.prices.week/1000000).toFixed(1) + 'M';
             document.getElementById('p-month').innerText = (item.prices.month/1000000).toFixed(1) + 'M';
-
-            // Reset Inputs
-            document.getElementById('inp-start').value = '';
-            document.getElementById('inp-end').value = '';
-            document.getElementById('display-total').innerText = "0 IDR";
-            document.getElementById('lbl-total-days').innerText = "0 " + i18n[state.lang].days;
-
-            showPage('step-details');
+            calcTotal();
         }
 
-        // --- CALENDAR LOGIC ---
         function selectDuration(days) {
             const start = new Date();
             const end = new Date();
             end.setDate(start.getDate() + days);
-            
             document.getElementById('inp-start').valueAsDate = start;
             document.getElementById('inp-end').valueAsDate = end;
             calcTotal();
@@ -279,60 +256,41 @@
 
             const start = new Date(sVal);
             const end = new Date(eVal);
-            const diffTime = Math.abs(end - start);
-            const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)); 
 
-            if (days <= 0) return;
-
-            let price = 0;
-            const prices = state.item.prices;
-
-            // SMART PRICING LOGIC
-            if (days >= 30) {
-                // Monthly rate pro-rated
-                price = (prices.month / 30) * days;
-            } else if (days >= 7) {
-                // Weekly rate pro-rated
-                price = (prices.week / 7) * days;
-            } else {
-                // Daily rate
-                price = prices.day * days;
+            if (days <= 0) {
+                document.getElementById('display-total').innerText = "0 IDR";
+                return;
             }
 
-            // Round to thousands
-            price = Math.floor(price / 1000) * 1000;
+            let price = 0;
+            const p = state.item.prices;
+            if (days >= 30) price = (p.month / 30) * days;
+            else if (days >= 7) price = (p.week / 7) * days;
+            else price = p.day * days;
 
+            price = Math.ceil(price / 1000) * 1000;
             document.getElementById('display-total').innerText = price.toLocaleString() + " IDR";
             document.getElementById('lbl-total-days').innerText = days + " " + i18n[state.lang].days;
             return { price, days };
         }
 
-        // --- GEO & ORDER ---
         function getMyLocation() {
             if (navigator.geolocation) {
-                tg.showAlert("Locating...");
                 navigator.geolocation.getCurrentPosition((pos) => {
-                    const link = `https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                    const link = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
                     document.getElementById('inp-address').value = link;
-                    tg.showAlert("Location found!");
-                }, () => {
-                    tg.showAlert("Could not get location. Type address manually.");
-                });
+                }, () => tg.showAlert("Location error"));
             }
         }
 
         async function finishOrder() {
             const calc = calcTotal();
             if (!calc || calc.price === 0) return tg.showAlert(i18n[state.lang].tariffs);
-            
             const addr = document.getElementById('inp-address').value;
-            const time = document.getElementById('inp-time').value;
-            if(!addr) return tg.showAlert("Please enter address");
+            if(!addr) return tg.showAlert("Enter address");
 
-            const t = i18n[state.lang];
-            const msg = `${t.confirm} ${state.item.model}?\n${calc.days} ${t.days} = ${calc.price.toLocaleString()} IDR\n📍 ${addr}`;
-
-            tg.showConfirm(msg, async (ok) => {
+            tg.showConfirm(`${i18n[state.lang].confirm} ${state.item.model}?`, async (ok) => {
                 if(ok) {
                     const order = {
                         user: tg.initDataUnsafe?.user?.username || "Guest",
@@ -341,28 +299,29 @@
                         days: calc.days,
                         dates: `${document.getElementById('inp-start').value} to ${document.getElementById('inp-end').value}`,
                         loc: addr,
-                        time: time,
+                        time: document.getElementById('inp-time').value,
                         lang: state.lang
                     };
 
+                    document.getElementById('btn-book').disabled = true;
+                    document.getElementById('btn-book').innerText = "...";
+
                     try {
-                        // Send to Google Sheets
                         await fetch(GOOGLE_URL, { 
                             method: "POST", 
                             mode: "no-cors", 
-                            headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(order) 
                         });
-                        tg.showAlert(t.sent);
+                        tg.showAlert(i18n[state.lang].sent);
                         tg.close();
                     } catch (e) {
-                        tg.showAlert(t.error);
+                        tg.showAlert(i18n[state.lang].error);
+                        document.getElementById('btn-book').disabled = false;
                     }
                 }
             });
         }
-        
-        // Init
+
         setLang('ru');
     </script>
 </body>
