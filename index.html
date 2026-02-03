@@ -165,9 +165,8 @@
         tg.expand();
         tg.enableClosingConfirmation();
         
-        // Используем тестовый URL для Google Apps Script
-        // В продакшене замените на свой
-        const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbxFWnw3423FvPaxfvCClkguaZsJZfK7Fs76nX3_YYaU1wlkZCwrumwdwZX4jgBBZaRU/exec";
+        // ⚠️ ВАЖНО: Замените этот URL на URL вашего нового развертывания Google Apps Script!
+        const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbxZv5twimwUOvEtugq1U09BG5sY8KY4DXHWddqq-xvj6NbzmQjJZNyWSu-4Ot-PXMLV/exec";
         
         const db = [
             { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический и надежный NMax 155.', en: 'Classic and reliable NMax 155.'}},
@@ -424,7 +423,6 @@
             return { price, days };
         }
 
-        // ИСПРАВЛЕННАЯ ФУНКЦИЯ ГЕОЛОКАЦИИ
         function getMyLocation() {
             tg.showAlert("Определение местоположения...");
             
@@ -433,19 +431,13 @@
                 return;
             }
             
-            // Прямой запрос геолокации без дополнительных подтверждений
             navigator.geolocation.getCurrentPosition(
                 function(position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
                     
-                    // Формируем ссылку на Google Maps
                     const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-                    
-                    // Вставляем адрес в поле ввода
                     document.getElementById('inp-address').value = mapsLink;
-                    
-                    // Показываем сообщение об успехе
                     tg.showAlert("Местоположение определено! Адрес добавлен в поле.");
                 },
                 function(error) {
@@ -469,7 +461,7 @@
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 10000, // 10 секунд
+                    timeout: 10000,
                     maximumAge: 0
                 }
             );
@@ -511,28 +503,30 @@
                 btn.innerText = i18n[state.lang].loading;
 
                 try {
-                    console.log('Order data:', order);
+                    console.log('Отправляю заказ на URL:', GOOGLE_URL);
+                    console.log('Данные заказа:', order);
                     
-                    // В тестовом режиме
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    // ✅ ВАЖНО: РАБОЧАЯ ОТПРАВКА В GOOGLE APPS SCRIPT
+                    const response = await fetch(GOOGLE_URL, { 
+                        method: "POST", 
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(order) 
+                    });
+                    
+                    console.log('Ответ от сервера получен, статус:', response.status);
                     
                     tg.showAlert(i18n[state.lang].sent);
-                    
-                    // В продакшене раскомментируйте:
-                    // await fetch(GOOGLE_URL, { 
-                    //     method: "POST", 
-                    //     mode: "no-cors",
-                    //     headers: { 'Content-Type': 'application/json' },
-                    //     body: JSON.stringify(order) 
-                    // });
                     
                     setTimeout(() => {
                         tg.close();
                     }, 1500);
                     
                 } catch (e) {
-                    console.error('Error:', e);
-                    tg.showAlert(i18n[state.lang].error);
+                    console.error('Ошибка при отправке заказа:', e);
+                    tg.showAlert(i18n[state.lang].error + ": " + e.message);
                     btn.disabled = false;
                     btn.innerText = originalText;
                 }
