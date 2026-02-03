@@ -502,34 +502,43 @@
                 btn.disabled = true;
                 btn.innerText = i18n[state.lang].loading;
 
-                try {
-                    console.log('Отправляю заказ на URL:', GOOGLE_URL);
-                    console.log('Данные заказа:', order);
-                    
-                    // ✅ ВАЖНО: РАБОЧАЯ ОТПРАВКА В GOOGLE APPS SCRIPT
-                    const response = await fetch(GOOGLE_URL, { 
-                        method: "POST", 
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(order) 
-                    });
-                    
-                    console.log('Ответ от сервера получен, статус:', response.status);
-                    
-                    tg.showAlert(i18n[state.lang].sent);
-                    
-                    setTimeout(() => {
-                        tg.close();
-                    }, 1500);
-                    
-                } catch (e) {
-                    console.error('Ошибка при отправке заказа:', e);
-                    tg.showAlert(i18n[state.lang].error + ": " + e.message);
-                    btn.disabled = false;
-                    btn.innerText = originalText;
-                }
+                // В функции finishOrder() замените блок try-catch на:
+
+try {
+    console.log('📤 Отправляю заказ на URL:', GOOGLE_URL);
+    console.log('📊 Данные заказа:', order);
+    
+    // ⚠️ ВАЖНО: Используем FormData для Telegram
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(order));
+    
+    // Отправляем как FormData
+    const response = await fetch(GOOGLE_URL, {
+        method: 'POST',
+        body: formData,
+        // mode: 'no-cors' - НЕ ИСПОЛЬЗУЙТЕ ЭТОТ РЕЖИМ!
+    });
+    
+    // Пробуем получить ответ
+    try {
+        const result = await response.text();
+        console.log('📨 Ответ от сервера:', result);
+    } catch (readErr) {
+        console.log('⚠️ Не удалось прочитать ответ, но запрос отправлен');
+    }
+    
+    tg.showAlert("✅ " + i18n[state.lang].sent);
+    
+    setTimeout(() => {
+        tg.close();
+    }, 2000);
+    
+} catch (e) {
+    console.error('❌ Ошибка:', e);
+    tg.showAlert("Ошибка отправки: " + e.message);
+    btn.disabled = false;
+    btn.innerText = originalText;
+}
             });
         }
 
