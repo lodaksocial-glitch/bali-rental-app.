@@ -424,28 +424,55 @@
             return { price, days };
         }
 
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ ГЕОЛОКАЦИИ
         function getMyLocation() {
-            if (navigator.geolocation) {
-                tg.showConfirm(
-                    i18n[state.lang].allow_location,
-                    "OK",
-                    (confirmed) => {
-                        if (confirmed) {
-                            navigator.geolocation.getCurrentPosition(
-                                (pos) => {
-                                    const link = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                                    document.getElementById('inp-address').value = link;
-                                },
-                                () => {
-                                    tg.showAlert("Location access denied or failed");
-                                }
-                            );
-                        }
-                    }
-                );
-            } else {
-                tg.showAlert("Geolocation not supported");
+            tg.showAlert("Определение местоположения...");
+            
+            if (!navigator.geolocation) {
+                tg.showAlert("Геолокация не поддерживается вашим устройством");
+                return;
             }
+            
+            // Прямой запрос геолокации без дополнительных подтверждений
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    
+                    // Формируем ссылку на Google Maps
+                    const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+                    
+                    // Вставляем адрес в поле ввода
+                    document.getElementById('inp-address').value = mapsLink;
+                    
+                    // Показываем сообщение об успехе
+                    tg.showAlert("Местоположение определено! Адрес добавлен в поле.");
+                },
+                function(error) {
+                    let errorMessage = "Не удалось определить местоположение";
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = "Доступ к геолокации запрещен. Разрешите доступ в настройках.";
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = "Информация о местоположении недоступна.";
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = "Время запроса истекло.";
+                            break;
+                        default:
+                            errorMessage = "Произошла неизвестная ошибка.";
+                    }
+                    
+                    tg.showAlert(errorMessage);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000, // 10 секунд
+                    maximumAge: 0
+                }
+            );
         }
 
         async function finishOrder() {
