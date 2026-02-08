@@ -30,6 +30,7 @@
       padding: 0;
       height: 100vh;
       letter-spacing: 0.2px;
+      scroll-behavior: smooth;
     }
     h1, h2, h3, .serif {
       font-family: 'Playfair Display', serif;
@@ -84,6 +85,7 @@
       <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">EN</button>
     </div>
 
+    <!-- STEP 1: Premium Landing -->
     <div id="step-type" class="page active p-4 gap-4 overflow-y-auto">
       <div class="glass rounded-[28px] p-5 hero-glow shadow-luxe">
         <div class="flex items-center justify-between">
@@ -94,38 +96,38 @@
         <p class="text-white/70 text-sm mt-3" id="lbl-hero-sub">Авто и мотобайки с доставкой. Быстро, безопасно, со вкусом.</p>
         <div class="grid grid-cols-3 gap-2 mt-4">
           <div class="glass rounded-2xl p-3 text-center">
-            <div class="text-lg font-extrabold">24/7</div>
-            <div class="text-[10px] uppercase tracking-widest text-white/60" id="lbl-hero-1">Support</div>
+            <div class="text-sm font-extrabold">24/7</div>
+            <div class="text-[8px] uppercase tracking-widest text-white/60" id="lbl-hero-1">Support</div>
           </div>
           <div class="glass rounded-2xl p-3 text-center">
-            <div class="text-lg font-extrabold">15–30</div>
-            <div class="text-[10px] uppercase tracking-widest text-white/60" id="lbl-hero-2">Min delivery</div>
+            <div class="text-sm font-extrabold">15–30</div>
+            <div class="text-[8px] uppercase tracking-widest text-white/60" id="lbl-hero-2">Min delivery</div>
           </div>
           <div class="glass rounded-2xl p-3 text-center">
-            <div class="text-lg font-extrabold">4.9★</div>
-            <div class="text-[10px] uppercase tracking-widest text-white/60" id="lbl-hero-3">Guest rating</div>
+            <div class="text-sm font-extrabold">4.9★</div>
+            <div class="text-[8px] uppercase tracking-widest text-white/60" id="lbl-hero-3">Guest rating</div>
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3">
-        <div onclick="showCategory('bike')" class="relative h-44 rounded-[26px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-luxe">
+      <div class="flex flex-col gap-4">
+        <div onclick="showCategory('bike')" class="relative h-[58vh] rounded-[28px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-luxe">
           <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Motorcycles" loading="lazy" decoding="async" width="800" height="600">
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
           <div class="absolute bottom-4 left-4 right-4">
             <span class="badge text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg" id="lbl-rent-bike">Rent a Bike</span>
-            <h2 class="text-xl font-black italic uppercase tracking-tight mt-2" id="lbl-moto">MOTORCYCLES</h2>
-            <p class="text-white/70 text-[11px] mt-1" id="lbl-start-bike">From 150k IDR / day</p>
+            <h2 class="text-3xl font-black italic uppercase tracking-tight mt-2" id="lbl-moto">MOTORCYCLES</h2>
+            <p class="text-white/70 text-sm mt-1" id="lbl-start-bike">From 150k IDR / day</p>
           </div>
         </div>
 
-        <div onclick="showCategory('car')" class="relative h-44 rounded-[26px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-luxe">
+        <div onclick="showCategory('car')" class="relative h-[58vh] rounded-[28px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-luxe">
           <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Cars" loading="lazy" decoding="async" width="800" height="600">
           <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
           <div class="absolute bottom-4 left-4 right-4">
             <span class="badge text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg" id="lbl-rent-car">Rent a Car</span>
-            <h2 class="text-xl font-black italic uppercase tracking-tight mt-2" id="lbl-cars">PREMIUM CARS</h2>
-            <p class="text-white/70 text-[11px] mt-1" id="lbl-start-car">From 300k IDR / day</p>
+            <h2 class="text-3xl font-black italic uppercase tracking-tight mt-2" id="lbl-cars">PREMIUM CARS</h2>
+            <p class="text-white/70 text-sm mt-1" id="lbl-start-car">From 300k IDR / day</p>
           </div>
         </div>
       </div>
@@ -135,12 +137,12 @@
           <div class="h-10 w-10 rounded-2xl bg-white/10 flex items-center justify-center">✦</div>
           <div>
             <p class="text-sm font-bold" id="lbl-premium">Премиальный сервис</p>
-            <p class="text-xs text-white/70" id="lbl-premium-sub">Чистый транспорт, страховка, замена при необходимости, поддержка в пути.</p>
+            <p class="text-xs text-white/70" id="lbl-premium-sub">Чистый транспорт, замена при необходимости, поддержка в пути.</p>
           </div>
         </div>
         <div class="grid grid-cols-3 gap-2 mt-4 text-[10px] uppercase tracking-widest text-white/70">
           <div class="glass rounded-2xl p-3 text-center" id="lbl-tag-1">Delivery</div>
-          <div class="glass rounded-2xl p-3 text-center" id="lbl-tag-2">Concierge</div>
+          <div class="glass rounded-2xl p-3 text-center" id="lbl-tag-2">Service</div>
           <div class="glass rounded-2xl p-3 text-center" id="lbl-tag-3">Replacement</div>
         </div>
       </div>
@@ -158,6 +160,7 @@
       </div>
     </div>
 
+    <!-- STEP 2: List of Vehicles -->
     <div id="step-list" class="page bg-[#f8fafc] text-slate-900 overflow-hidden">
       <div class="p-4 bg-white shadow-sm flex items-center justify-between sticky top-0 z-50">
         <button onclick="showPage('step-type')" class="p-2 rounded-xl bg-slate-100 text-blue-600 font-bold">←</button>
@@ -174,6 +177,7 @@
       </div>
     </div>
 
+    <!-- STEP 3: Details & Booking -->
     <div id="step-details" class="page bg-white text-slate-900 overflow-hidden relative">
       <div class="flex-1 overflow-y-auto pb-48">
         <div class="relative h-64">
@@ -255,8 +259,11 @@
     tg.expand();
     tg.enableClosingConfirmation();
 
+    // Google Apps Script endpoint (must forward to CRM/Sheets + Telegram bot)
     const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbzMSNLfJMYH7NAX8rOXXrVPXqXRmbMergvyFEUGvRcN9ALB7rJrkapbqGV-Htp7da8oJQ/exec";
     const AIRPORT_FEE = 150000;
+
+    // Notification settings passed to backend
     const NOTIFY_DEFAULT = true;
 
     const db = [
@@ -300,8 +307,8 @@
         hero_1: "Поддержка", hero_2: "мин доставка", hero_3: "Рейтинг",
         rent_bike: "Аренда Мото", moto_title: "МОТОЦИКЛЫ", start: "От", rent_car: "Аренда Авто", car_title: "АВТОМОБИЛИ",
         footer_main: "Премиальный сервис аренды на Бали.<br>Ваш комфорт — наш приоритет.",
-        premium: "Премиальный сервис", premium_sub: "Чистый транспорт, страховка, замена при необходимости, поддержка в пути.",
-        tag_1: "Доставка", tag_2: "Консьерж", tag_3: "Замена",
+        premium: "Премиальный сервис", premium_sub: "Чистый транспорт, замена при необходимости, поддержка в пути.",
+        tag_1: "Доставка", tag_2: "Сервис", tag_3: "Замена",
         cat: "КАТЕГОРИЯ", back: "Назад", day: "День", week: "Неделя", month: "Месяц",
         tariffs: "Выберите срок аренды", book: "ЗАБРОНИРОВАТЬ", confirm: "Подтвердить бронь", sent: "✅ Заказ отправлен!", error: "Ошибка сети",
         addr_ph: "Адрес виллы / отеля", time_ph: "Время (напр. 10:00)", days: "дней", start_lbl: "Начало", end_lbl: "Конец",
@@ -320,8 +327,8 @@
         hero_1: "Support", hero_2: "min delivery", hero_3: "Rating",
         rent_bike: "Rent a Bike", moto_title: "MOTORCYCLES", start: "From", rent_car: "Rent a Car", car_title: "PREMIUM CARS",
         footer_main: "Premium rental service in Bali.<br>Your comfort is our priority.",
-        premium: "Premium service", premium_sub: "Clean vehicles, insurance, replacement if needed, road support.",
-        tag_1: "Delivery", tag_2: "Concierge", tag_3: "Replacement",
+        premium: "Premium service", premium_sub: "Clean vehicles, replacement if needed, road support.",
+        tag_1: "Delivery", tag_2: "Service", tag_3: "Replacement",
         cat: "CATEGORY", back: "Back", day: "Day", week: "Week", month: "Month",
         tariffs: "Select Rental Duration", book: "BOOK NOW", confirm: "Confirm Booking", sent: "✅ Order Sent!", error: "Network Error",
         addr_ph: "Villa Address / Hotel", time_ph: "Time (e.g. 10:00 AM)", days: "days", start_lbl: "Start", end_lbl: "End",
@@ -650,6 +657,7 @@
           try {
             await response.text();
           } catch (readErr) {
+            // Ignore response parsing issues
           }
 
           tg.showAlert(i18n[state.lang].sent);
@@ -663,6 +671,7 @@
       });
     }
 
+    // Initialize
     setLang('ru');
 
     const today = new Date().toISOString().split('T')[0];
