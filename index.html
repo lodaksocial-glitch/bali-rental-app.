@@ -1,566 +1,689 @@
+Да. Ниже полный код `index.html`, просто замените им файл в репозитории.
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Bali Elite Pro</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; background: #0f172a; color: #fff; margin: 0; padding: 0; height: 100vh; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-        .btn-primary { background: #3b82f6; box-shadow: 0 4px 20px rgba(59,130,246,0.4); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-secondary { background: #10b981; box-shadow: 0 4px 20px rgba(16,185,129,0.4); }
-        .page { display: none; height: 100vh; animation: fadeIn 0.3s ease; flex-direction: column; width: 100%; }
-        .active { display: flex; }
-        .lang-active { background: #3b82f6; color: white; }
-        input, select { color-scheme: dark; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        ::-webkit-scrollbar { width: 0; }
-        .duration-selected { border: 2px solid #3b82f6; background: #eff6ff; }
-        .error-border { border-color: #ef4444 !important; }
-        .telegram-btn { background: #0088cc; box-shadow: 0 4px 20px rgba(0,136,204,0.4); }
-        .telegram-btn:hover { background: #0077b3; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Bali Elite Pro — Premium Rentals</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --ink: #0b1220;
+      --snow: #f8fafc;
+      --gold: #f5c65b;
+      --ocean: #0ea5a4;
+      --royal: #1d4ed8;
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.12);
+    }
+
+    * { -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #1b2a4a 0%, transparent 60%),
+                  radial-gradient(900px 600px at 90% 10%, #0a3a3c 0%, transparent 55%),
+                  #0b1220;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      letter-spacing: 0.2px;
+    }
+    h1, h2, h3, .serif {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .page { display: none; height: 100vh; animation: fadeIn 0.35s ease; flex-direction: column; width: 100%; }
+    .active { display: flex; }
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #1d4ed8 0%, #0ea5a4 100%);
+      box-shadow: 0 10px 30px rgba(14,165,164,0.35);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, #f5c65b 0%, #f1b64d 100%);
+      color: #1d1d1d;
+      box-shadow: 0 10px 30px rgba(245,198,91,0.35);
+    }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .lang-active { background: #f5c65b; color: #111827; }
+    .duration-selected { border: 2px solid #1d4ed8; background: #eff6ff; }
+    .error-border { border-color: #ef4444 !important; }
+    .shadow-luxe { box-shadow: 0 18px 50px rgba(0,0,0,0.28); }
+    .badge {
+      background: rgba(245, 198, 91, 0.15);
+      color: #f5c65b;
+      border: 1px solid rgba(245, 198, 91, 0.25);
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0); } }
+
+    .card-reveal { animation: fadeIn 0.4s ease; }
+    .hero-glow {
+      background: radial-gradient(400px 300px at 20% 10%, rgba(245,198,91,0.25), transparent 60%),
+                  radial-gradient(500px 400px at 90% 20%, rgba(14,165,164,0.22), transparent 60%);
+    }
+    ::-webkit-scrollbar { width: 0; }
+
+    input, select { color-scheme: dark; }
+  </style>
 </head>
 <body>
-    <div id="app" class="max-w-md mx-auto relative h-screen flex flex-col bg-[#0f172a] overflow-hidden">
-        
-        <div class="absolute top-4 right-4 z-[100] flex glass rounded-full p-1">
-            <button onclick="setLang('ru')" id="btn-ru" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">RU</button>
-            <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">EN</button>
-        </div>
+  <div id="app" class="max-w-md mx-auto relative h-screen flex flex-col overflow-hidden">
 
-        <!-- STEP 1: Type Selection -->
-        <div id="step-type" class="page active p-3 gap-3 overflow-y-auto">
-            <div onclick="showCategory('bike')" class="relative h-60 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all flex-shrink-0 mt-2">
-                <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Motorcycles">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                <div class="absolute bottom-6 left-6 right-6">
-                    <span class="bg-blue-600/80 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest text-white mb-2 inline-block" id="lbl-rent-bike">Rent a Bike</span>
-                    <h2 class="text-3xl font-black italic uppercase tracking-tighter" id="lbl-moto">MOTORCYCLES</h2>
-                    <p class="text-gray-300 text-xs mt-1" id="lbl-start-bike">From 150k IDR / day</p>
-                </div>
-            </div>
-
-            <div onclick="showCategory('car')" class="relative h-60 rounded-[32px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all flex-shrink-0">
-                <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Cars">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
-                <div class="absolute bottom-6 left-6 right-6">
-                    <span class="bg-blue-600/80 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest text-white mb-2 inline-block" id="lbl-rent-car">Rent a Car</span>
-                    <h2 class="text-3xl font-black italic uppercase tracking-tighter" id="lbl-cars">PREMIUM CARS</h2>
-                    <p class="text-gray-300 text-xs mt-1" id="lbl-start-car">From 300k IDR / day</p>
-                </div>
-            </div>
-            
-            <!-- Contact Button on Main Page -->
-            <div class="mt-4 px-4">
-                <a href="https://t.me/x_Valet_x" target="_blank" class="telegram-btn w-full text-white py-4 rounded-2xl font-bold uppercase text-sm active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.69 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.98-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.06-.2-.07-.06-.17-.04-.24-.02-.1.02-1.69 1.09-4.78 3.2-.45.31-.86.46-1.23.45-.41-.01-1.2-.23-1.79-.42-.72-.23-1.29-.36-1.24-.76.03-.24.37-.48 1.01-.74 3.98-1.65 6.66-2.74 8.04-3.27 3.59-1.4 4.34-1.64 4.83-1.65.11 0 .36.03.52.18.12.12.16.28.18.42.01.1.01.33.01.45z"/>
-                    </svg>
-                    <span id="lbl-contact">Contact Service</span>
-                </a>
-            </div>
-            
-            <div class="mt-auto py-10 px-4">
-                <p class="text-[10px] font-medium text-white/30 text-center uppercase tracking-[0.3em] mb-3">Bali Elite Pro</p>
-                <p class="text-[14px] font-semibold text-white/90 text-center leading-relaxed italic" id="lbl-footer-main">
-                    Премиальный сервис аренды на Бали.<br>Ваш комфорт — наш приоритет.
-                </p>
-            </div>
-        </div>
-
-        <!-- STEP 2: List of Vehicles -->
-        <div id="step-list" class="page bg-[#f1f5f9] text-slate-900 overflow-hidden">
-            <div class="p-4 bg-white shadow-sm flex items-center justify-between sticky top-0 z-50">
-                <button onclick="showPage('step-type')" class="p-2 rounded-xl bg-slate-100 text-blue-600 font-bold">←</button>
-                <h2 class="text-lg font-black uppercase tracking-widest" id="lbl-category">CATEGORY</h2>
-                <a href="https://t.me/x_Valet_x" target="_blank" class="p-2 rounded-xl bg-blue-100 text-blue-600 font-bold">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.69 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.98-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.06-.2-.07-.06-.17-.04-.24-.02-.1.02-1.69 1.09-4.78 3.2-.45.31-.86.46-1.23.45-.41-.01-1.2-.23-1.79-.42-.72-.23-1.29-.36-1.24-.76.03-.24.37-.48 1.01-.74 3.98-1.65 6.66-2.74 8.04-3.27 3.59-1.4 4.34-1.64 4.83-1.65.11 0 .36.03.52.18.12.12.16.28.18.42.01.1.01.33.01.45z"/>
-                    </svg>
-                </a>
-            </div>
-            <div id="items-container" class="space-y-4 p-4 pb-32 overflow-y-auto flex-1 h-full"></div>
-        </div>
-
-        <!-- STEP 3: Details & Booking -->
-        <div id="step-details" class="page bg-white text-slate-900 overflow-hidden relative">
-            <div class="flex-1 overflow-y-auto pb-40">
-                <div class="relative h-64">
-                    <img id="det-img" src="" class="w-full h-full object-cover bg-gray-100" alt="Vehicle image">
-                    <button onclick="showPage('step-list')" class="absolute top-4 left-4 bg-white/90 p-2 rounded-xl text-slate-900 shadow-lg z-[70] font-bold">← <span id="lbl-back-btn">Back</span></button>
-                    <!-- Telegram Contact Button in Details -->
-                    <a href="https://t.me/x_Valet_x" target="_blank" class="absolute top-4 right-4 bg-white/90 p-2 rounded-xl text-blue-600 shadow-lg z-[70] font-bold">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.69 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.98-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.06-.2-.07-.06-.17-.04-.24-.02-.1.02-1.69 1.09-4.78 3.2-.45.31-.86.46-1.23.45-.41-.01-1.2-.23-1.79-.42-.72-.23-1.29-.36-1.24-.76.03-.24.37-.48 1.01-.74 3.98-1.65 6.66-2.74 8.04-3.27 3.59-1.4 4.34-1.64 4.83-1.65.11 0 .36.03.52.18.12.12.16.28.18.42.01.1.01.33.01.45z"/>
-                        </svg>
-                    </a>
-                    <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
-                </div>
-
-                <div class="px-6 -mt-8 relative z-20">
-                    <h2 id="det-model" class="text-3xl font-black text-slate-900 leading-tight mb-2">Model</h2>
-                    <span id="det-specs" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest">Specs</span>
-                    <p id="det-desc" class="text-sm text-gray-500 mt-4 leading-relaxed"></p>
-
-                    <p class="text-xs font-bold text-slate-400 uppercase mt-6 mb-3" id="lbl-tariffs">Select Duration</p>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div onclick="selectDuration(1)" id="dur-1" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer active:scale-95 transition-all">
-                            <p class="text-[9px] uppercase font-bold text-gray-400" id="lbl-day">Day</p>
-                            <p id="p-day" class="font-bold text-slate-900 text-xs">-</p>
-                        </div>
-                        <div onclick="selectDuration(7)" id="dur-7" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer active:scale-95 transition-all">
-                            <p class="text-[9px] uppercase font-bold text-green-500" id="lbl-week">Week</p>
-                            <p id="p-week" class="font-bold text-slate-900 text-xs">-</p>
-                        </div>
-                        <div onclick="selectDuration(30)" id="dur-30" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer active:scale-95 transition-all">
-                            <p class="text-[9px] uppercase font-bold text-blue-500" id="lbl-month">Month</p>
-                            <p id="p-month" class="font-bold text-slate-900 text-xs">-</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 bg-slate-50 p-4 rounded-[24px] border border-slate-100 space-y-4">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-start-date">Start</label>
-                                <input type="date" id="inp-start" class="w-full bg-white p-2 rounded-xl text-sm font-bold border border-gray-200 outline-none" onchange="validateDates()">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-end-date">End</label>
-                                <input type="date" id="inp-end" class="w-full bg-white p-2 rounded-xl text-sm font-bold border border-gray-200 outline-none" onchange="validateDates()">
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <input type="text" id="inp-address" class="flex-1 bg-white p-3 rounded-xl text-xs border border-gray-200 outline-none" placeholder="Villa address">
-                            <button onclick="getMyLocation()" class="bg-blue-100 text-blue-600 p-3 rounded-xl text-xs font-bold active:scale-90">📍</button>
-                        </div>
-                        <input type="text" id="inp-time" class="w-full bg-white p-3 rounded-xl text-xs border border-gray-200 outline-none" placeholder="Delivery time">
-                    </div>
-                </div>
-            </div>
-
-            <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 pb-8 z-[80] shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-                <div class="flex items-center justify-between mb-3 px-2">
-                    <span class="text-xs font-bold text-gray-400" id="lbl-total-days">0 Days</span>
-                    <span id="display-total" class="text-2xl font-black text-blue-600">0 IDR</span>
-                </div>
-                <button onclick="finishOrder()" id="btn-book" class="w-full btn-primary text-white py-4 rounded-2xl font-black uppercase text-sm active:scale-95 transition-all mb-3">Book</button>
-                <!-- Contact Button in Booking Section -->
-                <a href="https://t.me/x_Valet_x" target="_blank" class="telegram-btn w-full text-white py-4 rounded-2xl font-bold uppercase text-sm active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.69 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.98-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.06-.2-.07-.06-.17-.04-.24-.02-.1.02-1.69 1.09-4.78 3.2-.45.31-.86.46-1.23.45-.41-.01-1.2-.23-1.79-.42-.72-.23-1.29-.36-1.24-.76.03-.24.37-.48 1.01-.74 3.98-1.65 6.66-2.74 8.04-3.27 3.59-1.4 4.34-1.64 4.83-1.65.11 0 .36.03.52.18.12.12.16.28.18.42.01.1.01.33.01.45z"/>
-                    </svg>
-                    <span id="lbl-contact-bottom">Contact Service</span>
-                </a>
-            </div>
-        </div>
+    <div class="absolute top-4 right-4 z-[100] flex glass rounded-full p-1">
+      <button onclick="setLang('ru')" id="btn-ru" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">RU</button>
+      <button onclick="setLang('en')" id="btn-en" class="px-3 py-1 rounded-full text-[10px] font-bold transition-all">EN</button>
     </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.enableClosingConfirmation();
-        
-        // ⚠️ ВАЖНО: Замените этот URL на URL вашего нового развертывания Google Apps Script!
-        const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbzMSNLfJMYH7NAX8rOXXrVPXqXRmbMergvyFEUGvRcN9ALB7rJrkapbqGV-Htp7da8oJQ/exec";
-        
-        const db = [
-            { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический и надежный NMax 155.', en: 'Classic and reliable NMax 155.'}},
-            { id: 2, type: 'bike', model: 'Yamaha NMax New (2025)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://brdsg.com/img/800/bw5d48ohbw5jup2tq9_3/CT79WSw0akV4fenCTIXNpDJVwe6BJTXCLRs2cLNUJNQ.png', specs: 'New Gen | ABS', desc: {ru: 'Новый кузов 2025 года, LED оптика, Bluetooth.', en: 'New 2025 body, LED, Bluetooth.'}},
-            { id: 3, type: 'bike', model: 'Yamaha NMax (2026)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/84/2967/yamaha-nmax-turbo-slant-rear-view-full-image-125296.jpg', specs: '2026 Model', desc: {ru: 'Самая свежая модель 2026 года.', en: 'Latest 2026 model.'}},
-            { id: 4, type: 'bike', model: 'Yamaha XMax 250 (2023)', prices: {day:249000, week:1900000, month:3500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | Maxi', desc: {ru: 'Макси-скутер для комфортных поездок.', en: 'Comfortable maxi-scooter.'}},
-            { id: 5, type: 'bike', model: 'XMax Tech Max (2026)', prices: {day:250000, week:2700000, month:4200000}, img: 'https://www.yamahamotor.co.id/wp-content/uploads/2024/10/Yamaha-nmax-Turbo-Tech-MAX-Magma-Black-1.png', specs: 'Tech Max 2026', desc: {ru: 'Премиальная комплектация Tech Max.', en: 'Premium Tech Max edition.'}},
-            { id: 6, type: 'bike', model: 'Honda ADV 160', prices: {day:200000, week:1300000, month:2700000}, img: 'https://honda-motor.id/wp-content/uploads/2024/02/Honda-ADV-160-ABS-Tough-Matte-White-1.png', specs: 'Adventure', desc: {ru: 'Скутер повышенной проходимости.', en: 'Adventure style scooter.'}},
-            { id: 7, type: 'car', model: 'Honda Brio', prices: {day:350000, week:2000000, month:5000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/2020_Honda_Brio_Satya_S_1.2_DD1_%2820211001%29_01.jpg', specs: 'Compact', desc: {ru: 'Экономичный и юркий городской автомобиль.', en: 'Economic and agile city car.'}},
-            { id: 8, type: 'car', model: 'Mitsubishi Xpander', prices: {day:450000, week:3500000, month:8000000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/28/1635/mitsubishi-xpander-17705.jpg', specs: 'Premium MPV', desc: {ru: '7-местный просторный кроссовер.', en: '7-seater spacious crossover.'}},
-            { id: 9, type: 'bike', model: 'Yamaha XMax 250 (2025)', prices: {day:250000, week:2700000, month:4000000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | New Gen', desc: {ru: 'Модель 2025 года. Комфорт и мощь.', en: '2025 model. Power and comfort.'}},
-            { id: 10, type: 'bike', model: 'Honda ADV 160 (2026)', prices: {day:200000, week:1900000, month:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/73/2617/honda-adv-160-slant-rear-view-full-image-937505.jpg', specs: 'ABS | 2026', desc: {ru: 'Обновленная версия 2026 года с ABS.', en: 'Updated 2026 version with ABS.'}},
-            { id: 11, type: 'bike', model: 'Honda PCX 160 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://thumb.katadata.co.id/frontend/thumbnail/2022/12/14/zigi-63992e5298583-dijual-rp32-juta-new-honda-pcx-160-tampil-dengan-warna-baru_665_374.jpg', specs: 'CBS | 160cc', desc: {ru: 'Надежный городской скутер.', en: 'Reliable city scooter.'}},
-            { id: 12, type: 'bike', model: 'Honda PCX 160 (2026)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://img.autofun.co.id/file/178d31a78c9e4c29a61bc09372781775.jpg', specs: 'ABS | 2026', desc: {ru: 'Топовая комплектация 2026 года.', en: 'Top edition 2026 model.'}},
-            { id: 13, type: 'bike', model: 'Yamaha XSR 155', prices: {day:200000, week:1300000, month:2900000}, img: 'https://yamahamotorjabodetabek.id/wp-content/uploads/2023/11/XSR-Matte-Silver-Premium.png', specs: 'Retro Style', desc: {ru: 'Стильный ретро-байк для ценителей.', en: 'Stylish retro-bike.'}},
-            { id: 14, type: 'bike', model: 'Honda Stylo 160', prices: {day:150000, week:1000000, month:1700000}, img: 'https://honda-motor.id/wp-content/uploads/2024/02/Stylo-160-CBS-Glam-Black.png', specs: 'Fashionable', desc: {ru: 'Новинка в классическом стиле.', en: 'Classic fashion scooter.'}},
-            { id: 15, type: 'bike', model: 'Honda Scoopy', prices: {day:150000, week:1000000, month:1700000}, img: 'https://cdn.antaranews.com/cache/1200x800/2024/11/18/New-Honda-Scoopy-Prestige-White.jpg', specs: 'Classic 110cc', desc: {ru: 'Легкий и стильный скутер.', en: 'Light and stylish scooter.'}},
-            { id: 16, type: 'bike', model: 'Yamaha Grand Filano', prices: {day:150000, week:1000000, month:1700000}, img: 'https://yamahametro.com/wp-content/uploads/2023/10/FILANO-NEO5.jpg', specs: 'Hybrid', desc: {ru: 'Премиальный гибридный скутер.', en: 'Premium hybrid scooter.'}},
-            { id: 17, type: 'bike', model: 'Yamaha Fazzio', prices: {day:150000, week:1000000, month:1700000}, img: 'https://www.tjahaja-baru.com/uploads/products/thumbnail/29d13bc7850504f7772ae1d65835aaf0.png', specs: 'Smart Hybrid', desc: {ru: 'Молодежный и экономичный.', en: 'Modern and economic.'}},
-            { id: 18, type: 'bike', model: 'Yamaha Lexi 155', prices: {day:150000, week:1000000, month:1700000}, img: 'https://imgcdn.oto.com/large/gallery/color/84/2870/yamaha-lexi-lx-155-color-518959.jpg', specs: 'VVA | 155cc', desc: {ru: 'Удобный байк с плоским полом.', en: 'Comfortable bike with flat floor.'}},
-            { id: 19, type: 'bike', model: 'Yamaha Aerox 155', prices: {day:150000, week:1000000, month:2500000}, img: 'https://www.auksi.co.id/get-image/artikel/1711412949MotorYamahaAerox155.png', specs: 'Sporty', desc: {ru: 'Спортивный дизайн и динамика.', en: 'Sporty design and dynamics.'}},
-            { id: 20, type: 'bike', model: 'Honda Vario 160', prices: {day:150000, week:1000000, month:1700000}, img: 'https://imgcdn.oto.com/large/gallery/color/73/2569/honda-vario-160-color-223651.jpg', specs: 'Powerful 160cc', desc: {ru: 'Резвый городской скутер.', en: 'Fast city scooter.'}},
-            { id: 21, type: 'bike', model: 'Yamaha Gear 125', prices: {day:150000, week:1000000, month:1700000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Gear-std-2-600x400.png', specs: 'Compact 125cc', desc: {ru: 'Компактный и надежный.', en: 'Compact and reliable.'}},
-            { id: 22, type: 'bike', model: 'Vespa Sprint (2026)', prices: {day:175000, week:2500000, month:2900000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/87/1114/vespa-sprint-slant-front-view-full-image-819066.jpg', specs: 'Italian Style', desc: {ru: 'Итальянский стиль 2026 года.', en: 'Italian style 2026.'}},
-            { id: 23, type: 'bike', model: 'Kawasaki Ninja FI', prices: {day:350000, week:2500000, month:6000000}, img: 'https://kawasaki-global-admin.com/ContentStorage/KMI/ProductTopFeature/1229/86ed658d-e280-47e9-88cc-9d80167dfc64.jpg?w=800', specs: '2 Cylinder Sport', desc: {ru: 'Мощный спортивный байк.', en: 'Powerful sports bike.'}},
-            { id: 24, type: 'bike', model: 'Kawasaki ZX-25R', prices: {day:650000, week:4000000, month:10000000}, img: 'https://cdn.antaranews.com/cache/1200x800/2020/07/10/WhatsApp-Image-2020-07-10-at-16.38.58.jpeg', specs: '4 Cylinder | 250cc', desc: {ru: 'Легендарные 4 цилиндра. Звук и мощь.', en: 'Legendary 4 cylinders.'}},
-            { id: 25, type: 'bike', model: 'Kawasaki KLX 150', prices: {day:200000, week:1300000, month:2900000}, img: 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/MTA-182277670/kawasaki_kawasaki_klx_150_se_sepeda_motor_-otr_jabodetabekser-_full07_rp2ogfbd.png', specs: 'Off-road', desc: {ru: 'Для бездорожья и приключений.', en: 'For off-road and adventures.'}},
-            { id: 26, type: 'bike', model: 'Honda CRF 150L', prices: {day:200000, week:1300000, month:2900000}, img: 'https://cdn.antaranews.com/cache/1200x800/2021/10/26/Extreme-Green.jpg', specs: 'Enduro', desc: {ru: 'Универсальный эндуро байк.', en: 'Universal enduro bike.'}},
-            { id: 27, type: 'bike', model: 'Harley Davidson', prices: {day:3500000, week:7500000, month:25000000}, img: 'https://htcms-prod-images.s3.ap-south-1.amazonaws.com/ht/auto/cms-images/harleydavidson_custom1250/images/exterior_harleydavidson-custom1250_right-view_600x400.jpeg', specs: 'Luxury Expensive', desc: {ru: 'Премиальный круизер для VIP.', en: 'Luxury cruiser for VIP.'}},
-            { id: 28, type: 'car', model: 'Toyota Raize', prices: {day:350000, week:2500000, month:7500000}, img: 'https://auto2000ciledug.id/wp-content/uploads/2024/08/10-raize-white-black.png', specs: 'Compact SUV', desc: {ru: 'Современный кроссовер для города.', en: 'Modern city crossover.'}},
-            { id: 29, type: 'car', model: 'Toyota Avanza', prices: {day:350000, week:2500000, month:7500000}, img: 'https://d1g6w7sntckt92.cloudfront.net/public/images/car_gallery_images/I3eUoPLccBunM3QyAfF0DbtNUgi1wP60VRRjt7zM.jpg', specs: '7-Seater Family', desc: {ru: 'Самый популярный семейный авто.', en: 'Most popular family car.'}},
-            { id: 30, type: 'car', model: 'Honda CR-V RS', prices: {day:650000, week:4500000, month:13500000}, img: 'https://hondatugu.marketing/wp-content/uploads/2023/07/63lj249eFZNHiaMRUDed7S5hQZPhsptDLBsyMqiJ-600x343.png', specs: 'Premium SUV', desc: {ru: 'Люксовый кроссовер с комфортом бизнес-класса.', en: 'Luxury SUV with business class comfort.'}}
-        ];
+    <div id="step-type" class="page active p-4 gap-4 overflow-y-auto">
+      <div class="glass rounded-[28px] p-5 hero-glow shadow-luxe">
+        <div class="flex items-center justify-between">
+          <div class="badge text-[10px] font-bold uppercase tracking-[0.3em] px-3 py-1 rounded-full" id="lbl-elite">ELITE SERVICE</div>
+          <div class="text-[10px] uppercase tracking-[0.3em] text-white/60" id="lbl-bali">Bali, Indonesia</div>
+        </div>
+        <h1 class="text-3xl font-black mt-4 leading-tight" id="lbl-hero">Премиальная аренда транспорта</h1>
+        <p class="text-white/70 text-sm mt-3" id="lbl-hero-sub">Авто и мотобайки с доставкой. Быстро, безопасно, со вкусом.</p>
+        <div class="grid grid-cols-3 gap-2 mt-4">
+          <div class="glass rounded-2xl p-3 text-center">
+            <div class="text-lg font-extrabold">24/7</div>
+            <div class="text-[10px] uppercase tracking-widest text-white/60" id="lbl-hero-1">Support</div>
+          </div>
+          <div class="glass rounded-2xl p-3 text-center">
+            <div class="text-lg font-extrabold">15–30</div>
+            <div class="text-[10px] uppercase tracking-widest text-white/60" id="lbl-hero-2">Min delivery</div>
+          </div>
+          <div class="glass rounded-2xl p-3 text-center">
+            <div class="text-lg font-extrabold">4.9★</div>
+            <div class="text-[10px] uppercase tracking-widest text-white/60" id="lbl-hero-3">Guest rating</div>
+          </div>
+        </div>
+      </div>
 
-        const i18n = {
-            ru: {
-                rent_bike: "Аренда Мото", moto_title: "МОТОЦИКЛЫ", start: "От", rent_car: "Аренда Авто", car_title: "АВТОМОБИЛИ",
-                footer_main: "Премиальный сервис аренды на Бали.<br>Ваш комфорт — наш приоритет.",
-                cat: "КАТЕГОРИЯ", back: "Назад", day: "День", week: "Неделя", month: "Месяц",
-                tariffs: "Выберите срок аренды", book: "ЗАБРОНИРОВАТЬ", confirm: "Подтвердить бронь", sent: "✅ Заказ отправлен!", error: "Ошибка сети",
-                addr_ph: "Адрес виллы / отеля", time_ph: "Время (напр. 10:00)", days: "дней", start_lbl: "Начало", end_lbl: "Конец",
-                enter_addr: "Введите адрес", date_error: "Дата окончания не может быть раньше начала", 
-                select_vehicle: "Выберите транспорт", loading: "Отправка...",
-                get_location: "Определение местоположения", allow_location: "Разрешите доступ к геолокации",
-                contact: "Связаться с сервисом", contact_desc: "Есть вопросы? Напишите нам в Telegram!"
-            },
-            en: {
-                rent_bike: "Rent a Bike", moto_title: "MOTORCYCLES", start: "From", rent_car: "Rent a Car", car_title: "PREMIUM CARS",
-                footer_main: "Premium rental service in Bali.<br>Your comfort is our priority.",
-                cat: "CATEGORY", back: "Back", day: "Day", week: "Week", month: "Month",
-                tariffs: "Select Rental Duration", book: "BOOK NOW", confirm: "Confirm Booking", sent: "✅ Order Sent!", error: "Network Error",
-                addr_ph: "Villa Address / Hotel", time_ph: "Time (e.g. 10:00 AM)", days: "days", start_lbl: "Start", end_lbl: "End",
-                enter_addr: "Enter address", date_error: "End date cannot be earlier than start", 
-                select_vehicle: "Select vehicle", loading: "Sending...",
-                get_location: "Getting location", allow_location: "Allow access to geolocation",
-                contact: "Contact Service", contact_desc: "Questions? Contact us on Telegram!"
-            }
-        };
+      <div class="grid grid-cols-2 gap-3">
+        <div onclick="showCategory('bike')" class="relative h-44 rounded-[26px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-luxe">
+          <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Motorcycles" loading="lazy" decoding="async" width="800" height="600">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+          <div class="absolute bottom-4 left-4 right-4">
+            <span class="badge text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg" id="lbl-rent-bike">Rent a Bike</span>
+            <h2 class="text-xl font-black italic uppercase tracking-tight mt-2" id="lbl-moto">MOTORCYCLES</h2>
+            <p class="text-white/70 text-[11px] mt-1" id="lbl-start-bike">From 150k IDR / day</p>
+          </div>
+        </div>
 
-        let state = { 
-            lang: 'ru', 
-            item: null,
-            selectedDuration: 1
-        };
-        
-        function setLang(lang) {
-            state.lang = lang;
-            document.getElementById('btn-ru').classList.toggle('lang-active', lang === 'ru');
-            document.getElementById('btn-en').classList.toggle('lang-active', lang === 'en');
-            updateUI();
-        }
+        <div onclick="showCategory('car')" class="relative h-44 rounded-[26px] overflow-hidden cursor-pointer active:scale-[0.98] transition-all shadow-luxe">
+          <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800&q=80" class="absolute inset-0 w-full h-full object-cover" alt="Cars" loading="lazy" decoding="async" width="800" height="600">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent"></div>
+          <div class="absolute bottom-4 left-4 right-4">
+            <span class="badge text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg" id="lbl-rent-car">Rent a Car</span>
+            <h2 class="text-xl font-black italic uppercase tracking-tight mt-2" id="lbl-cars">PREMIUM CARS</h2>
+            <p class="text-white/70 text-[11px] mt-1" id="lbl-start-car">From 300k IDR / day</p>
+          </div>
+        </div>
+      </div>
 
-        function updateUI() {
-            const t = i18n[state.lang];
-            document.getElementById('lbl-rent-bike').innerText = t.rent_bike;
-            document.getElementById('lbl-moto').innerText = t.moto_title;
-            document.getElementById('lbl-start-bike').innerText = `${t.start} 150k IDR`;
-            document.getElementById('lbl-rent-car').innerText = t.rent_car;
-            document.getElementById('lbl-cars').innerText = t.car_title;
-            document.getElementById('lbl-start-car').innerText = `${t.start} 300k IDR`;
-            document.getElementById('lbl-footer-main').innerHTML = t.footer_main;
-            document.getElementById('lbl-category').innerText = t.cat;
-            document.getElementById('lbl-back-btn').innerText = t.back;
-            document.getElementById('lbl-tariffs').innerText = t.tariffs;
-            document.getElementById('lbl-day').innerText = t.day;
-            document.getElementById('lbl-week').innerText = t.week;
-            document.getElementById('lbl-month').innerText = t.month;
-            document.getElementById('lbl-start-date').innerText = t.start_lbl;
-            document.getElementById('lbl-end-date').innerText = t.end_lbl;
-            document.getElementById('inp-address').placeholder = t.addr_ph;
-            document.getElementById('inp-time').placeholder = t.time_ph;
-            document.getElementById('btn-book').innerText = t.book;
-            document.getElementById('lbl-contact').innerText = t.contact;
-            document.getElementById('lbl-contact-bottom').innerText = t.contact;
-            if (state.item) renderDetails(state.item);
-        }
+      <div class="glass rounded-[26px] p-4">
+        <div class="flex items-start gap-3">
+          <div class="h-10 w-10 rounded-2xl bg-white/10 flex items-center justify-center">✦</div>
+          <div>
+            <p class="text-sm font-bold" id="lbl-premium">Премиальный сервис</p>
+            <p class="text-xs text-white/70" id="lbl-premium-sub">Чистый транспорт, страховка, замена при необходимости, поддержка в пути.</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 mt-4 text-[10px] uppercase tracking-widest text-white/70">
+          <div class="glass rounded-2xl p-3 text-center" id="lbl-tag-1">Delivery</div>
+          <div class="glass rounded-2xl p-3 text-center" id="lbl-tag-2">Concierge</div>
+          <div class="glass rounded-2xl p-3 text-center" id="lbl-tag-3">Replacement</div>
+        </div>
+      </div>
 
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.getElementById(id).scrollTop = 0;
-        }
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="openQuickStart()" class="btn-primary w-full text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest active:scale-95 transition-all">Fast booking</button>
+        <a href="https://t.me/x_Valet_x" target="_blank" class="btn-secondary w-full py-4 rounded-2xl font-black uppercase text-xs tracking-widest active:scale-95 transition-all text-center">Telegram</a>
+      </div>
 
-        function showCategory(type) {
-            const container = document.getElementById('items-container');
-            const items = db.filter(i => i.type === type);
-            
-            container.innerHTML = '';
-            
-            if (items.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-gray-500">No vehicles available</div>`;
-                return;
-            }
-            
-            items.forEach(item => {
-                const pricePerDay = (item.prices.day / 1000).toFixed(0);
-                container.innerHTML += `
-                    <div onclick="openDetails(${item.id})" class="bg-white rounded-[24px] p-4 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all cursor-pointer">
-                        <div class="w-24 h-24 rounded-2xl bg-gray-100 overflow-hidden flex-shrink-0">
-                            <img src="${item.img}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150/cccccc/ffffff?text=No+Image'" alt="${item.model}">
-                        </div>
-                        <div class="flex-1 py-1">
-                            <h3 class="font-black text-lg leading-tight text-slate-900">${item.model}</h3>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1 mb-2">${item.specs}</p>
-                            <div class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold">
-                                ${pricePerDay}k / ${i18n[state.lang].day}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            showPage('step-list');
-        }
+      <div class="mt-auto pb-6">
+        <p class="text-[10px] font-medium text-white/40 text-center uppercase tracking-[0.3em] mb-2">Bali Elite Pro</p>
+        <p class="text-[13px] font-semibold text-white/90 text-center leading-relaxed italic" id="lbl-footer-main">
+          Премиальный сервис аренды на Бали.<br>Ваш комфорт — наш приоритет.
+        </p>
+      </div>
+    </div>
 
-        function openDetails(id) {
-            try {
-                state.item = db.find(i => i.id === id);
-                if (!state.item) {
-                    console.error('Item not found:', id);
-                    tg.showAlert("Транспорт не найден");
-                    return;
-                }
-                renderDetails(state.item);
-                showPage('step-details');
-            } catch (error) {
-                console.error('Error in openDetails:', error);
-                tg.showAlert("Ошибка при открытии деталей");
-            }
-        }
+    <div id="step-list" class="page bg-[#f8fafc] text-slate-900 overflow-hidden">
+      <div class="p-4 bg-white shadow-sm flex items-center justify-between sticky top-0 z-50">
+        <button onclick="showPage('step-type')" class="p-2 rounded-xl bg-slate-100 text-blue-600 font-bold">←</button>
+        <h2 class="text-sm font-black uppercase tracking-widest" id="lbl-category">CATEGORY</h2>
+        <a href="https://t.me/x_Valet_x" target="_blank" class="p-2 rounded-xl bg-blue-100 text-blue-600 font-bold">✈︎</a>
+      </div>
+      <div id="items-container" class="space-y-4 p-4 pb-28 overflow-y-auto flex-1 h-full"></div>
 
-        function renderDetails(item) {
-            document.getElementById('det-img').src = item.img;
-            document.getElementById('det-model').innerText = item.model;
-            document.getElementById('det-specs').innerText = item.specs;
-            document.getElementById('det-desc').innerText = item.desc[state.lang];
-            document.getElementById('p-day').innerText = (item.prices.day/1000).toFixed(0) + 'k';
-            document.getElementById('p-week').innerText = (item.prices.week/1000000).toFixed(1) + 'M';
-            document.getElementById('p-month').innerText = (item.prices.month/1000000).toFixed(1) + 'M';
-            
-            // Reset duration selection
-            [1,7,30].forEach(d => {
-                const el = document.getElementById(`dur-${d}`);
-                if (el) el.classList.remove('duration-selected');
-            });
-            const selectedEl = document.getElementById(`dur-${state.selectedDuration}`);
-            if (selectedEl) selectedEl.classList.add('duration-selected');
-            
-            // Set default dates
-            const today = new Date();
-            const tomorrow = new Date();
-            tomorrow.setDate(today.getDate() + state.selectedDuration);
-            
-            document.getElementById('inp-start').valueAsDate = today;
-            document.getElementById('inp-end').valueAsDate = tomorrow;
-            
-            calcTotal();
-        }
+      <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-3 z-[80]">
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="openQuickStart()" class="btn-primary text-white py-3 rounded-2xl font-black uppercase text-xs tracking-widest">Fast booking</button>
+          <a href="https://t.me/x_Valet_x" target="_blank" class="btn-secondary py-3 rounded-2xl font-black uppercase text-xs tracking-widest text-center">Telegram</a>
+        </div>
+      </div>
+    </div>
 
-        function selectDuration(days) {
-            state.selectedDuration = days;
-            [1,7,30].forEach(d => {
-                const el = document.getElementById(`dur-${d}`);
-                if (el) el.classList.remove('duration-selected');
-            });
-            const selectedEl = document.getElementById(`dur-${days}`);
-            if (selectedEl) selectedEl.classList.add('duration-selected');
-            
-            const startInput = document.getElementById('inp-start');
-            const endInput = document.getElementById('inp-end');
-            
-            if (startInput.value) {
-                const start = new Date(startInput.value);
-                const end = new Date(start);
-                end.setDate(start.getDate() + days);
-                endInput.valueAsDate = end;
-            }
-            validateDates();
-        }
+    <div id="step-details" class="page bg-white text-slate-900 overflow-hidden relative">
+      <div class="flex-1 overflow-y-auto pb-48">
+        <div class="relative h-64">
+          <img id="det-img" src="" class="w-full h-full object-cover bg-gray-100" alt="Vehicle image" loading="lazy" decoding="async" width="900" height="600">
+          <button onclick="showPage('step-list')" class="absolute top-4 left-4 bg-white/90 p-2 rounded-xl text-slate-900 shadow-lg z-[70] font-bold">← <span id="lbl-back-btn">Back</span></button>
+          <a href="https://t.me/x_Valet_x" target="_blank" class="absolute top-4 right-4 bg-white/90 p-2 rounded-xl text-blue-600 shadow-lg z-[70] font-bold">✈︎</a>
+          <div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
+        </div>
 
-        function validateDates() {
-            const start = document.getElementById('inp-start');
-            const end = document.getElementById('inp-end');
-            
-            if (start) start.classList.remove('error-border');
-            if (end) end.classList.remove('error-border');
-            
-            if (!start.value || !end.value) {
-                calcTotal();
-                return;
-            }
-            
-            const startDate = new Date(start.value);
-            const endDate = new Date(end.value);
-            
-            if (endDate < startDate) {
-                if (end) end.classList.add('error-border');
-                tg.showAlert(i18n[state.lang].date_error);
-                document.getElementById('display-total').innerText = "0 IDR";
-                return;
-            }
-            
-            calcTotal();
-        }
+        <div class="px-6 -mt-8 relative z-20">
+          <h2 id="det-model" class="text-3xl font-black text-slate-900 leading-tight mb-2">Model</h2>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span id="det-specs" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest">Specs</span>
+            <span id="det-save" class="hidden bg-amber-100 text-amber-700 px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest">Save</span>
+          </div>
+          <p id="det-desc" class="text-sm text-gray-500 mt-4 leading-relaxed"></p>
 
-        function calcTotal() {
-            const sVal = document.getElementById('inp-start').value;
-            const eVal = document.getElementById('inp-end').value;
-            
-            if(!sVal || !eVal || !state.item) {
-                document.getElementById('display-total').innerText = "0 IDR";
-                return null;
-            }
+          <p class="text-xs font-bold text-slate-400 uppercase mt-6 mb-3" id="lbl-tariffs">Select Duration</p>
+          <div class="grid grid-cols-3 gap-2">
+            <div onclick="selectDuration(1)" id="dur-1" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer active:scale-95 transition-all">
+              <p class="text-[9px] uppercase font-bold text-gray-400" id="lbl-day">Day</p>
+              <p id="p-day" class="font-bold text-slate-900 text-xs">-</p>
+            </div>
+            <div onclick="selectDuration(7)" id="dur-7" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer active:scale-95 transition-all">
+              <p class="text-[9px] uppercase font-bold text-green-500" id="lbl-week">Week</p>
+              <p id="p-week" class="font-bold text-slate-900 text-xs">-</p>
+            </div>
+            <div onclick="selectDuration(30)" id="dur-30" class="border border-gray-200 p-3 rounded-2xl text-center cursor-pointer active:scale-95 transition-all">
+              <p class="text-[9px] uppercase font-bold text-blue-500" id="lbl-month">Month</p>
+              <p id="p-month" class="font-bold text-slate-900 text-xs">-</p>
+            </div>
+          </div>
 
-            const start = new Date(sVal);
-            const end = new Date(eVal);
-            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)); 
+          <div class="mt-6 bg-slate-50 p-4 rounded-[24px] border border-slate-100 space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-start-date">Start</label>
+                <input type="date" id="inp-start" class="w-full bg-white p-2 rounded-xl text-sm font-bold border border-gray-200 outline-none" onchange="validateDates()">
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-gray-400 uppercase ml-1" id="lbl-end-date">End</label>
+                <input type="date" id="inp-end" class="w-full bg-white p-2 rounded-xl text-sm font-bold border border-gray-200 outline-none" onchange="validateDates()">
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="inp-address" class="flex-1 bg-white p-3 rounded-xl text-xs border border-gray-200 outline-none" placeholder="Villa address">
+              <button onclick="getMyLocation()" class="bg-blue-100 text-blue-600 p-3 rounded-xl text-xs font-bold active:scale-90">📍</button>
+            </div>
+            <input type="text" id="inp-time" class="w-full bg-white p-3 rounded-xl text-xs border border-gray-200 outline-none" placeholder="Delivery time">
 
-            if (days <= 0) {
-                document.getElementById('display-total').innerText = "0 IDR";
-                document.getElementById('lbl-total-days').innerText = "0 " + i18n[state.lang].days;
-                return { price: 0, days: 0 };
-            }
+            <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-200 text-xs font-semibold">
+              <input type="checkbox" id="inp-airport" class="accent-amber-500" onchange="calcTotal()">
+              <span id="lbl-airport">Доставка в аэропорт (+150 000 IDR)</span>
+            </label>
 
-            let price = 0;
-            const p = state.item.prices;
-            
-            if (days >= 30) price = (p.month / 30) * days;
-            else if (days >= 7) price = (p.week / 7) * days;
-            else price = p.day * days;
+            <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-gray-200 text-xs font-semibold">
+              <input type="checkbox" id="inp-notify" class="accent-blue-600" checked>
+              <span id="lbl-notify">Получать подтверждение в Telegram</span>
+            </label>
+          </div>
+        </div>
+      </div>
 
-            price = Math.ceil(price / 1000) * 1000;
-            document.getElementById('display-total').innerText = price.toLocaleString() + " IDR";
-            document.getElementById('lbl-total-days').innerText = days + " " + i18n[state.lang].days;
-            return { price, days };
-        }
+      <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 pb-8 z-[80] shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+        <div class="flex items-center justify-between mb-3 px-2">
+          <span class="text-xs font-bold text-gray-400" id="lbl-total-days">0 Days</span>
+          <span id="display-total" class="text-2xl font-black text-blue-600">0 IDR</span>
+        </div>
+        <button onclick="finishOrder()" id="btn-book" class="w-full btn-primary text-white py-4 rounded-2xl font-black uppercase text-sm active:scale-95 transition-all mb-3">Book</button>
+        <a href="https://t.me/x_Valet_x" target="_blank" class="btn-secondary w-full py-4 rounded-2xl font-black uppercase text-sm active:scale-95 transition-all flex items-center justify-center gap-2">
+          <span id="lbl-contact-bottom">Contact Service</span>
+        </a>
+      </div>
+    </div>
+  </div>
 
-        function getMyLocation() {
-            tg.showAlert("Определение местоположения...");
-            
-            if (!navigator.geolocation) {
-                tg.showAlert("Геолокация не поддерживается вашим устройством");
-                return;
-            }
-            
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    
-                    const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-                    document.getElementById('inp-address').value = mapsLink;
-                    tg.showAlert("Местоположение определено! Адрес добавлен в поле.");
-                },
-                function(error) {
-                    let errorMessage = "Не удалось определить местоположение";
-                    
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage = "Доступ к геолокации запрещен. Разрешите доступ в настройках.";
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage = "Информация о местоположении недоступна.";
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage = "Время запроса истекло.";
-                            break;
-                        default:
-                            errorMessage = "Произошла неизвестная ошибка.";
-                    }
-                    
-                    tg.showAlert(errorMessage);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                }
-            );
-        }
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    tg.enableClosingConfirmation();
 
-        async function finishOrder() {
-            const calc = calcTotal();
-            if (!calc || calc.days <= 0) {
-                tg.showAlert(i18n[state.lang].select_vehicle);
-                return;
-            }
-            
-            const addr = document.getElementById('inp-address').value;
-            if(!addr) {
-                tg.showAlert(i18n[state.lang].enter_addr);
-                return;
-            }
+    const GOOGLE_URL = "https://script.google.com/macros/s/AKfycbzMSNLfJMYH7NAX8rOXXrVPXqXRmbMergvyFEUGvRcN9ALB7rJrkapbqGV-Htp7da8oJQ/exec";
+    const AIRPORT_FEE = 150000;
+    const NOTIFY_DEFAULT = true;
 
-            tg.showConfirm(`${i18n[state.lang].confirm} ${state.item.model}?`, async (ok) => {
-                if(!ok) return;
-                
-                const order = {
-                    user: tg.initDataUnsafe?.user?.username || tg.initDataUnsafe?.user?.first_name || "Guest",
-                    user_id: tg.initDataUnsafe?.user?.id || "unknown",
-                    model: state.item.model,
-                    type: state.item.type,
-                    total: calc.price,
-                    days: calc.days,
-                    dates: `${document.getElementById('inp-start').value} to ${document.getElementById('inp-end').value}`,
-                    loc: addr,
-                    time: document.getElementById('inp-time').value,
-                    lang: state.lang,
-                    timestamp: new Date().toISOString()
-                };
+    const db = [
+      { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический и надежный NMax 155.', en: 'Classic and reliable NMax 155.'}},
+      { id: 2, type: 'bike', model: 'Yamaha NMax New (2025)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://brdsg.com/img/800/bw5d48ohbw5jup2tq9_3/CT79WSw0akV4fenCTIXNpDJVwe6BJTXCLRs2cLNUJNQ.png', specs: 'New Gen | ABS', desc: {ru: 'Новый кузов 2025 года, LED оптика, Bluetooth.', en: 'New 2025 body, LED, Bluetooth.'}},
+      { id: 3, type: 'bike', model: 'Yamaha NMax (2026)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/84/2967/yamaha-nmax-turbo-slant-rear-view-full-image-125296.jpg', specs: '2026 Model', desc: {ru: 'Самая свежая модель 2026 года.', en: 'Latest 2026 model.'}},
+      { id: 4, type: 'bike', model: 'Yamaha XMax 250 (2023)', prices: {day:249000, week:1900000, month:3500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | Maxi', desc: {ru: 'Макси-скутер для комфортных поездок.', en: 'Comfortable maxi-scooter.'}},
+      { id: 5, type: 'bike', model: 'XMax Tech Max (2026)', prices: {day:250000, week:2700000, month:4200000}, img: 'https://www.yamahamotor.co.id/wp-content/uploads/2024/10/Yamaha-nmax-Turbo-Tech-MAX-Magma-Black-1.png', specs: 'Tech Max 2026', desc: {ru: 'Премиальная комплектация Tech Max.', en: 'Premium Tech Max edition.'}},
+      { id: 6, type: 'bike', model: 'Honda ADV 160', prices: {day:200000, week:1300000, month:2700000}, img: 'https://honda-motor.id/wp-content/uploads/2024/02/Honda-ADV-160-ABS-Tough-Matte-White-1.png', specs: 'Adventure', desc: {ru: 'Скутер повышенной проходимости.', en: 'Adventure style scooter.'}},
+      { id: 7, type: 'car', model: 'Honda Brio', prices: {day:350000, week:2000000, month:5000000}, img: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/2020_Honda_Brio_Satya_S_1.2_DD1_%2820211001%29_01.jpg', specs: 'Compact', desc: {ru: 'Экономичный и юркий городской автомобиль.', en: 'Economic and agile city car.'}},
+      { id: 8, type: 'car', model: 'Mitsubishi Xpander', prices: {day:450000, week:3500000, month:8000000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/28/1635/mitsubishi-xpander-17705.jpg', specs: 'Premium MPV', desc: {ru: '7-местный просторный кроссовер.', en: '7-seater spacious crossover.'}},
+      { id: 9, type: 'bike', model: 'Yamaha XMax 250 (2025)', prices: {day:250000, week:2700000, month:4000000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Xmax-2-600x400.png', specs: '250cc | New Gen', desc: {ru: 'Модель 2025 года. Комфорт и мощь.', en: '2025 model. Power and comfort.'}},
+      { id: 10, type: 'bike', model: 'Honda ADV 160 (2026)', prices: {day:200000, week:1900000, month:2700000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/73/2617/honda-adv-160-slant-rear-view-full-image-937505.jpg', specs: 'ABS | 2026', desc: {ru: 'Обновленная версия 2026 года с ABS.', en: 'Updated 2026 version with ABS.'}},
+      { id: 11, type: 'bike', model: 'Honda PCX 160 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://thumb.katadata.co.id/frontend/thumbnail/2022/12/14/zigi-63992e5298583-dijual-rp32-juta-new-honda-pcx-160-tampil-dengan-warna-baru_665_374.jpg', specs: 'CBS | 160cc', desc: {ru: 'Надежный городской скутер.', en: 'Reliable city scooter.'}},
+      { id: 12, type: 'bike', model: 'Honda PCX 160 (2026)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://img.autofun.co.id/file/178d31a78c9e4c29a61bc09372781775.jpg', specs: 'ABS | 2026', desc: {ru: 'Топовая комплектация 2026 года.', en: 'Top edition 2026 model.'}},
+      { id: 13, type: 'bike', model: 'Yamaha XSR 155', prices: {day:200000, week:1300000, month:2900000}, img: 'https://yamahamotorjabodetabek.id/wp-content/uploads/2023/11/XSR-Matte-Silver-Premium.png', specs: 'Retro Style', desc: {ru: 'Стильный ретро-байк для ценителей.', en: 'Stylish retro-bike.'}},
+      { id: 14, type: 'bike', model: 'Honda Stylo 160', prices: {day:150000, week:1000000, month:1700000}, img: 'https://honda-motor.id/wp-content/uploads/2024/02/Stylo-160-CBS-Glam-Black.png', specs: 'Fashionable', desc: {ru: 'Новинка в классическом стиле.', en: 'Classic fashion scooter.'}},
+      { id: 15, type: 'bike', model: 'Honda Scoopy', prices: {day:150000, week:1000000, month:1700000}, img: 'https://cdn.antaranews.com/cache/1200x800/2024/11/18/New-Honda-Scoopy-Prestige-White.jpg', specs: 'Classic 110cc', desc: {ru: 'Легкий и стильный скутер.', en: 'Light and stylish scooter.'}},
+      { id: 16, type: 'bike', model: 'Yamaha Grand Filano', prices: {day:150000, week:1000000, month:1700000}, img: 'https://yamahametro.com/wp-content/uploads/2023/10/FILANO-NEO5.jpg', specs: 'Hybrid', desc: {ru: 'Премиальный гибридный скутер.', en: 'Premium hybrid scooter.'}},
+      { id: 17, type: 'bike', model: 'Yamaha Fazzio', prices: {day:150000, week:1000000, month:1700000}, img: 'https://www.tjahaja-baru.com/uploads/products/thumbnail/29d13bc7850504f7772ae1d65835aaf0.png', specs: 'Smart Hybrid', desc: {ru: 'Молодежный и экономичный.', en: 'Modern and economic.'}},
+      { id: 18, type: 'bike', model: 'Yamaha Lexi 155', prices: {day:150000, week:1000000, month:1700000}, img: 'https://imgcdn.oto.com/large/gallery/color/84/2870/yamaha-lexi-lx-155-color-518959.jpg', specs: 'VVA | 155cc', desc: {ru: 'Удобный байк с плоским полом.', en: 'Comfortable bike with flat floor.'}},
+      { id: 19, type: 'bike', model: 'Yamaha Aerox 155', prices: {day:150000, week:1000000, month:2500000}, img: 'https://www.auksi.co.id/get-image/artikel/1711412949MotorYamahaAerox155.png', specs: 'Sporty', desc: {ru: 'Спортивный дизайн и динамика.', en: 'Sporty design and dynamics.'}},
+      { id: 20, type: 'bike', model: 'Honda Vario 160', prices: {day:150000, week:1000000, month:1700000}, img: 'https://imgcdn.oto.com/large/gallery/color/73/2569/honda-vario-160-color-223651.jpg', specs: 'Powerful 160cc', desc: {ru: 'Резвый городской скутер.', en: 'Fast city scooter.'}},
+      { id: 21, type: 'bike', model: 'Yamaha Gear 125', prices: {day:150000, week:1000000, month:1700000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Gear-std-2-600x400.png', specs: 'Compact 125cc', desc: {ru: 'Компактный и надежный.', en: 'Compact and reliable.'}},
+      { id: 22, type: 'bike', model: 'Vespa Sprint (2026)', prices: {day:175000, week:2500000, month:2900000}, img: 'https://imgcdn.oto.com/large/gallery/exterior/87/1114/vespa-sprint-slant-front-view-full-image-819066.jpg', specs: 'Italian Style', desc: {ru: 'Итальянский стиль 2026 года.', en: 'Italian style 2026.'}},
+      { id: 23, type: 'bike', model: 'Kawasaki Ninja FI', prices: {day:350000, week:2500000, month:6000000}, img: 'https://kawasaki-global-admin.com/ContentStorage/KMI/ProductTopFeature/1229/86ed658d-e280-47e9-88cc-9d80167dfc64.jpg?w=800', specs: '2 Cylinder Sport', desc: {ru: 'Мощный спортивный байк.', en: 'Powerful sports bike.'}},
+      { id: 24, type: 'bike', model: 'Kawasaki ZX-25R', prices: {day:650000, week:4000000, month:10000000}, img: 'https://cdn.antaranews.com/cache/1200x800/2020/07/10/WhatsApp-Image-2020-07-10-at-16.38.58.jpeg', specs: '4 Cylinder | 250cc', desc: {ru: 'Легендарные 4 цилиндра. Звук и мощь.', en: 'Legendary 4 cylinders.'}},
+      { id: 25, type: 'bike', model: 'Kawasaki KLX 150', prices: {day:200000, week:1300000, month:2900000}, img: 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/MTA-182277670/kawasaki_kawasaki_klx_150_se_sepeda_motor_-otr_jabodetabekser-_full07_rp2ogfbd.png', specs: 'Off-road', desc: {ru: 'Для бездорожья и приключений.', en: 'For off-road and adventures.'}},
+      { id: 26, type: 'bike', model: 'Honda CRF 150L', prices: {day:200000, week:1300000, month:2900000}, img: 'https://cdn.antaranews.com/cache/1200x800/2021/10/26/Extreme-Green.jpg', specs: 'Enduro', desc: {ru: 'Универсальный эндуро байк.', en: 'Universal enduro bike.'}},
+      { id: 27, type: 'bike', model: 'Harley Davidson', prices: {day:3500000, week:7500000, month:25000000}, img: 'https://htcms-prod-images.s3.ap-south-1.amazonaws.com/ht/auto/cms-images/harleydavidson_custom1250/images/exterior_harleydavidson-custom1250_right-view_600x400.jpeg', specs: 'Luxury Expensive', desc: {ru: 'Премиальный круизер для VIP.', en: 'Luxury cruiser for VIP.'}},
+      { id: 28, type: 'car', model: 'Toyota Raize', prices: {day:350000, week:2500000, month:7500000}, img: 'https://auto2000ciledug.id/wp-content/uploads/2024/08/10-raize-white-black.png', specs: 'Compact SUV', desc: {ru: 'Современный кроссовер для города.', en: 'Modern city crossover.'}},
+      { id: 29, type: 'car', model: 'Toyota Avanza', prices: {day:350000, week:2500000, month:7500000}, img: 'https://d1g6w7sntckt92.cloudfront.net/public/images/car_gallery_images/I3eUoPLccBunM3QyAfF0DbtNUgi1wP60VRRjt7zM.jpg', specs: '7-Seater Family', desc: {ru: 'Самый популярный семейный авто.', en: 'Most popular family car.'}},
+      { id: 30, type: 'car', model: 'Honda CR-V RS', prices: {day:650000, week:4500000, month:13500000}, img: 'https://hondatugu.marketing/wp-content/uploads/2023/07/63lj249eFZNHiaMRUDed7S5hQZPhsptDLBsyMqiJ-600x343.png', specs: 'Premium SUV', desc: {ru: 'Люксовый кроссовер с комфортом бизнес-класса.', en: 'Luxury SUV with business class comfort.'}}
+    ];
 
-                const btn = document.getElementById('btn-book');
-                const originalText = btn.innerText;
-                btn.disabled = true;
-                btn.innerText = i18n[state.lang].loading;
+    const i18n = {
+      ru: {
+        elite: "ELITE SERVICE", bali: "Bali, Indonesia",
+        hero: "Премиальная аренда транспорта",
+        hero_sub: "Авто и мотобайки с доставкой. Быстро, безопасно, со вкусом.",
+        hero_1: "Поддержка", hero_2: "мин доставка", hero_3: "Рейтинг",
+        rent_bike: "Аренда Мото", moto_title: "МОТОЦИКЛЫ", start: "От", rent_car: "Аренда Авто", car_title: "АВТОМОБИЛИ",
+        footer_main: "Премиальный сервис аренды на Бали.<br>Ваш комфорт — наш приоритет.",
+        premium: "Премиальный сервис", premium_sub: "Чистый транспорт, страховка, замена при необходимости, поддержка в пути.",
+        tag_1: "Доставка", tag_2: "Консьерж", tag_3: "Замена",
+        cat: "КАТЕГОРИЯ", back: "Назад", day: "День", week: "Неделя", month: "Месяц",
+        tariffs: "Выберите срок аренды", book: "ЗАБРОНИРОВАТЬ", confirm: "Подтвердить бронь", sent: "✅ Заказ отправлен!", error: "Ошибка сети",
+        addr_ph: "Адрес виллы / отеля", time_ph: "Время (напр. 10:00)", days: "дней", start_lbl: "Начало", end_lbl: "Конец",
+        enter_addr: "Введите адрес", date_error: "Дата окончания не может быть раньше начала",
+        select_vehicle: "Выберите транспорт", loading: "Отправка...",
+        get_location: "Определение местоположения", allow_location: "Разрешите доступ к геолокации",
+        contact: "Связаться с сервисом",
+        notify: "Получать подтверждение в Telegram",
+        airport: "Доставка в аэропорт (+150 000 IDR)",
+        save_month: "Экономия до"
+      },
+      en: {
+        elite: "ELITE SERVICE", bali: "Bali, Indonesia",
+        hero: "Premium transport rentals",
+        hero_sub: "Cars & bikes with delivery. Fast, safe, tasteful.",
+        hero_1: "Support", hero_2: "min delivery", hero_3: "Rating",
+        rent_bike: "Rent a Bike", moto_title: "MOTORCYCLES", start: "From", rent_car: "Rent a Car", car_title: "PREMIUM CARS",
+        footer_main: "Premium rental service in Bali.<br>Your comfort is our priority.",
+        premium: "Premium service", premium_sub: "Clean vehicles, insurance, replacement if needed, road support.",
+        tag_1: "Delivery", tag_2: "Concierge", tag_3: "Replacement",
+        cat: "CATEGORY", back: "Back", day: "Day", week: "Week", month: "Month",
+        tariffs: "Select Rental Duration", book: "BOOK NOW", confirm: "Confirm Booking", sent: "✅ Order Sent!", error: "Network Error",
+        addr_ph: "Villa Address / Hotel", time_ph: "Time (e.g. 10:00 AM)", days: "days", start_lbl: "Start", end_lbl: "End",
+        enter_addr: "Enter address", date_error: "End date cannot be earlier than start",
+        select_vehicle: "Select vehicle", loading: "Sending...",
+        get_location: "Getting location", allow_location: "Allow access to geolocation",
+        contact: "Contact Service",
+        notify: "Receive confirmation in Telegram",
+        airport: "Airport delivery (+150,000 IDR)",
+        save_month: "Save up to"
+      }
+    };
 
-                // В функции finishOrder() замените блок try-catch на:
+    let state = { lang: 'ru', item: null, selectedDuration: 1 };
 
-try {
-    console.log('📤 Отправляю заказ на URL:', GOOGLE_URL);
-    console.log('📊 Данные заказа:', order);
-    
-    // ⚠️ ВАЖНО: Используем FormData для Telegram
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(order));
-    
-    // Отправляем как FormData
-    const response = await fetch(GOOGLE_URL, {
-        method: 'POST',
-        body: formData,
-        // mode: 'no-cors' - НЕ ИСПОЛЬЗУЙТЕ ЭТОТ РЕЖИМ!
-    });
-    
-    // Пробуем получить ответ
-    try {
-        const result = await response.text();
-        console.log('📨 Ответ от сервера:', result);
-    } catch (readErr) {
-        console.log('⚠️ Не удалось прочитать ответ, но запрос отправлен');
+    function setLang(lang) {
+      state.lang = lang;
+      document.getElementById('btn-ru').classList.toggle('lang-active', lang === 'ru');
+      document.getElementById('btn-en').classList.toggle('lang-active', lang === 'en');
+      updateUI();
     }
-    
-    tg.showAlert("✅ " + i18n[state.lang].sent);
-    
-    setTimeout(() => {
-        tg.close();
-    }, 2000);
-    
-} catch (e) {
-    console.error('❌ Ошибка:', e);
-    tg.showAlert("Ошибка отправки: " + e.message);
-    btn.disabled = false;
-    btn.innerText = originalText;
-}
-            });
-        }
 
-        // Initialize
-        setLang('ru');
-        
-        // Set min date for inputs
-        const today = new Date().toISOString().split('T')[0];
-        const startInput = document.getElementById('inp-start');
-        const endInput = document.getElementById('inp-end');
-        
-        if (startInput) {
-            startInput.min = today;
-            startInput.value = today;
+    function updateUI() {
+      const t = i18n[state.lang];
+      document.getElementById('lbl-elite').innerText = t.elite;
+      document.getElementById('lbl-bali').innerText = t.bali;
+      document.getElementById('lbl-hero').innerText = t.hero;
+      document.getElementById('lbl-hero-sub').innerText = t.hero_sub;
+      document.getElementById('lbl-hero-1').innerText = t.hero_1;
+      document.getElementById('lbl-hero-2').innerText = t.hero_2;
+      document.getElementById('lbl-hero-3').innerText = t.hero_3;
+      document.getElementById('lbl-rent-bike').innerText = t.rent_bike;
+      document.getElementById('lbl-moto').innerText = t.moto_title;
+      document.getElementById('lbl-start-bike').innerText = `${t.start} 150k IDR`;
+      document.getElementById('lbl-rent-car').innerText = t.rent_car;
+      document.getElementById('lbl-cars').innerText = t.car_title;
+      document.getElementById('lbl-start-car').innerText = `${t.start} 300k IDR`;
+      document.getElementById('lbl-footer-main').innerHTML = t.footer_main;
+      document.getElementById('lbl-premium').innerText = t.premium;
+      document.getElementById('lbl-premium-sub').innerText = t.premium_sub;
+      document.getElementById('lbl-tag-1').innerText = t.tag_1;
+      document.getElementById('lbl-tag-2').innerText = t.tag_2;
+      document.getElementById('lbl-tag-3').innerText = t.tag_3;
+      document.getElementById('lbl-category').innerText = t.cat;
+      document.getElementById('lbl-back-btn').innerText = t.back;
+      document.getElementById('lbl-tariffs').innerText = t.tariffs;
+      document.getElementById('lbl-day').innerText = t.day;
+      document.getElementById('lbl-week').innerText = t.week;
+      document.getElementById('lbl-month').innerText = t.month;
+      document.getElementById('lbl-start-date').innerText = t.start_lbl;
+      document.getElementById('lbl-end-date').innerText = t.end_lbl;
+      document.getElementById('inp-address').placeholder = t.addr_ph;
+      document.getElementById('inp-time').placeholder = t.time_ph;
+      document.getElementById('btn-book').innerText = t.book;
+      document.getElementById('lbl-contact-bottom').innerText = t.contact;
+      document.getElementById('lbl-notify').innerText = t.notify;
+      document.getElementById('lbl-airport').innerText = t.airport;
+      if (state.item) renderDetails(state.item);
+    }
+
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.getElementById(id).scrollTop = 0;
+    }
+
+    function openQuickStart() {
+      showCategory('bike');
+    }
+
+    function showCategory(type) {
+      const container = document.getElementById('items-container');
+      const items = db.filter(i => i.type === type);
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = `<div class="text-center py-8 text-gray-500">No vehicles available</div>`;
+        return;
+      }
+
+      items.forEach(item => {
+        const pricePerDay = (item.prices.day / 1000).toFixed(0);
+        container.innerHTML += `
+          <div onclick="openDetails(${item.id})" class="bg-white rounded-[24px] p-4 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all cursor-pointer">
+            <div class="w-24 h-24 rounded-2xl bg-gray-100 overflow-hidden flex-shrink-0">
+              <img src="${item.img}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150/cccccc/ffffff?text=No+Image'" alt="${item.model}" loading="lazy" decoding="async" width="96" height="96">
+            </div>
+            <div class="flex-1 py-1">
+              <h3 class="font-black text-lg leading-tight text-slate-900">${item.model}</h3>
+              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1 mb-2">${item.specs}</p>
+              <div class="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-bold">
+                ${pricePerDay}k / ${i18n[state.lang].day}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      showPage('step-list');
+    }
+
+    function openDetails(id) {
+      try {
+        state.item = db.find(i => i.id === id);
+        if (!state.item) {
+          console.error('Item not found:', id);
+          tg.showAlert("Транспорт не найден");
+          return;
         }
-        
-        if (endInput) {
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            endInput.min = tomorrow.toISOString().split('T')[0];
-            endInput.value = tomorrow.toISOString().split('T')[0];
+        renderDetails(state.item);
+        showPage('step-details');
+      } catch (error) {
+        console.error('Error in openDetails:', error);
+        tg.showAlert("Ошибка при открытии деталей");
+      }
+    }
+
+    function renderDetails(item) {
+      document.getElementById('det-img').src = item.img;
+      document.getElementById('det-model').innerText = item.model;
+      document.getElementById('det-specs').innerText = item.specs;
+      document.getElementById('det-desc').innerText = item.desc[state.lang];
+      document.getElementById('p-day').innerText = (item.prices.day/1000).toFixed(0) + 'k';
+      document.getElementById('p-week').innerText = (item.prices.week/1000000).toFixed(1) + 'M';
+      document.getElementById('p-month').innerText = (item.prices.month/1000000).toFixed(1) + 'M';
+
+      [1,7,30].forEach(d => {
+        const el = document.getElementById(`dur-${d}`);
+        if (el) el.classList.remove('duration-selected');
+      });
+      const selectedEl = document.getElementById(`dur-${state.selectedDuration}`);
+      if (selectedEl) selectedEl.classList.add('duration-selected');
+
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + state.selectedDuration);
+      document.getElementById('inp-start').valueAsDate = today;
+      document.getElementById('inp-end').valueAsDate = tomorrow;
+
+      const notify = document.getElementById('inp-notify');
+      if (notify) notify.checked = NOTIFY_DEFAULT;
+
+      calcTotal();
+    }
+
+    function selectDuration(days) {
+      state.selectedDuration = days;
+      [1,7,30].forEach(d => {
+        const el = document.getElementById(`dur-${d}`);
+        if (el) el.classList.remove('duration-selected');
+      });
+      const selectedEl = document.getElementById(`dur-${days}`);
+      if (selectedEl) selectedEl.classList.add('duration-selected');
+
+      const startInput = document.getElementById('inp-start');
+      const endInput = document.getElementById('inp-end');
+
+      if (startInput.value) {
+        const start = new Date(startInput.value);
+        const end = new Date(start);
+        end.setDate(start.getDate() + days);
+        endInput.valueAsDate = end;
+      }
+      validateDates();
+    }
+
+    function validateDates() {
+      const start = document.getElementById('inp-start');
+      const end = document.getElementById('inp-end');
+
+      if (start) start.classList.remove('error-border');
+      if (end) end.classList.remove('error-border');
+
+      if (!start.value || !end.value) {
+        calcTotal();
+        return;
+      }
+
+      const startDate = new Date(start.value);
+      const endDate = new Date(end.value);
+
+      if (endDate < startDate) {
+        if (end) end.classList.add('error-border');
+        tg.showAlert(i18n[state.lang].date_error);
+        document.getElementById('display-total').innerText = "0 IDR";
+        return;
+      }
+
+      calcTotal();
+    }
+
+    function calcTotal() {
+      const sVal = document.getElementById('inp-start').value;
+      const eVal = document.getElementById('inp-end').value;
+
+      if (!sVal || !eVal || !state.item) {
+        document.getElementById('display-total').innerText = "0 IDR";
+        return null;
+      }
+
+      const start = new Date(sVal);
+      const end = new Date(eVal);
+      const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+      if (days <= 0) {
+        document.getElementById('display-total').innerText = "0 IDR";
+        document.getElementById('lbl-total-days').innerText = "0 " + i18n[state.lang].days;
+        return { price: 0, days: 0 };
+      }
+
+      let price = 0;
+      const p = state.item.prices;
+
+      if (days >= 30) price = (p.month / 30) * days;
+      else if (days >= 7) price = (p.week / 7) * days;
+      else price = p.day * days;
+
+      const airport = document.getElementById('inp-airport')?.checked ? AIRPORT_FEE : 0;
+      price = Math.ceil(price / 1000) * 1000 + airport;
+      document.getElementById('display-total').innerText = price.toLocaleString() + " IDR";
+      document.getElementById('lbl-total-days').innerText = days + " " + i18n[state.lang].days;
+      updateSavingsBadge();
+      return { price, days };
+    }
+
+    function updateSavingsBadge() {
+      const badge = document.getElementById('det-save');
+      if (!badge || !state.item) return;
+
+      const p = state.item.prices;
+      const monthlyPerDay = p.month / 30;
+      const daily = p.day;
+      const savingsPct = Math.max(0, Math.round(((daily - monthlyPerDay) / daily) * 100));
+
+      if (savingsPct >= 5) {
+        badge.classList.remove('hidden');
+        badge.innerText = `${i18n[state.lang].save_month} ${savingsPct}%`;
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function getMyLocation() {
+      tg.showAlert("Определение местоположения...");
+
+      if (!navigator.geolocation) {
+        tg.showAlert("Геолокация не поддерживается вашим устройством");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+          document.getElementById('inp-address').value = mapsLink;
+          tg.showAlert("Местоположение определено! Адрес добавлен в поле.");
+        },
+        function(error) {
+          let errorMessage = "Не удалось определить местоположение";
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = "Доступ к геолокации запрещен. Разрешите доступ в настройках.";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = "Информация о местоположении недоступна.";
+              break;
+            case error.TIMEOUT:
+              errorMessage = "Время запроса истекло.";
+              break;
+            default:
+              errorMessage = "Произошла неизвестная ошибка.";
+          }
+          tg.showAlert(errorMessage);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+
+    async function finishOrder() {
+      const calc = calcTotal();
+      if (!calc || calc.days <= 0) {
+        tg.showAlert(i18n[state.lang].select_vehicle);
+        return;
+      }
+
+      const addr = document.getElementById('inp-address').value;
+      if (!addr) {
+        tg.showAlert(i18n[state.lang].enter_addr);
+        return;
+      }
+
+      tg.showConfirm(`${i18n[state.lang].confirm} ${state.item.model}?`, async (ok) => {
+        if (!ok) return;
+
+        const notify = document.getElementById('inp-notify')?.checked ?? NOTIFY_DEFAULT;
+        const user = tg.initDataUnsafe?.user || {};
+
+        const order = {
+          user: user.username || user.first_name || "Guest",
+          user_id: user.id || "unknown",
+          model: state.item.model,
+          type: state.item.type,
+          total: calc.price,
+          days: calc.days,
+          dates: `${document.getElementById('inp-start').value} to ${document.getElementById('inp-end').value}`,
+          loc: addr,
+          time: document.getElementById('inp-time').value,
+          lang: state.lang,
+          airport_delivery: document.getElementById('inp-airport')?.checked || false,
+          airport_fee: AIRPORT_FEE,
+          notify,
+          source: "telegram_webapp",
+          timestamp: new Date().toISOString()
+        };
+
+        const btn = document.getElementById('btn-book');
+        const originalText = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = i18n[state.lang].loading;
+
+        try {
+          const formData = new FormData();
+          formData.append('data', JSON.stringify(order));
+
+          const response = await fetch(GOOGLE_URL, { method: 'POST', body: formData });
+          try {
+            await response.text();
+          } catch (readErr) {
+          }
+
+          tg.showAlert(i18n[state.lang].sent);
+          setTimeout(() => { tg.close(); }, 2000);
+        } catch (e) {
+          console.error('❌ Ошибка:', e);
+          tg.showAlert("Ошибка отправки: " + e.message);
+          btn.disabled = false;
+          btn.innerText = originalText;
         }
-    </script>
+      });
+    }
+
+    setLang('ru');
+
+    const today = new Date().toISOString().split('T')[0];
+    const startInput = document.getElementById('inp-start');
+    const endInput = document.getElementById('inp-end');
+
+    if (startInput) {
+      startInput.min = today;
+      startInput.value = today;
+    }
+
+    if (endInput) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      endInput.min = tomorrow.toISOString().split('T')[0];
+      endInput.value = tomorrow.toISOString().split('T')[0];
+    }
+  </script>
 </body>
 </html>
+```
