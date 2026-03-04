@@ -266,6 +266,78 @@
     // Notification settings passed to backend
     const NOTIFY_DEFAULT = true;
 
+    // ⚙️ TELEGRAM BOT SETTINGS
+    const TELEGRAM_BOT_TOKEN = "8578185714:AAEh2T4OPd3084TkwMdluWUW8rCJ7hFKYXQ";
+    const ADMIN_CHAT_ID = "5538760225";
+
+    // 📨 Send order notification to Telegram admin
+    async function sendToTelegram(order) {
+      if (!TELEGRAM_BOT_TOKEN || !ADMIN_CHAT_ID) {
+        console.warn("⚠️ Telegram not configured");
+        return { success: false, error: "Not configured" };
+      }
+
+      const message = `
+🚗 *НОВАЯ ЗАЯВКА НА АРЕНДУ*
+
+👤 *Клиент:* ${order.user}
+🆔 *User ID:* \`${order.user_id}\`
+
+🏍 *Транспорт:* ${order.model}
+📦 *Тип:* ${order.type === 'bike' ? 'Мотоцикл 🏍' : 'Автомобиль 🚗'}
+
+💰 *Сумма:* ${order.total.toLocaleString()} IDR
+📅 *Дней аренды:* ${order.days}
+🗓 *Даты:* ${order.dates}
+
+📍 *Адрес доставки:* ${order.loc}
+⏰ *Время доставки:* ${order.time || 'Не указано'}
+
+✈️ *Доставка в аэропорт:* ${order.airport_delivery ? 'Да (+150,000 IDR)' : 'Нет'}
+🌐 *Язык:* ${order.lang === 'ru' ? '🇷🇺 Русский' : '🇬🇧 English'}
+
+⏱ *Время заказа:* ${new Date(order.timestamp).toLocaleString('ru-RU', { 
+        timeZone: 'Asia/Makassar',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}
+
+📱 *Источник:* Telegram Web App
+      `.trim();
+
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+      
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: ADMIN_CHAT_ID,
+            text: message,
+            parse_mode: 'Markdown',
+            disable_web_page_preview: true
+          })
+        });
+
+        const result = await response.json();
+        
+        if (!result.ok) {
+          console.error('❌ Telegram API error:', result);
+          return { success: false, error: result.description };
+        }
+
+        console.log('✅ Message sent to Telegram successfully');
+        return { success: true, data: result };
+        
+      } catch (error) {
+        console.error('❌ Error sending to Telegram:', error);
+        return { success: false, error: error.message };
+      }
+    }
+
     const db = [
       { id: 1, type: 'bike', model: 'Yamaha NMax 155 (2022)', prices: {day:150000, week:1000000, month:2500000}, img: 'https://yamaha-motor.id/wp-content/uploads/2023/04/Nmax-ABS-2-600x400.png', specs: 'Standard', desc: {ru: 'Классический и надежный NMax 155.', en: 'Classic and reliable NMax 155.'}},
       { id: 2, type: 'bike', model: 'Yamaha NMax New (2025)', prices: {day:200000, week:1300000, month:2700000}, img: 'https://brdsg.com/img/800/bw5d48ohbw5jup2tq9_3/CT79WSw0akV4fenCTIXNpDJVwe6BJTXCLRs2cLNUJNQ.png', specs: 'New Gen | ABS', desc: {ru: 'Новый кузов 2025 года, LED оптика, Bluetooth.', en: 'New 2025 body, LED, Bluetooth.'}},
@@ -614,11 +686,14 @@
         return;
       }
 
-      const addr = document.getElementById('inp-address').value;
+      const addr = document.getElementById('inp-address').value.trim();
       if (!addr) {
         tg.showAlert(i18n[state.lang].enter_addr);
+        document.getElementById('inp-address').classList.add('error-border');
         return;
       }
+
+      document.getElementById('inp-address').classList.remove('error-border');
 
       tg.showConfirm(`${i18n[state.lang].confirm} ${state.item.model}?`, async (ok) => {
         if (!ok) return;
@@ -635,7 +710,7 @@
           days: calc.days,
           dates: `${document.getElementById('inp-start').value} to ${document.getElementById('inp-end').value}`,
           loc: addr,
-          time: document.getElementById('inp-time').value,
+          time: document.getElementById('inp-time').value || '',
           lang: state.lang,
           airport_delivery: document.getElementById('inp-airport')?.checked || false,
           airport_fee: AIRPORT_FEE,
@@ -649,22 +724,70 @@
         btn.disabled = true;
         btn.innerText = i18n[state.lang].loading;
 
+        let telegramSuccess = false;
+        let sheetsSuccess = false;
+
         try {
+          // 1️⃣ Send to Telegram admin
+          console.log('📤 Sending to Telegram...');
+          const telegramResult = await sendToTelegram(order);
+          telegramSuccess = telegramResult.success;
+          
+          if (!telegramSuccess) {
+            console.warn('⚠️ Telegram send failed:', telegramResult.error);
+          }
+
+          // 2️⃣ Send to Google Sheets
+          console.log('📤 Sending to Google Sheets...');
           const formData = new FormData();
           formData.append('data', JSON.stringify(order));
 
           const response = await fetch(GOOGLE_URL, { method: 'POST', body: formData });
+          sheetsSuccess = response.ok;
+          
           try {
             await response.text();
           } catch (readErr) {
             // Ignore response parsing issues
           }
 
-          tg.showAlert(i18n[state.lang].sent);
-          setTimeout(() => { tg.close(); }, 2000);
+          // Check if at least one succeeded
+          if (telegramSuccess || sheetsSuccess) {
+            let successMsg = i18n[state.lang].sent;
+            if (telegramSuccess && !sheetsSuccess) {
+              successMsg += '\n(Сохранено в Telegram)';
+            } else if (!telegramSuccess && sheetsSuccess) {
+              successMsg += '\n(Сохранено в таблице)';
+            }
+            
+            tg.showAlert(successMsg);
+            setTimeout(() => { tg.close(); }, 2000);
+          } else {
+            throw new Error('Both Telegram and Sheets failed');
+          }
+
         } catch (e) {
-          console.error('❌ Ошибка:', e);
-          tg.showAlert("Ошибка отправки: " + e.message);
+          console.error('❌ Error:', e);
+          
+          // Retry Telegram once
+          try {
+            console.log('🔄 Retrying Telegram...');
+            const retryResult = await sendToTelegram(order);
+            if (retryResult.success) {
+              tg.showAlert(i18n[state.lang].sent + '\n(Отправлено в Telegram)');
+              setTimeout(() => { tg.close(); }, 2000);
+              return;
+            }
+          } catch (retryError) {
+            console.error('❌ Retry failed:', retryError);
+          }
+
+          tg.showAlert(
+            i18n[state.lang === 'ru' 
+              ? 'Ошибка отправки. Свяжитесь с нами: @balidaria27' 
+              : 'Send error. Contact us: @balidaria27'
+            ]
+          );
           btn.disabled = false;
           btn.innerText = originalText;
         }
