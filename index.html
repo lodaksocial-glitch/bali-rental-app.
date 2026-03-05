@@ -73,6 +73,8 @@
                   radial-gradient(500px 400px at 90% 20%, rgba(14,165,164,0.22), transparent 60%);
     }
     ::-webkit-scrollbar { width: 0; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
     input, select { color-scheme: dark; }
   </style>
@@ -167,6 +169,36 @@
         <h2 class="text-sm font-black uppercase tracking-widest" id="lbl-category">CATEGORY</h2>
         <a href="https://t.me/x_Valet_x" target="_blank" class="p-2 rounded-xl bg-blue-100 text-blue-600 font-bold">✈︎</a>
       </div>
+
+      <!-- Search Bar -->
+      <div class="p-4 bg-white border-b sticky top-16 z-40">
+        <input 
+          type="search" 
+          id="search-input"
+          placeholder="🔍 Поиск транспорта..."
+          class="w-full p-3 rounded-xl border border-gray-200 text-sm outline-none"
+          oninput="searchVehicles(this.value)"
+        >
+      </div>
+
+      <!-- Filters -->
+      <div class="sticky top-32 bg-white z-40 p-4 border-b">
+        <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <button onclick="filterByPrice('all')" id="filter-all" class="filter-btn px-4 py-2 rounded-full text-xs font-bold bg-blue-100 text-blue-600 whitespace-nowrap">
+            Все
+          </button>
+          <button onclick="filterByPrice('economy')" id="filter-economy" class="filter-btn px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700 whitespace-nowrap">
+            Эконом (≤150k)
+          </button>
+          <button onclick="filterByPrice('standard')" id="filter-standard" class="filter-btn px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700 whitespace-nowrap">
+            Стандарт (200k)
+          </button>
+          <button onclick="filterByPrice('premium')" id="filter-premium" class="filter-btn px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700 whitespace-nowrap">
+            Премиум (≥250k)
+          </button>
+        </div>
+      </div>
+
       <div id="items-container" class="space-y-4 p-4 pb-28 overflow-y-auto flex-1 h-full"></div>
 
       <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-3 z-[80]">
@@ -238,6 +270,56 @@
               <span id="lbl-notify">Получать подтверждение в Telegram</span>
             </label>
           </div>
+
+          <!-- Referral Section -->
+          <div class="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-[24px] border-2 border-amber-200">
+            <div class="text-center">
+              <div class="text-3xl mb-2">🎁</div>
+              <h3 class="text-lg font-black text-slate-900 mb-2" id="lbl-referral-title">Приведи друга</h3>
+              <p class="text-sm text-slate-600 mb-4" id="lbl-referral-desc">
+                Получи <span class="font-bold text-amber-600">3 дня бесплатной аренды</span> за каждого друга!
+              </p>
+              
+              <div class="bg-white p-4 rounded-xl border border-amber-200 mb-3">
+                <p class="text-xs text-slate-500 mb-2" id="lbl-your-link">Твоя реферальная ссылка:</p>
+                <div class="flex gap-2">
+                  <input 
+                    type="text" 
+                    id="referral-link" 
+                    readonly 
+                    class="flex-1 p-2 bg-slate-50 rounded-lg text-xs font-mono text-slate-700 border border-slate-200"
+                    value="Загрузка..."
+                  >
+                  <button 
+                    onclick="copyReferralLink()" 
+                    class="bg-amber-500 text-white px-4 py-2 rounded-lg text-xs font-bold active:scale-95 transition-all whitespace-nowrap"
+                    id="btn-copy-ref"
+                  >
+                    📋
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+                <div class="bg-white p-3 rounded-xl border border-amber-100">
+                  <div class="text-2xl font-black text-amber-600" id="ref-count">0</div>
+                  <div class="text-slate-500" id="lbl-invited">Приглашено</div>
+                </div>
+                <div class="bg-white p-3 rounded-xl border border-amber-100">
+                  <div class="text-2xl font-black text-green-600" id="ref-bonus">0</div>
+                  <div class="text-slate-500" id="lbl-bonus-days">Бонусных дней</div>
+                </div>
+              </div>
+
+              <button 
+                onclick="shareReferralLink()" 
+                class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-xl font-bold text-sm active:scale-95 transition-all"
+                id="btn-share-ref"
+              >
+                📤 Поделиться ссылкой
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -270,6 +352,178 @@
     const TELEGRAM_BOT_TOKEN = "8578185714:AAEh2T4OPd3084TkwMdluWUW8rCJ7hFKYXQ";
     const ADMIN_CHAT_ID = "5538760225";
 
+    // 🎁 REFERRAL SYSTEM
+    let referralData = {
+      userId: null,
+      referralCode: null,
+      invitedCount: 0,
+      bonusDays: 0,
+      usedDays: 0,
+      referredBy: null,
+      hasOrdered: false
+    };
+
+    // Initialize referral system
+    function initReferralSystem() {
+      const user = tg.initDataUnsafe?.user;
+      if (!user || !user.id) {
+        console.warn('⚠️ User not available for referral system');
+        document.getElementById('referral-link').value = 'Войдите через Telegram';
+        return;
+      }
+
+      referralData.userId = user.id;
+      referralData.referralCode = `REF${user.id}`;
+
+      // Check if user came from referral link
+      const startParam = tg.initDataUnsafe?.start_param;
+      if (startParam && startParam.startsWith('ref_')) {
+        referralData.referredBy = startParam.replace('ref_', '');
+        console.log('✅ User came from referral:', referralData.referredBy);
+      }
+
+      // Generate referral link
+      const referralLink = `https://t.me/MySuperRent_bot?start=ref_${user.id}`;
+      document.getElementById('referral-link').value = referralLink;
+
+      // Load referral stats
+      loadReferralStats();
+    }
+
+    // Load referral statistics
+    async function loadReferralStats() {
+      try {
+        const response = await fetch(`${GOOGLE_URL}?action=getReferralStats&userId=${referralData.userId}`);
+        const stats = await response.json();
+        
+        referralData.invitedCount = stats.invitedCount || 0;
+        referralData.bonusDays = stats.bonusDays || 0;
+        referralData.usedDays = stats.usedDays || 0;
+        referralData.hasOrdered = stats.hasOrdered || false;
+
+        document.getElementById('ref-count').textContent = referralData.invitedCount;
+        document.getElementById('ref-bonus').textContent = Math.max(0, referralData.bonusDays - referralData.usedDays);
+      } catch (error) {
+        console.warn('⚠️ Could not load referral stats:', error);
+        // Show default values
+        document.getElementById('ref-count').textContent = '0';
+        document.getElementById('ref-bonus').textContent = '0';
+      }
+    }
+
+    // Copy referral link
+    function copyReferralLink() {
+      const input = document.getElementById('referral-link');
+      input.select();
+      input.setSelectionRange(0, 99999);
+      
+      try {
+        document.execCommand('copy');
+        const btn = document.getElementById('btn-copy-ref');
+        btn.textContent = '✅';
+        setTimeout(() => {
+          btn.textContent = '📋';
+        }, 2000);
+        tg.showAlert('Ссылка скопирована!');
+      } catch (err) {
+        console.error('Could not copy:', err);
+        tg.showAlert('Не удалось скопировать ссылку');
+      }
+    }
+
+    // Share referral link
+    function shareReferralLink() {
+      const link = document.getElementById('referral-link').value;
+      const text = `🎁 Получи скидку 10% на аренду транспорта на Бали!\n\nИспользуй мою реферальную ссылку и получи скидку на первый заказ:\n${link}\n\n🏍 Байки и авто с доставкой\n⭐ Премиальный сервис\n📱 Быстрое бронирование\n\nА я получу 3 дня бесплатной аренды! 🎉`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'Bali Elite Pro - Аренда транспорта',
+          text: text
+        }).catch(err => console.log('Share cancelled'));
+      } else {
+        copyReferralLink();
+      }
+    }
+
+    // Save referral to Google Sheets
+    async function saveReferral(referrerId, friendId, orderId) {
+      try {
+        const formData = new FormData();
+        formData.append('action', 'saveReferral');
+        formData.append('referrerId', referrerId);
+        formData.append('friendId', friendId);
+        formData.append('orderId', orderId);
+        formData.append('bonusDays', 3);
+        formData.append('timestamp', new Date().toISOString());
+
+        await fetch(GOOGLE_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        console.log('✅ Referral saved');
+        
+        // Send notification to referrer
+        const referrerMessage = `🎉 *Поздравляем!*\n\nВаш друг сделал первый заказ!\n\n🎁 Вы получили *3 дня бесплатной аренды*\n\nТеперь у вас: ${referralData.bonusDays + 3} бонусных дней\n\nПродолжайте приглашать друзей! 🚀`;
+        
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: referrerId,
+            text: referrerMessage,
+            parse_mode: 'Markdown'
+          })
+        });
+      } catch (error) {
+        console.error('❌ Error saving referral:', error);
+      }
+    }
+
+    // Apply referral bonus to order
+    function applyReferralBonus(order) {
+      let discount = 0;
+      let discountReason = '';
+      let bonusDaysUsed = 0;
+
+      // Apply bonus days if available
+      const availableDays = Math.max(0, referralData.bonusDays - referralData.usedDays);
+      if (availableDays > 0) {
+        const orderDays = order.days;
+        const pricePerDay = order.total / orderDays;
+        
+        if (availableDays >= orderDays) {
+          // Full order free
+          discount = order.total;
+          bonusDaysUsed = orderDays;
+          discountReason = `Использовано ${orderDays} бонусных дней (бесплатно!)`;
+        } else {
+          // Partial discount
+          discount = pricePerDay * availableDays;
+          bonusDaysUsed = availableDays;
+          discountReason = `Использовано ${availableDays} бонусных дней`;
+        }
+      }
+
+      // First order discount for referred users
+      if (referralData.referredBy && !referralData.hasOrdered) {
+        const firstOrderDiscount = (order.total - discount) * 0.10; // 10% on remaining amount
+        discount += firstOrderDiscount;
+        discountReason += (discountReason ? ' + ' : '') + 'Скидка 10% за регистрацию по реферальной ссылке';
+      }
+
+      return {
+        ...order,
+        originalTotal: order.total,
+        discount: Math.round(discount),
+        total: Math.max(0, Math.round(order.total - discount)),
+        discountReason,
+        bonusDaysUsed,
+        referredBy: referralData.referredBy
+      };
+    }
+
     // 📨 Send order notification to Telegram admin
     async function sendToTelegram(order) {
       if (!TELEGRAM_BOT_TOKEN || !ADMIN_CHAT_ID) {
@@ -286,7 +540,7 @@
 🏍 *Транспорт:* ${order.model}
 📦 *Тип:* ${order.type === 'bike' ? 'Мотоцикл 🏍' : 'Автомобиль 🚗'}
 
-💰 *Сумма:* ${order.total.toLocaleString()} IDR
+${order.originalTotal && order.discount > 0 ? `💵 *Цена:* ${order.originalTotal.toLocaleString()} IDR\n🎁 *Скидка:* -${order.discount.toLocaleString()} IDR\n💰 *Итого:* ${order.total.toLocaleString()} IDR\n📝 *Причина скидки:* ${order.discountReason}` : `💰 *Сумма:* ${order.total.toLocaleString()} IDR`}
 📅 *Дней аренды:* ${order.days}
 🗓 *Даты:* ${order.dates}
 
@@ -295,6 +549,7 @@
 
 ✈️ *Доставка в аэропорт:* ${order.airport_delivery ? 'Да (+150,000 IDR)' : 'Нет'}
 🌐 *Язык:* ${order.lang === 'ru' ? '🇷🇺 Русский' : '🇬🇧 English'}
+${order.referredBy ? `\n🎁 *Реферер ID:* ${order.referredBy} (начислить 3 дня бонуса!)` : ''}
 
 ⏱ *Время заказа:* ${new Date(order.timestamp).toLocaleString('ru-RU', { 
         timeZone: 'Asia/Makassar',
@@ -318,7 +573,21 @@
             chat_id: ADMIN_CHAT_ID,
             text: message,
             parse_mode: 'Markdown',
-            disable_web_page_preview: true
+            disable_web_page_preview: true,
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: '✅ Подтвердить', callback_data: `confirm_${order.user_id}` },
+                  { text: '❌ Отклонить', callback_data: `reject_${order.user_id}` }
+                ],
+                [
+                  { text: '💬 Написать клиенту', url: order.user !== 'Guest' ? `https://t.me/${order.user}` : 'https://t.me/balidaria27' }
+                ],
+                [
+                  { text: '📍 Открыть на карте', url: order.loc.includes('maps.google') || order.loc.includes('goo.gl') ? order.loc : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.loc)}` }
+                ]
+              ]
+            }
           })
         });
 
@@ -329,7 +598,44 @@
           return { success: false, error: result.description };
         }
 
-        console.log('✅ Message sent to Telegram successfully');
+        console.log('✅ Message sent to Telegram admin successfully');
+
+        // Send confirmation to client
+        if (order.user_id && order.user_id !== 'unknown') {
+          try {
+            const clientMessage = `
+✅ *Ваш заказ принят!*
+
+🏍 *Транспорт:* ${order.model}
+💰 *Сумма:* ${order.total.toLocaleString()} IDR
+📅 *Период:* ${order.days} ${order.days === 1 ? 'день' : order.days < 5 ? 'дня' : 'дней'}
+🗓 *Даты:* ${order.dates}
+
+📍 *Адрес доставки:* ${order.loc}
+⏰ *Время:* ${order.time || 'Уточним при подтверждении'}
+
+Мы свяжемся с вами в ближайшее время для подтверждения деталей.
+
+📞 *Контакты:* @balidaria27
+🌐 *Сайт:* Bali Elite Pro
+            `.trim();
+
+            await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: order.user_id,
+                text: clientMessage,
+                parse_mode: 'Markdown'
+              })
+            });
+
+            console.log('✅ Confirmation sent to client');
+          } catch (clientError) {
+            console.warn('⚠️ Could not send confirmation to client:', clientError);
+          }
+        }
+        
         return { success: true, data: result };
         
       } catch (error) {
@@ -390,7 +696,13 @@
         contact: "Связаться с сервисом",
         notify: "Получать подтверждение в Telegram",
         airport: "Доставка в аэропорт (+150 000 IDR)",
-        save_month: "Экономия до"
+        save_month: "Экономия до",
+        referral_title: "Приведи друга",
+        referral_desc: "Получи 3 дня бесплатной аренды за каждого друга!",
+        your_link: "Твоя реферальная ссылка:",
+        invited: "Приглашено",
+        bonus_days: "Бонусных дней",
+        share_link: "Поделиться ссылкой"
       },
       en: {
         elite: "ELITE SERVICE", bali: "Bali, Indonesia",
@@ -410,7 +722,13 @@
         contact: "Contact Service",
         notify: "Receive confirmation in Telegram",
         airport: "Airport delivery (+150,000 IDR)",
-        save_month: "Save up to"
+        save_month: "Save up to",
+        referral_title: "Refer a Friend",
+        referral_desc: "Get 3 days free rental for each friend!",
+        your_link: "Your referral link:",
+        invited: "Invited",
+        bonus_days: "Bonus days",
+        share_link: "Share link"
       }
     };
 
@@ -458,6 +776,12 @@
       document.getElementById('lbl-contact-bottom').innerText = t.contact;
       document.getElementById('lbl-notify').innerText = t.notify;
       document.getElementById('lbl-airport').innerText = t.airport;
+      document.getElementById('lbl-referral-title').innerText = t.referral_title;
+      document.getElementById('lbl-referral-desc').innerHTML = t.referral_desc;
+      document.getElementById('lbl-your-link').innerText = t.your_link;
+      document.getElementById('lbl-invited').innerText = t.invited;
+      document.getElementById('lbl-bonus-days').innerText = t.bonus_days;
+      document.getElementById('btn-share-ref').innerText = '📤 ' + t.share_link;
       if (state.item) renderDetails(state.item);
     }
 
@@ -484,7 +808,7 @@
       items.forEach(item => {
         const pricePerDay = (item.prices.day / 1000).toFixed(0);
         container.innerHTML += `
-          <div onclick="openDetails(${item.id})" class="bg-white rounded-[24px] p-4 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all cursor-pointer">
+          <div onclick="openDetails(${item.id})" data-price="${item.prices.day}" data-model="${item.model.toLowerCase()}" class="vehicle-item bg-white rounded-[24px] p-4 flex gap-4 shadow-sm border border-slate-100 active:scale-95 transition-all cursor-pointer">
             <div class="w-24 h-24 rounded-2xl bg-gray-100 overflow-hidden flex-shrink-0">
               <img src="${item.img}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150/cccccc/ffffff?text=No+Image'" alt="${item.model}" loading="lazy" decoding="async" width="96" height="96">
             </div>
@@ -499,6 +823,51 @@
         `;
       });
       showPage('step-list');
+      
+      // Reset filters
+      document.getElementById('search-input').value = '';
+      filterByPrice('all');
+    }
+
+    function filterByPrice(category) {
+      const items = document.querySelectorAll('.vehicle-item');
+      const buttons = document.querySelectorAll('.filter-btn');
+      
+      // Update button styles
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-blue-100', 'text-blue-600');
+        btn.classList.add('bg-gray-100', 'text-gray-700');
+      });
+      document.getElementById(`filter-${category}`).classList.remove('bg-gray-100', 'text-gray-700');
+      document.getElementById(`filter-${category}`).classList.add('bg-blue-100', 'text-blue-600');
+      
+      // Filter items
+      items.forEach(item => {
+        const price = parseInt(item.dataset.price);
+        let show = false;
+        
+        if (category === 'all') show = true;
+        else if (category === 'economy' && price <= 150000) show = true;
+        else if (category === 'standard' && price > 150000 && price < 250000) show = true;
+        else if (category === 'premium' && price >= 250000) show = true;
+        
+        item.style.display = show ? 'flex' : 'none';
+      });
+    }
+
+    function searchVehicles(query) {
+      const items = document.querySelectorAll('.vehicle-item');
+      const searchTerm = query.toLowerCase().trim();
+      
+      if (!searchTerm) {
+        items.forEach(item => item.style.display = 'flex');
+        return;
+      }
+      
+      items.forEach(item => {
+        const model = item.dataset.model;
+        item.style.display = model.includes(searchTerm) ? 'flex' : 'none';
+      });
     }
 
     function openDetails(id) {
@@ -701,7 +1070,7 @@
         const notify = document.getElementById('inp-notify')?.checked ?? NOTIFY_DEFAULT;
         const user = tg.initDataUnsafe?.user || {};
 
-        const order = {
+        let order = {
           user: user.username || user.first_name || "Guest",
           user_id: user.id || "unknown",
           model: state.item.model,
@@ -718,6 +1087,9 @@
           source: "telegram_webapp",
           timestamp: new Date().toISOString()
         };
+
+        // Apply referral bonuses
+        order = applyReferralBonus(order);
 
         const btn = document.getElementById('btn-book');
         const originalText = btn.innerText;
@@ -753,11 +1125,21 @@
 
           // Check if at least one succeeded
           if (telegramSuccess || sheetsSuccess) {
+            // Save referral if user came from referral link
+            if (order.referredBy && !referralData.hasOrdered) {
+              await saveReferral(order.referredBy, order.user_id, `ORD_${Date.now()}`);
+              referralData.hasOrdered = true;
+            }
+
             let successMsg = i18n[state.lang].sent;
             if (telegramSuccess && !sheetsSuccess) {
               successMsg += '\n(Сохранено в Telegram)';
             } else if (!telegramSuccess && sheetsSuccess) {
               successMsg += '\n(Сохранено в таблице)';
+            }
+            
+            if (order.discount > 0) {
+              successMsg += `\n\n🎁 Применена скидка: ${order.discount.toLocaleString()} IDR!`;
             }
             
             tg.showAlert(successMsg);
@@ -812,6 +1194,11 @@
       endInput.min = tomorrow.toISOString().split('T')[0];
       endInput.value = tomorrow.toISOString().split('T')[0];
     }
+
+    // Initialize referral system after a short delay
+    setTimeout(() => {
+      initReferralSystem();
+    }, 1000);
   </script>
 </body>
 </html>
